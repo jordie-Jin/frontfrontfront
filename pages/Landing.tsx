@@ -199,11 +199,13 @@ const Landing: React.FC = () => {
             <div className="w-8 h-8">
               <img
                 src="/img/logonobg.png"
-                alt="로고"
+                alt="SENTINEL 로고"
                 className="w-full h-full object-contain"
               />
-          </div>
-
+            </div>
+            <span className="text-xs uppercase tracking-[0.3em] text-white/80">
+              SENTINEL
+            </span>
           </div>
           
           <div className="hidden md:flex items-center space-x-10 text-[10px] uppercase tracking-[0.2em] font-medium text-slate-400">
