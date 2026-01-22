@@ -196,10 +196,14 @@ const Landing: React.FC = () => {
       <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'py-4 bg-black/80 backdrop-blur-md border-b border-white/10' : 'py-8'}`}>
         <div className="max-w-7xl mx-auto px-10 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 border border-white/20 rounded-full flex items-center justify-center">
-               <i className="fas fa-eye text-xs text-white"></i>
-            </div>
-            <span className="text-xl font-bold tracking-widest serif uppercase">Sentinel</span>
+            <div className="w-8 h-8">
+              <img
+                src="/img/logonobg.png"
+                alt="로고"
+                className="w-full h-full object-contain"
+              />
+          </div>
+
           </div>
           
           <div className="hidden md:flex items-center space-x-10 text-[10px] uppercase tracking-[0.2em] font-medium text-slate-400">

@@ -31,9 +31,13 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="p-8 mb-8">
           <Link to="/" className="flex items-center space-x-3 group">
             <div className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-slate-400 transition-colors">
-              <i className="fas fa-eye text-slate-300"></i>
+              <img
+                src="/img/owllogo.png"
+                alt="보기"
+                className="w-20 h-20 rounded-full object-cover"
+              />
             </div>
-            <h1 className="text-xl font-bold tracking-widest serif text-white">SENTINEL</h1>
+            <h1 className="text-xl font-bold tracking-widest serif text-white">SENTIENEL</h1>
           </Link>
         </div>
         
@@ -59,7 +63,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <main className="flex-1 relative overflow-y-auto">
         <div className="fixed inset-0 pointer-events-none opacity-40 z-0">
            <iframe 
-              src='https://my.spline.design/retrofuturismbganimation-7dUJI7lr9el2yBM1O1QGJBKb/' 
+              src='https://my.spline.design/retrofuturisticcircuitloop-tuqsKqc0Zul737nHijrJjx50/' 
               frameBorder='0' 
               width='100%' 
               height='100%'
