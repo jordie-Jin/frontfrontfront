@@ -219,26 +219,15 @@ const Landing: React.FC = () => {
       <section className="relative h-screen flex flex-col justify-end items-center overflow-hidden pb-32">
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full overflow-hidden">
-            <iframe 
-              loading="lazy" 
-              style={{ 
-                position: 'absolute', 
-                width: '100vw', 
-                height: '100vh', 
-                top: '50%', 
-                left: '50%', 
-                transform: 'translate(-50%, -50%) scale(1.05)', 
-                border: 'none', 
-                padding: '0', 
-                margin: '0',
-                pointerEvents: 'none'
-              }}
-              src="./img/owl.mp4" 
-              allowFullScreen={true} 
-              allow="fullscreen"
-              title="Sentinel Background Atmosphere"
-            >
-            </iframe>
+            <video
+              className="absolute top-0 left-0 w-full h-full object-cover scale-105"
+              src="/img/owl.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+            />
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#050505] pointer-events-none"></div>
         </div>

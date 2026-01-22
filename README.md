@@ -2,6 +2,6 @@
 <img width="1200" height="475" src="./img/owl.png" />
 </div>
 
-# OOOOOOOO
+# Hear the hoot before the fall.
 
-This contains everything you need
+Discretely watch everything.
