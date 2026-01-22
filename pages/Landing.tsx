@@ -13,7 +13,9 @@ const Landing: React.FC = () => {
   // Form State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
+  const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string; name?: string; }>({});
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -23,6 +25,41 @@ const Landing: React.FC = () => {
 
   const handleAuthSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const nextErrors: typeof errors = {};
+    const trimmedEmail = email.trim();
+    const trimmedName = name.trim();
+    const emailPattern = /^\S+@\S+\.\S+$/;
+    const isRegister = authMode === 'register';
+
+    if (!trimmedEmail) {
+      nextErrors.email = '이메일을 입력해 주세요.';
+    } else if (!emailPattern.test(trimmedEmail)) {
+      nextErrors.email = '올바른 이메일 형식을 입력해 주세요.';
+    }
+
+    if (!password) {
+      nextErrors.password = '비밀번호를 입력해 주세요.';
+    } else if (password.length < 8) {
+      nextErrors.password = '비밀번호는 8자 이상이어야 합니다.';
+    }
+
+    if (isRegister) {
+      if (!trimmedName) {
+        nextErrors.name = '이름을 입력해 주세요.';
+      }
+
+      if (!confirmPassword) {
+        nextErrors.confirmPassword = '비밀번호 확인을 입력해 주세요.';
+      } else if (password !== confirmPassword) {
+        nextErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+      }
+    }
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
     // Simulate successful authentication/registration
     console.log(`${authMode === 'login' ? 'Logging in' : 'Registering'}:`, { email, name });
     navigate('/dashboard');
@@ -30,6 +67,8 @@ const Landing: React.FC = () => {
 
   const toggleAuthMode = () => {
     setAuthMode(prev => prev === 'login' ? 'register' : 'login');
+    setErrors({});
+    setConfirmPassword('');
   };
 
   return (
@@ -66,32 +105,40 @@ const Landing: React.FC = () => {
             <form onSubmit={handleAuthSubmit} className="space-y-5">
               {authMode === 'register' && (
                 <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
-                  <label className="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">Director Name</label>
+                  <label className="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">이름</label>
                   <input 
                     type="text" 
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="E.g. Alexander Vance"
+                    placeholder="이름을 입력해 주세요"
                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:border-white/30 transition-all outline-none text-white placeholder-slate-700"
+                    aria-invalid={Boolean(errors.name)}
                   />
+                  {errors.name && (
+                    <p className="text-xs text-red-400">{errors.name}</p>
+                  )}
                 </div>
               )}
               
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">Security Identifier</label>
+                <label className="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">이메일</label>
                 <input 
                   type="email" 
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@sentinel.network"
+                  placeholder="이메일을 입력해 주세요"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:border-white/30 transition-all outline-none text-white placeholder-slate-700"
+                  aria-invalid={Boolean(errors.email)}
                 />
+                {errors.email && (
+                  <p className="text-xs text-red-400">{errors.email}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">Access Cipher</label>
+                <label className="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">비밀번호</label>
                 <input 
                   type="password" 
                   required
@@ -99,14 +146,36 @@ const Landing: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:border-white/30 transition-all outline-none text-white placeholder-slate-700"
+                  aria-invalid={Boolean(errors.password)}
                 />
+                {errors.password && (
+                  <p className="text-xs text-red-400">{errors.password}</p>
+                )}
               </div>
+
+              {authMode === 'register' && (
+                <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
+                  <label className="text-[10px] uppercase tracking-widest text-slate-500 font-bold ml-1">비밀번호 확인</label>
+                  <input 
+                    type="password" 
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:border-white/30 transition-all outline-none text-white placeholder-slate-700"
+                    aria-invalid={Boolean(errors.confirmPassword)}
+                  />
+                  {errors.confirmPassword && (
+                    <p className="text-xs text-red-400">{errors.confirmPassword}</p>
+                  )}
+                </div>
+              )}
 
               <button 
                 type="submit"
                 className="w-full py-5 bg-white text-black rounded-2xl font-bold text-xs uppercase tracking-[0.2em] hover:bg-slate-200 transition-all shadow-xl mt-4"
               >
-                {authMode === 'login' ? 'Establish Link' : 'Initialize Node'}
+                {authMode === 'login' ? '로그인' : '가입'}
               </button>
             </form>
 
