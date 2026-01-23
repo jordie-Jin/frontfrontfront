@@ -315,7 +315,7 @@ const Landing: React.FC = () => {
                <h2 className="text-4xl md:text-5xl serif leading-tight mb-8">
                  우리는 <br/>
                  <span className="italic text-slate-400">데이터</span>를 읽고, <br/>
-                 판단 가능한 인사이트로 제공합니다.
+                 판단 가능한 인사이트로 <br/> 제공합니다.
                </h2>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
                   <p className="text-sm text-slate-500 leading-relaxed">전문가의 직관에 의존하던 판단을 데이터 기반 인사이트로 전환해,
@@ -351,7 +351,7 @@ const Landing: React.FC = () => {
                       loop
                       playsInline
                       preload="auto"
-                    />
+                     />
                   </div>
                   <div className="flex justify-between text-[10px] text-slate-500 uppercase tracking-widest mb-4"><span>RECENT</span><span>2026년 01월 26일</span></div>
                   <h3 className="text-3xl serif mb-4 group-hover:text-slate-300 transition-colors">데이터 기반 통합 리스크 신호 포착</h3>
