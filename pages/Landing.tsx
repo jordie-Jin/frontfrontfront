@@ -345,21 +345,27 @@ const Landing: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                <div className="md:col-span-2 group cursor-pointer">
                   <div className="aspect-video bg-slate-900 overflow-hidden mb-8">
-                     <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=2080&auto=format&fit=crop" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt="뉴스 1" />
+                    <video src="img/robot.mp4" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt="뉴스 1"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="auto"
+                    />
                   </div>
-                  <div className="flex justify-between text-[10px] text-slate-500 uppercase tracking-widest mb-4"><span>RECENT</span><span>2025년 9월 4일</span></div>
-                  <h3 className="text-3xl serif mb-4 group-hover:text-slate-300 transition-colors">인텔리전스 기반 통합 스트레스 반응 조절자 발견</h3>
-                  <p className="text-slate-500 text-sm mb-6 max-w-xl">이번 주요 논문에서 우리는 약물 발견의 새로운 방식을 열어주는 독창적인 옵토제네틱 스크리닝 플랫폼을 공개합니다.</p>
+                  <div className="flex justify-between text-[10px] text-slate-500 uppercase tracking-widest mb-4"><span>RECENT</span><span>2026년 01월 26일</span></div>
+                  <h3 className="text-3xl serif mb-4 group-hover:text-slate-300 transition-colors">데이터 기반 통합 리스크 신호 포착</h3>
+                  <p className="text-slate-500 text-sm mb-6 max-w-xl">재무 지표, 현금흐름, 외부 환경 데이터를 결합해 기업의 구조적 위험 신호를 조기에 식별, <br/>인사이트를 제공합니다.</p>
                   <span className="text-[10px] uppercase tracking-widest font-bold border-b border-white/20 pb-1 group-hover:border-white transition-all">기사 읽기</span>
                </div>
                <div className="space-y-12">
                   {[
-                    { date: '2025년 12월 18일', title: '노화 해결을 위한 컴퓨터 비전 확장' },
-                    { date: '2025년 12월 2일', title: '노화를 공학 문제로 바라보다' },
-                    { date: '2025년 11월 21일', title: '우리 과학의 내부: 노벨상 수상자 협업' }
+                    { date: '2025년 12월 18일', title: '흑자도산을 예측하는 재무 패턴 확장' },
+                    { date: '2025년 12월 2일', title: '사건이 아닌 시간으로 리스크의 흐름을 보다' },
+                    { date: '2025년 11월 21일', title: 'AI 기반 기업 리스크 분석, 실무에 적용되다' }
                   ].map((item, i) => (
                     <div key={i} className="group cursor-pointer border-t border-white/10 pt-8">
-                      <div className="flex justify-between text-[9px] text-slate-600 uppercase tracking-[0.2em] mb-3"><span>뉴스</span><span>{item.date}</span></div>
+                      <div className="flex justify-between text-[9px] text-slate-600 uppercase tracking-[0.2em] mb-3"><span>소식</span><span>{item.date}</span></div>
                       <h4 className="text-xl serif leading-snug group-hover:text-slate-300 transition-colors">{item.title}</h4>
                       <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fas fa-arrow-right text-xs"></i></div>
                     </div>
@@ -372,16 +378,16 @@ const Landing: React.FC = () => {
       {/* Final CTA Area */}
       <section className="py-40 px-10 relative overflow-hidden flex flex-col items-center text-center">
          <div className="absolute inset-0 opacity-20 grayscale pointer-events-none">
-            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" className="w-full h-full object-cover" />
+            <img src="/img/robot.jpg" className="w-full h-full object-cover" />
          </div>
          <div className="relative z-10 max-w-3xl">
-            <h2 className="text-4xl md:text-5xl serif leading-tight mb-12">우리는 인간 네트워크의 <br/>미래를 위한 전략적 <br/>인텔리전스를 전진시킵니다.</h2>
+            <h2 className="text-4xl md:text-5xl serif leading-tight mb-12">우리는 기업 네트워크의 불확실성을 <br/>데이터 인텔리전스로 <br/>선제적으로 해석합니다.</h2>
             <button 
               onClick={() => { setAuthMode('register'); setShowAuth(true); }}
               className="inline-flex items-center space-x-4 group"
             >
                <span className="bg-white text-black w-14 h-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"><i className="fas fa-plus"></i></span>
-               <span className="text-[10px] uppercase tracking-[0.3em] font-bold">함께하기</span>
+               <span className="text-[13px] uppercase tracking-[0.3em] font-bold">CONTACT US</span>
             </button>
          </div>
       </section>
@@ -389,9 +395,8 @@ const Landing: React.FC = () => {
       {/* Big Branding Footer */}
       <footer className="pt-24 pb-12 px-10 bg-[#0a0a0a] border-t border-white/5">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-24"><h1 className="text-[12vw] font-bold leading-none tracking-tighter text-white/5 serif select-none">IntegratedBio</h1></div>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 text-[10px] uppercase tracking-widest text-slate-500">
-             <div className="md:col-span-4"><p className="mb-4">© 2025 INTEGRATED BIOSCIENCES. 모든 권리 보유.</p></div>
+             <div className="md:col-span-4"><p className="mb-4">© 2026 SENTINEL. All rights reserved.</p></div>
              <div className="md:col-span-2 flex flex-col space-y-2">
                 <span className="text-white font-bold mb-2">둘러보기</span>
                 <a href="#" className="hover:text-white transition-colors">플랫폼</a>
