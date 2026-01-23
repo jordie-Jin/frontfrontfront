@@ -337,7 +337,7 @@ const Landing: React.FC = () => {
       <section className="py-32 px-10 border-t border-white/5 bg-white/[0.01]">
          <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-end mb-20">
-               <h2 className="text-6xl serif font-light">소식이 궁금하시죠?</h2>
+               <h2 className="text-6xl serif font-light">소식이 궁금하신가요?</h2>
                <button className="px-6 py-2 border border-white/20 rounded-full text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all">
                  모든 뉴스카드 보기 <i className="fas fa-arrow-right ml-2"></i>
                </button>
@@ -408,7 +408,6 @@ const Landing: React.FC = () => {
                 <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
                 <a href="#" className="hover:text-white transition-colors">X</a>
              </div>
-             <div className="md:col-span-4 flex justify-end items-end"><div className="flex items-center space-x-2"><span>큐레이션</span><span className="text-white font-bold">Sentinel Hub</span></div></div>
           </div>
         </div>
       </footer>
