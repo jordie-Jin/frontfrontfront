@@ -92,7 +92,7 @@ const KpiTooltip: React.FC<KpiTooltipProps> = ({
         id={tooltipId}
         role="tooltip"
         aria-hidden={!isOpen}
-        className={`absolute z-30 w-56 max-h-48 overflow-y-auto rounded-2xl border border-white/10 bg-[#0b1220]/95 p-3 text-[11px] text-slate-200 shadow-[0_20px_40px_rgba(0,0,0,0.35)] transition-all duration-200 ${
+        className={`absolute z-50 w-56 max-h-48 overflow-y-auto rounded-2xl border border-white/10 bg-[#0b1220]/95 p-3 text-[11px] text-slate-200 shadow-[0_20px_40px_rgba(0,0,0,0.35)] transition-all duration-200 ${
           placementClasses[placement]
         } ${isOpen ? 'opacity-100 translate-y-0' : 'pointer-events-none opacity-0 translate-y-2'}`}
       >
