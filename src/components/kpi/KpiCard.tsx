@@ -56,11 +56,18 @@ const KpiCard: React.FC<KpiCardProps> = ({
     }
   };
 
+  const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget as Node)) {
+      return;
+    }
+    setTooltipOpen(false);
+  };
+
   return (
     <div
       className={`glass-panel p-6 rounded-2xl flex flex-col justify-between hover:border-white/20 transition-all cursor-default relative ${className ?? ''}`}
       onMouseEnter={hasTooltip ? () => setTooltipOpen(true) : undefined}
-      onMouseLeave={hasTooltip ? () => setTooltipOpen(false) : undefined}
+      onMouseLeave={hasTooltip ? handleMouseLeave : undefined}
       onFocusCapture={hasTooltip ? () => setTooltipOpen(true) : undefined}
       onBlurCapture={hasTooltip ? handleBlur : undefined}
     >
