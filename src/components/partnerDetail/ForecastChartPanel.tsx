@@ -17,7 +17,7 @@ const ForecastChartPanel: React.FC<ForecastChartPanelProps> = ({ data }) => {
   return (
     <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-[0_0_40px_rgba(59,130,246,0.12)]">
       <div className="mb-6 flex items-center justify-between">
-        <h3 className="text-lg text-white">시계열 건강도 예측</h3>
+        <h3 className="text-lg text-white">예측 지표 그래프</h3>
         <span className="text-[10px] uppercase tracking-[0.3em] text-slate-500">최근 6개월</span>
       </div>
       <div className="h-72">
