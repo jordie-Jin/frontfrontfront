@@ -1,3 +1,5 @@
+import { KpiTooltipContent } from './kpi';
+
 export type PartnerStatus = '정상' | '주의' | '위험';
 export type TrafficLight = 'green' | 'yellow' | 'red';
 
@@ -27,13 +29,14 @@ export interface PartnerMetric {
   label: string;
   value: string;
   description?: string;
+  tooltip?: KpiTooltipContent;
 }
 
 export interface PartnerDetail {
   partner: Partner;
   forecast: Array<{ month: string; score: number }>;
   metrics: PartnerMetric[];
-  trafficSignals: Array<{ label: string; status: TrafficLight }>;
+  trafficSignals: Array<{ label: string; status: TrafficLight; tooltip: KpiTooltipContent }>;
   aiCommentary: string;
   summary: PartnerSummary;
 }

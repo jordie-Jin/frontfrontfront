@@ -68,17 +68,89 @@ const buildDetail = (partner: Partner, commentary: string): PartnerDetail => ({
     { month: '6월', score: Math.min(100, partner.healthScore + 1) },
   ],
   metrics: [
-    { label: '네트워크 건강도', value: `${partner.healthScore}%` },
-    { label: '연 매출', value: `${partner.revenue.toLocaleString('ko-KR')}억 원` },
-    { label: '계약 진행률', value: '84%' },
+    {
+      label: '네트워크 건강도',
+      value: `${partner.healthScore}%`,
+      tooltip: {
+        description: '연결된 파트너까지 포함한 네트워크 안정성 점수입니다.',
+        interpretation: '높을수록 리스크 전파 가능성이 낮습니다.',
+        actionHint: '하락 시 연관 파트너 신호등을 먼저 확인하세요.',
+      },
+    },
+    {
+      label: '연 매출',
+      value: `${partner.revenue.toLocaleString('ko-KR')}억 원`,
+      tooltip: {
+        description: '기업의 사업 규모를 나타내는 지표입니다.',
+        interpretation: '규모가 클수록 리스크 파급력이 큽니다.',
+        actionHint: '위험 신호 발생 시 우선순위를 높게 배정하세요.',
+      },
+    },
+    {
+      label: '계약 진행률',
+      value: '84%',
+      tooltip: {
+        description: '체결 계약 대비 정상 이행 비율입니다.',
+        interpretation: '하락은 운영 리스크 신호일 수 있습니다.',
+        actionHint: '지연 원인을 항목별로 점검하세요.',
+      },
+    },
   ],
   trafficSignals: [
-    { label: '유동비율', status: 'green' },
-    { label: '당좌비율', status: 'green' },
-    { label: 'CFO 증감률', status: 'yellow' },
-    { label: '부채비율', status: 'yellow' },
-    { label: '이자보상배율', status: 'red' },
-    { label: '단기차입금 비중', status: 'red' },
+    {
+      label: '유동비율',
+      status: 'green',
+      tooltip: {
+        description: '단기 채무 대응 자산 여력입니다.',
+        interpretation: '하락 시 단기 유동성 압박이 커집니다.',
+        actionHint: '현금성 자산과 단기부채를 함께 보세요.',
+      },
+    },
+    {
+      label: '당좌비율',
+      status: 'green',
+      tooltip: {
+        description: '즉시 현금화 가능한 유동성 지표입니다.',
+        interpretation: '급락은 현금 고갈 신호일 수 있습니다.',
+        actionHint: '매출채권 회수 추이를 확인하세요.',
+      },
+    },
+    {
+      label: 'CFO 증감률',
+      status: 'yellow',
+      tooltip: {
+        description: '영업활동 현금흐름 변화율입니다.',
+        interpretation: '이익과 현금이 괴리될 수 있습니다.',
+        actionHint: '재고·매출채권 증가 여부를 점검하세요.',
+      },
+    },
+    {
+      label: '부채비율',
+      status: 'yellow',
+      tooltip: {
+        description: '자기자본 대비 부채 부담 수준입니다.',
+        interpretation: '지속 상승 시 재무 안정성이 저하됩니다.',
+        actionHint: '차입 목적과 만기 구조를 확인하세요.',
+      },
+    },
+    {
+      label: '이자보상배율',
+      status: 'red',
+      tooltip: {
+        description: '영업이익의 이자 감당 능력 지표입니다.',
+        interpretation: '1 미만이면 이자 부담 위험이 큽니다.',
+        actionHint: '차입 구조 조정 가능성을 검토하세요.',
+      },
+    },
+    {
+      label: '단기차입금 비중',
+      status: 'red',
+      tooltip: {
+        description: '단기 상환 부채 비율입니다.',
+        interpretation: '높을수록 만기 리스크가 큽니다.',
+        actionHint: '만기 일정과 재조달 계획을 확인하세요.',
+      },
+    },
   ],
   aiCommentary: commentary,
   summary: createSummary(partner),
