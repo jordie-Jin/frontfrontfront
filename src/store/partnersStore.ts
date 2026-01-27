@@ -42,12 +42,6 @@ export const setPartners = (next: Partner[]) => {
   notify();
 };
 
-export const addPartner = (partner: Partner) => {
-  partnersState = [partner, ...partnersState];
-  savePartners(partnersState);
-  notify();
-};
-
 const subscribe = (listener: () => void) => {
   listeners.add(listener);
   return () => listeners.delete(listener);
@@ -57,5 +51,5 @@ const getSnapshot = () => partnersState;
 
 export const usePartnersStore = () => {
   const partners = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
-  return { partners, setPartners, addPartner };
+  return { partners, setPartners };
 };

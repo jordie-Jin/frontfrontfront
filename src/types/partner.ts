@@ -40,9 +40,3 @@ export interface PartnerDetail {
   aiCommentary: string;
   summary: PartnerSummary;
 }
-
-export interface UploadResult {
-  partner: Partner;
-  detail: PartnerDetail;
-  message: string;
-}

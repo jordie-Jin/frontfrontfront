@@ -78,7 +78,7 @@ const PartnersPage: React.FC = () => {
       <PartnersHeader
         searchValue={searchValue}
         onSearchChange={setSearchValue}
-        onInviteClick={() => navigate('/partners/invite')}
+        onAddCompanyClick={() => navigate('/companies/add')}
       />
 
       <AsyncState

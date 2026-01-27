@@ -3,13 +3,13 @@ import React from 'react';
 interface PartnersHeaderProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
-  onInviteClick: () => void;
+  onAddCompanyClick: () => void;
 }
 
 const PartnersHeader: React.FC<PartnersHeaderProps> = ({
   searchValue,
   onSearchChange,
-  onInviteClick,
+  onAddCompanyClick,
 }) => {
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -32,10 +32,10 @@ const PartnersHeader: React.FC<PartnersHeaderProps> = ({
         </div>
         <button
           type="button"
-          onClick={onInviteClick}
+          onClick={onAddCompanyClick}
           className="rounded-full bg-gradient-to-r from-slate-100 to-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-900 shadow-[0_0_30px_rgba(255,255,255,0.25)] transition hover:scale-[1.02]"
         >
-          협력사 초대
+          기업 추가
         </button>
       </div>
     </div>

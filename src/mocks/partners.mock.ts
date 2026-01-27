@@ -1,4 +1,4 @@
-import { Partner, PartnerDetail, PartnerSummary, UploadResult } from '../types/partner';
+import { Partner, PartnerDetail, PartnerSummary } from '../types/partner';
 
 export const INITIAL_PARTNERS: Partner[] = [
   {
@@ -162,27 +162,4 @@ export const getMockPartnerDetail = (id: string): PartnerDetail => {
     partner,
     '삼성물류는 전반적으로 안정적인 현금 흐름과 높은 네트워크 신뢰도를 유지하고 있습니다.\n다만 단기 차입금 비중 증가와 이자보상배율 하락이 관측되고 있어,\n향후 분기 내 유동성 관리 전략에 대한 점검이 필요합니다.',
   );
-};
-
-export const getMockUploadResult = (meta: {
-  name: string;
-  industry: string;
-}): UploadResult => {
-  const partner: Partner = {
-    id: `p-${Date.now()}`,
-    name: meta.name,
-    industry: meta.industry,
-    healthScore: 64,
-    revenue: 1500,
-    status: '주의',
-  };
-
-  return {
-    partner,
-    detail: buildDetail(
-      partner,
-      '초기 분석 결과, 해당 기업은 성장 잠재력이 높지만 재무 안정성 보완이 필요합니다.\n추가 자료 검토 후 위험 신호를 재평가하는 것이 권장됩니다.',
-    ),
-    message: '분석이 완료되었습니다. 초기 리포트가 생성되었습니다.',
-  };
 };
