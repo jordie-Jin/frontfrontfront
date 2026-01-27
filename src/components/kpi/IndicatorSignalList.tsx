@@ -29,7 +29,9 @@ const IndicatorSignalRow: React.FC<IndicatorSignalItem> = ({ label, status, tool
 
   return (
     <div
-      className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
+      className={`flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 relative overflow-visible ${
+        tooltipOpen ? 'z-20' : 'z-0'
+      }`}
       onMouseEnter={() => setTooltipOpen(true)}
       onMouseLeave={() => setTooltipOpen(false)}
       onFocusCapture={() => setTooltipOpen(true)}

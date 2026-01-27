@@ -65,7 +65,9 @@ const KpiCard: React.FC<KpiCardProps> = ({
 
   return (
     <div
-      className={`glass-panel p-6 rounded-2xl flex flex-col justify-between hover:border-white/20 transition-all cursor-default relative ${className ?? ''}`}
+      className={`glass-panel p-6 rounded-2xl flex flex-col justify-between hover:border-white/20 transition-all cursor-default relative overflow-visible ${
+        tooltipOpen ? 'z-30' : 'z-0'
+      } ${className ?? ''}`}
       onMouseEnter={hasTooltip ? () => setTooltipOpen(true) : undefined}
       onMouseLeave={hasTooltip ? handleMouseLeave : undefined}
       onFocusCapture={hasTooltip ? () => setTooltipOpen(true) : undefined}
