@@ -53,7 +53,6 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
     const visibleQuarters = new Set(['2025Q1', '2025Q2', '2025Q3', '2025Q4', '2026Q1']);
 
     return Object.keys(grouped)
-      .filter((quarter) => visibleQuarters.has(quarter))
       .sort((a, b) => {
         const first = parseQuarter(a);
         const second = parseQuarter(b);
