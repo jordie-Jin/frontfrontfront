@@ -60,7 +60,7 @@ const RiskDistributionDonut: React.FC<RiskDistributionDonutProps> = ({ data }) =
   const chartData = data?.length ? data : MOCK_DATA;
 
   return (
-    <div className="h-[260px] w-full">
+    <div className="h-[260px] w-full risk-donut-animate">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -72,7 +72,10 @@ const RiskDistributionDonut: React.FC<RiskDistributionDonutProps> = ({ data }) =
             paddingAngle={4}
             stroke="rgba(248, 250, 252, 0.9)"
             strokeWidth={2}
-            isAnimationActive={false}
+            isAnimationActive
+            animationBegin={150}
+            animationDuration={900}
+            animationEasing="ease-out"
             labelLine={false}
             label={renderLabel}
           >

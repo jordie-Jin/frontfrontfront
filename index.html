@@ -81,6 +81,21 @@
       background: rgba(255, 255, 255, 0.02);
     }
 
+    .risk-donut-animate {
+      animation: donutEnter 0.9s ease-out both;
+    }
+
+    @keyframes donutEnter {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     ::-webkit-scrollbar {
       width: 6px;
     }
