@@ -32,8 +32,13 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
   const chartData = useMemo(() => {
     if (records.length === 0) return [];
 
+    const visibleQuarters = new Set(['2025Q1', '2025Q2', '2025Q3', '2025Q4', '2026Q1']);
+
     const grouped = records.reduce<Record<string, { min: number; warn: number; risk: number; total: number }>>(
       (acc, record) => {
+        if (!visibleQuarters.has(record.quarter)) {
+          return acc;
+        }
         if (!acc[record.quarter]) {
           acc[record.quarter] = { min: 0, warn: 0, risk: 0, total: 0 };
         }
@@ -49,8 +54,6 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
       },
       {},
     );
-
-    const visibleQuarters = new Set(['2025Q1', '2025Q2', '2025Q3', '2025Q4', '2026Q1']);
 
     return Object.keys(grouped)
       .sort((a, b) => {
