@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import DashboardHeader from '../components/dashboard/DashboardHeader';
 import KpiCards from '../components/dashboard/KpiCards';
-import PartnerTrendChart from '../components/dashboard/PartnerTrendChart';
+import RiskStatusTrendChart from '../components/dashboard/RiskStatusTrendChart';
 import RiskDistributionCard from '../components/dashboard/RiskDistributionCard';
 import { partnerRiskQuarterlyMock } from '../mocks/partnerRiskQuarterly.mock';
 import { fetchDashboardSummary } from '../services/dashboardApi';
@@ -33,7 +33,7 @@ const DashboardPage: React.FC = () => {
 
   const emptyState = useMemo(() => {
     if (!data) return false;
-    return data.trend.points.length === 0 && data.riskDistribution.segments.length === 0;
+    return data.riskDistribution.segments.length === 0 && partnerRiskQuarterlyMock.length === 0;
   }, [data]);
 
   return (
@@ -87,10 +87,7 @@ const DashboardPage: React.FC = () => {
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <PartnerTrendChart
-              trend={data.trend.points}
-              metricLabel={data.trend.metricLabel ?? '종합 점수'}
-            />
+            <RiskStatusTrendChart records={partnerRiskQuarterlyMock} />
             <RiskDistributionCard distribution={data.riskDistribution} />
           </div>
         </div>
