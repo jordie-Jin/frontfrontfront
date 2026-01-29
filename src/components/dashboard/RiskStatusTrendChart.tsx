@@ -3,6 +3,8 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  Line,
+  ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -98,6 +100,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
           quarter,
           ...latestActualRates,
           isForecast: true,
+          dataType: 'FORECAST',
           latestActualQuarter,
           nextQuarter,
         };
@@ -110,6 +113,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
         warnRate: total ? (warn / total) * 100 : 0,
         riskRate: total ? (risk / total) * 100 : 0,
         isForecast: false,
+        dataType: 'ACTUAL',
         latestActualQuarter,
         nextQuarter,
       };
@@ -117,9 +121,19 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
   }, [records]);
 
   const riskStatusOverTime = riskStatusDistributionTrend;
-  const latestActualQuarter = riskStatusDistributionTrend[0]?.latestActualQuarter ?? '';
-  const nextQuarter = riskStatusDistributionTrend[0]?.nextQuarter ?? '';
-  const quarterLabels = riskStatusDistributionTrend.map((item) => item.quarter);
+  const forecastIndex = riskStatusDistributionTrend.findIndex((item) => item.dataType === 'FORECAST');
+  const forecastQuarter = forecastIndex >= 0 ? riskStatusDistributionTrend[forecastIndex]?.quarter ?? '' : '';
+  const forecastStartQuarter =
+    forecastIndex > 0 ? riskStatusDistributionTrend[forecastIndex - 1]?.quarter ?? '' : '';
+  const boundarySeries = riskStatusDistributionTrend.map((item) => ({
+    quarter: item.quarter,
+    minBoundary: item.minRate,
+    warnBoundary: item.minRate + item.warnRate,
+    riskBoundary: item.minRate + item.warnRate + item.riskRate,
+  }));
+  const actualBoundarySeries = forecastIndex > 0 ? boundarySeries.slice(0, forecastIndex) : boundarySeries;
+  const forecastBoundarySegment =
+    forecastIndex > 0 ? boundarySeries.slice(forecastIndex - 1, forecastIndex + 1) : [];
   const hasData = riskStatusDistributionTrend.length > 0;
 
   return (
@@ -145,7 +159,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
             </div>
             <div className="flex items-center space-x-2">
               <span className="w-3 h-3 rounded-full border border-slate-400/60"></span>
-              <span>{nextQuarter ? `${nextQuarter}(예측)` : '예측'}</span>
+              <span>{forecastQuarter ? `${forecastQuarter}(예측)` : '예측'}</span>
             </div>
           </div>
         </div>
@@ -179,7 +193,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
                 fontSize={10}
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={(value: string) => formatQuarterLabel(value, value === nextQuarter)}
+                tickFormatter={(value: string) => formatQuarterLabel(value, value === forecastQuarter)}
               />
               <YAxis
                 domain={[0, 100]}
@@ -191,7 +205,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
               />
               <Tooltip
                 formatter={(value, name, payload) => {
-                  const isForecast = payload?.payload?.quarter === nextQuarter;
+                  const isForecast = payload?.payload?.dataType === 'FORECAST';
                   const quarterLabel = formatQuarterLabel(payload?.payload?.quarter ?? '', isForecast);
                   return [`${Number(value).toFixed(1)}%`, `${labelMap[String(name)] ?? name} · ${quarterLabel}`];
                 }}
@@ -202,13 +216,18 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
                   fontSize: '12px',
                 }}
               />
-              {nextQuarter && (
-                <ReferenceLine
-                  x={nextQuarter}
-                  stroke="#94a3b8"
-                  strokeDasharray="4 4"
+              {forecastQuarter && forecastStartQuarter && (
+                <ReferenceArea
+                  x1={forecastStartQuarter}
+                  x2={forecastQuarter}
+                  fill="#94a3b8"
+                  fillOpacity={0.08}
+                  strokeOpacity={0}
                   label={{ value: '예측', position: 'insideTopRight', fill: '#94a3b8', fontSize: 10 }}
                 />
+              )}
+              {forecastQuarter && (
+                <ReferenceLine x={forecastQuarter} stroke="#94a3b8" strokeDasharray="4 4" />
               )}
               <Area
                 type="monotone"
@@ -234,6 +253,67 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
                 fillOpacity={1}
                 fill="url(#riskFill)"
               />
+              <Line
+                type="monotone"
+                data={actualBoundarySeries}
+                dataKey="minBoundary"
+                stroke="#34d399"
+                strokeWidth={2}
+                dot={false}
+                activeDot={false}
+              />
+              <Line
+                type="monotone"
+                data={actualBoundarySeries}
+                dataKey="warnBoundary"
+                stroke="#fbbf24"
+                strokeWidth={2}
+                dot={false}
+                activeDot={false}
+              />
+              <Line
+                type="monotone"
+                data={actualBoundarySeries}
+                dataKey="riskBoundary"
+                stroke="#fb7185"
+                strokeWidth={2}
+                dot={false}
+                activeDot={false}
+              />
+              {forecastBoundarySegment.length > 0 && (
+                <>
+                  <Line
+                    type="monotone"
+                    data={forecastBoundarySegment}
+                    dataKey="minBoundary"
+                    stroke="#34d399"
+                    strokeWidth={2}
+                    strokeDasharray="6 6"
+                    dot={false}
+                    activeDot={false}
+                  />
+                  <Line
+                    type="monotone"
+                    data={forecastBoundarySegment}
+                    dataKey="warnBoundary"
+                    stroke="#fbbf24"
+                    strokeWidth={2}
+                    strokeDasharray="6 6"
+                    dot={false}
+                    activeDot={false}
+                  />
+                  <Line
+                    type="monotone"
+                    data={forecastBoundarySegment}
+                    dataKey="riskBoundary"
+                    stroke="#fb7185"
+                    strokeWidth={2}
+                    strokeDasharray="6 6"
+                    dot={false}
+                    activeDot={false}
+                  />
+                </>
+              )}
             </AreaChart>
           </ResponsiveContainer>
         ) : (
