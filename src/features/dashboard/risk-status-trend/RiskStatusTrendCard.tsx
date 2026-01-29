@@ -17,6 +17,18 @@ const RiskStatusTrendCard: React.FC = () => {
     [],
   );
   const normalizedPayload = useMemo(() => normalizeRiskStatusTrend(payload), [payload]);
+  const latestActualQuarter =
+    normalizedPayload.windowQuarters[normalizedPayload.windowQuarters.length - 2];
+
+  useMemo(() => {
+    console.table({
+      latestActualQuarter,
+      forecastQuarter: normalizedPayload.forecastQuarter,
+      windowQuartersLen: normalizedPayload.windowQuarters.length,
+      trendLen: normalizedPayload.trend.length,
+      quartersInTrend: normalizedPayload.trend.map((bucket) => bucket.quarter).join(','),
+    });
+  }, [latestActualQuarter, normalizedPayload]);
 
   return (
     <div className="lg:col-span-2 glass-panel p-8 rounded-2xl">

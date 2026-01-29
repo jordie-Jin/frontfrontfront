@@ -11,18 +11,23 @@ const buildEmptyBucket = (quarter: string, dataType: RiskStatusBucket['dataType'
 export const normalizeRiskStatusTrend = (
   payload: RiskStatusTrendPayload,
 ): RiskStatusTrendPayload => {
-  const windowQuarters = payload.windowQuarters.slice(0, 5);
+  const windowQuarters = payload.windowQuarters;
   const trendMap = new Map<string, RiskStatusBucket>();
+  const duplicateBuckets = new Map<string, RiskStatusBucket[]>();
 
   payload.trend.forEach((bucket) => {
-    if (trendMap.has(bucket.quarter)) {
-      console.warn('[RiskStatusTrend] Duplicate quarter detected.', {
-        quarter: bucket.quarter,
-        dataType: bucket.dataType,
-      });
+    const existing = trendMap.get(bucket.quarter);
+    if (existing) {
+      const buckets = duplicateBuckets.get(bucket.quarter) ?? [existing];
+      buckets.push(bucket);
+      duplicateBuckets.set(bucket.quarter, buckets);
       return;
     }
     trendMap.set(bucket.quarter, bucket);
+  });
+
+  duplicateBuckets.forEach((buckets, quarter) => {
+    console.warn('duplicate quarter', quarter, buckets);
   });
 
   const normalizedTrend = windowQuarters.map((quarter) => {
@@ -33,9 +38,23 @@ export const normalizeRiskStatusTrend = (
     return buildEmptyBucket(quarter, dataType);
   });
 
+  let finalTrend = normalizedTrend;
+  if (finalTrend.length !== windowQuarters.length) {
+    console.error('[RiskStatusTrend] Trend length mismatch.', {
+      windowQuartersLen: windowQuarters.length,
+      trendLen: finalTrend.length,
+    });
+    finalTrend = windowQuarters.map((quarter) => {
+      const entry = trendMap.get(quarter);
+      if (entry) return entry;
+      const dataType = quarter === payload.forecastQuarter ? 'FORECAST' : 'ACTUAL';
+      return buildEmptyBucket(quarter, dataType);
+    });
+  }
+
   return {
     ...payload,
     windowQuarters,
-    trend: normalizedTrend,
+    trend: finalTrend,
   };
 };

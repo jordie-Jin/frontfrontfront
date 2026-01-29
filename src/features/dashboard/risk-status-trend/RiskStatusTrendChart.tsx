@@ -22,9 +22,6 @@ const labelMap: Record<string, string> = {
   RISK: '위험',
 };
 
-const formatQuarterLabel = (quarter: string, isForecast: boolean) =>
-  `${quarter}${isForecast ? ' (예측)' : ''}`;
-
 const toPercentSeries = (payload: RiskStatusTrendPayload) =>
   payload.trend.map((bucket) => {
     const total = bucket.NORMAL + bucket.CAUTION + bucket.RISK;
@@ -96,12 +93,14 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ payload }) 
         <XAxis
           dataKey="quarter"
           type="category"
-          ticks={riskStatusOverTime.map((item) => item.quarter)}
+          allowDuplicatedCategory={false}
+          ticks={payload.windowQuarters}
+          interval={0}
           stroke="#64748b"
           fontSize={10}
           axisLine={false}
           tickLine={false}
-          tickFormatter={(value: string) => formatQuarterLabel(value, value === forecastQuarter)}
+          tickFormatter={(value: string) => (value === forecastQuarter ? `${value}(예측)` : value)}
         />
         <YAxis
           domain={[0, 100]}
@@ -114,9 +113,8 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ payload }) 
         <Tooltip
           formatter={(value, name, tooltip) => {
             const quarter = tooltip?.payload?.quarter ?? '';
-            const isForecast = quarter === forecastQuarter;
             const label = labelMap[String(name)] ?? name;
-            return [`${Number(value).toFixed(1)}%`, `${label} · ${formatQuarterLabel(quarter, isForecast)}`];
+            return [`${Number(value).toFixed(1)}%`, `${label} · ${quarter}`];
           }}
           contentStyle={{
             backgroundColor: '#0f172a',
