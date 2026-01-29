@@ -227,7 +227,75 @@ paths:
           description: Update request created successfully
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required: [email, password]
+    
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token
+        tokenType:
+          type: string
+          example: Bearer
+        expiresIn:
+          type: integer
+          description: Access token expiry seconds
+          example: 3600
+        user:
+          $ref: '#/components/schemas/UserSummary'
+      required: [accessToken, tokenType, expiresIn, user]
+
+    MeResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserSummary'
+      required: [user]
+
+    UserSummary:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: "u_12345"
+        email:
+          type: string
+          example: user@company.com
+        name:
+          type: string
+          example: "홍길동"
+        role:
+          type: string
+          description: User role
+          enum: [USER, ADMIN]
+          example: USER
+      required: [userId, email, role]
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: AUTH_401
+        message:
+          type: string
+          example: Invalid credentials
+      required: [code, message]
 
     Quarter:
       type: string
