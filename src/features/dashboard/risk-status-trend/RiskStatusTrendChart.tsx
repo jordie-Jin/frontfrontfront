@@ -21,6 +21,7 @@ const labelMap: Record<string, string> = {
   CAUTION: '주의',
   RISK: '위험',
 };
+const tooltipKeys = new Set(['NORMAL', 'CAUTION', 'RISK']);
 
 const toPercentSeries = (payload: RiskStatusTrendPayload) =>
   payload.trend.map((bucket) => {
@@ -111,16 +112,43 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ payload }) 
           tickLine={false}
         />
         <Tooltip
-          formatter={(value, name, tooltip) => {
-            const quarter = tooltip?.payload?.quarter ?? '';
-            const label = labelMap[String(name)] ?? name;
-            return [`${Number(value).toFixed(1)}%`, `${label} · ${quarter}`];
-          }}
-          contentStyle={{
-            backgroundColor: '#0f172a',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '8px',
-            fontSize: '12px',
+          content={({ active, payload }) => {
+            if (!active || !payload || payload.length === 0) {
+              return null;
+            }
+
+            const filtered = payload.filter(
+              (entry, index, items) =>
+                tooltipKeys.has(String(entry.dataKey)) &&
+                items.findIndex((item) => item.dataKey === entry.dataKey) === index,
+            );
+            if (filtered.length === 0) {
+              return null;
+            }
+
+            const quarter = String(filtered[0]?.payload?.quarter ?? '');
+
+            return (
+              <div
+                style={{
+                  backgroundColor: '#0f172a',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  padding: '8px 10px',
+                }}
+              >
+                {filtered.map((entry) => {
+                  const label = labelMap[String(entry.dataKey)] ?? String(entry.dataKey);
+                  return (
+                    <div key={String(entry.dataKey)} className="flex items-center justify-between gap-3">
+                      <span className="text-slate-200">{`${label} · ${quarter}`}</span>
+                      <span className="text-slate-100 font-medium">{`${Number(entry.value).toFixed(1)}%`}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            );
           }}
         />
         {lastActualQuarter && forecastQuarter && (
@@ -145,6 +173,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ payload }) 
               strokeWidth={2}
               dot={false}
               activeDot={false}
+              legendType="none"
             />
             <Line
               type="monotone"
@@ -154,6 +183,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ payload }) 
               strokeWidth={2}
               dot={false}
               activeDot={false}
+              legendType="none"
             />
             <Line
               type="monotone"
@@ -163,6 +193,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ payload }) 
               strokeWidth={2}
               dot={false}
               activeDot={false}
+              legendType="none"
             />
           </>
         )}
@@ -177,6 +208,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ payload }) 
               strokeDasharray="6 6"
               dot={false}
               activeDot={false}
+              legendType="none"
             />
             <Line
               type="monotone"
@@ -187,6 +219,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ payload }) 
               strokeDasharray="6 6"
               dot={false}
               activeDot={false}
+              legendType="none"
             />
             <Line
               type="monotone"
@@ -197,6 +230,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ payload }) 
               strokeDasharray="6 6"
               dot={false}
               activeDot={false}
+              legendType="none"
             />
           </>
         )}
