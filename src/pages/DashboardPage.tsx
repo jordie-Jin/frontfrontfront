@@ -46,9 +46,11 @@ const DashboardPage: React.FC = () => {
   }, [loadSummary]);
 
   const emptyState = useMemo(() => {
-    if (!riskDistribution) return false;
-    return riskDistribution.segments.length === 0 && companyRiskQuarterlyMock.length === 0;
-  }, [riskDistribution]);
+    if (!riskDistribution || !data) return false;
+    return (
+      riskDistribution.segments.length === 0 && data.riskStatusDistributionTrend.length === 0
+    );
+  }, [data, riskDistribution]);
 
   const handleLogout = useCallback(async () => {
     try {
@@ -116,7 +118,10 @@ const DashboardPage: React.FC = () => {
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <RiskStatusTrendChart records={companyRiskQuarterlyMock} />
+            <RiskStatusTrendChart
+              windowQuarters={data.windowQuarters}
+              trend={data.riskStatusDistributionTrend}
+            />
             <RiskDistributionCard distribution={riskDistribution} />
           </div>
         </div>

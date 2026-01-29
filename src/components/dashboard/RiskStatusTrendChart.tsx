@@ -11,10 +11,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { CompanyQuarterRisk } from '../../types/risk';
+import { RiskStatusBucket } from '../../types/dashboard';
 
 interface RiskStatusTrendChartProps {
-  records: CompanyQuarterRisk[];
+  windowQuarters: string[];
+  trend: RiskStatusBucket[];
 }
 
 const labelMap: Record<string, string> = {
@@ -34,92 +35,71 @@ const parseQuarter = (quarter: string) => {
 const formatQuarterLabel = (quarter: string, isForecast: boolean) =>
   `${quarter}${isForecast ? '(예측)' : ''}`;
 
-const shiftQuarter = (quarter: string, delta: number) => {
-  const parsed = parseQuarter(quarter);
-  const total = parsed.year * 4 + (parsed.quarter - 1) + delta;
-  const year = Math.floor(total / 4);
-  const quarterIndex = total % 4;
-  return `${year}Q${quarterIndex + 1}`;
+const normalizeRiskTrend = (windowQuarters: string[], trend: RiskStatusBucket[]) => {
+  if (windowQuarters.length !== 5) {
+    console.debug('[RiskStatusTrendChart] windowQuarters length is not 5.', {
+      windowQuarters,
+    });
+  }
+
+  const sortedTrend = [...trend].sort((a, b) => {
+    const first = parseQuarter(a.quarter);
+    const second = parseQuarter(b.quarter);
+    if (first.year !== second.year) return first.year - second.year;
+    return first.quarter - second.quarter;
+  });
+
+  const dedupedTrend: RiskStatusBucket[] = [];
+  const seen = new Set<string>();
+
+  sortedTrend.forEach((item) => {
+    if (seen.has(item.quarter)) {
+      console.debug('[RiskStatusTrendChart] Duplicate quarter detected in trend.', {
+        quarter: item.quarter,
+        dataType: item.dataType,
+      });
+      return;
+    }
+    seen.add(item.quarter);
+    dedupedTrend.push(item);
+  });
+
+  const trendMap = new Map(dedupedTrend.map((item) => [item.quarter, item]));
+  const forecastQuarter = windowQuarters[windowQuarters.length - 1];
+
+  return windowQuarters.map((quarter) => {
+    const entry = trendMap.get(quarter);
+    const normal = entry?.NORMAL ?? 0;
+    const caution = entry?.CAUTION ?? 0;
+    const risk = entry?.RISK ?? 0;
+    const total = normal + caution + risk;
+    const dataType = entry?.dataType ?? (quarter === forecastQuarter ? 'FORECAST' : 'ACTUAL');
+
+    return {
+      quarter,
+      minRate: total ? (normal / total) * 100 : 0,
+      warnRate: total ? (caution / total) * 100 : 0,
+      riskRate: total ? (risk / total) * 100 : 0,
+      dataType,
+    };
+  });
 };
 
-const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) => {
-  const riskStatusDistributionTrend = useMemo(() => {
-    if (records.length === 0) return [];
-
-    const sortedQuarters = Array.from(new Set(records.map((record) => record.quarter))).sort(
-      (a, b) => {
-        const first = parseQuarter(a);
-        const second = parseQuarter(b);
-        if (first.year !== second.year) return first.year - second.year;
-        return first.quarter - second.quarter;
-      },
-    );
-    const recentActualQuarters = sortedQuarters.slice(-4);
-    const latestActualQuarter = recentActualQuarters[recentActualQuarters.length - 1];
-    const nextQuarter = shiftQuarter(latestActualQuarter, 1);
-    const quarterLabels = [...recentActualQuarters, nextQuarter];
-
-    const visibleQuarters = new Set(quarterLabels);
-
-    const grouped = records.reduce<Record<string, { min: number; warn: number; risk: number; total: number }>>(
-      (acc, record) => {
-        if (!visibleQuarters.has(record.quarter)) {
-          return acc;
-        }
-        if (!acc[record.quarter]) {
-          acc[record.quarter] = { min: 0, warn: 0, risk: 0, total: 0 };
-        }
-
-        const bucket = acc[record.quarter];
-        bucket.total += 1;
-
-        if (record.riskLevel === 'MIN') bucket.min += 1;
-        if (record.riskLevel === 'WARN') bucket.warn += 1;
-        if (record.riskLevel === 'RISK') bucket.risk += 1;
-
-        return acc;
-      },
-      {},
-    );
-
-    const latestActualBucket = grouped[latestActualQuarter] ?? { min: 0, warn: 0, risk: 0, total: 0 };
-    const latestActualRates = {
-      minRate: latestActualBucket.total ? (latestActualBucket.min / latestActualBucket.total) * 100 : 0,
-      warnRate: latestActualBucket.total ? (latestActualBucket.warn / latestActualBucket.total) * 100 : 0,
-      riskRate: latestActualBucket.total ? (latestActualBucket.risk / latestActualBucket.total) * 100 : 0,
-    };
-
-    return quarterLabels.map((quarter) => {
-      if (quarter === nextQuarter) {
-        return {
-          quarter,
-          ...latestActualRates,
-          isForecast: true,
-          dataType: 'FORECAST',
-          latestActualQuarter,
-          nextQuarter,
-        };
-      }
-
-      const { min, warn, risk, total } = grouped[quarter] ?? { min: 0, warn: 0, risk: 0, total: 0 };
-      return {
-        quarter,
-        minRate: total ? (min / total) * 100 : 0,
-        warnRate: total ? (warn / total) * 100 : 0,
-        riskRate: total ? (risk / total) * 100 : 0,
-        isForecast: false,
-        dataType: 'ACTUAL',
-        latestActualQuarter,
-        nextQuarter,
-      };
-    });
-  }, [records]);
+const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ windowQuarters, trend }) => {
+  const riskStatusDistributionTrend = useMemo(
+    () => normalizeRiskTrend(windowQuarters, trend),
+    [trend, windowQuarters],
+  );
 
   const riskStatusOverTime = riskStatusDistributionTrend;
   const forecastIndex = riskStatusDistributionTrend.findIndex((item) => item.dataType === 'FORECAST');
   const forecastQuarter = forecastIndex >= 0 ? riskStatusDistributionTrend[forecastIndex]?.quarter ?? '' : '';
   const forecastStartQuarter =
     forecastIndex > 0 ? riskStatusDistributionTrend[forecastIndex - 1]?.quarter ?? '' : '';
+  const quarterTypeMap = useMemo(
+    () => new Map(riskStatusDistributionTrend.map((item) => [item.quarter, item.dataType])),
+    [riskStatusDistributionTrend],
+  );
   const boundarySeries = riskStatusDistributionTrend.map((item) => ({
     quarter: item.quarter,
     minBoundary: item.minRate,
@@ -154,7 +134,7 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
             </div>
             <div className="flex items-center space-x-2">
               <span className="w-3 h-3 rounded-full border border-slate-400/60"></span>
-              <span>{forecastQuarter ? `${forecastQuarter}(예측)` : '예측'}</span>
+              <span>{forecastQuarter ? formatQuarterLabel(forecastQuarter, true) : '예측'}</span>
             </div>
           </div>
         </div>
@@ -184,11 +164,14 @@ const RiskStatusTrendChart: React.FC<RiskStatusTrendChartProps> = ({ records }) 
               <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
               <XAxis
                 dataKey="quarter"
+                ticks={riskStatusOverTime.map((item) => item.quarter)}
                 stroke="#64748b"
                 fontSize={10}
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={(value: string) => formatQuarterLabel(value, value === forecastQuarter)}
+                tickFormatter={(value: string) =>
+                  formatQuarterLabel(value, quarterTypeMap.get(value) === 'FORECAST')
+                }
               />
               <YAxis
                 domain={[0, 100]}

@@ -5,6 +5,25 @@ export type DashboardRange = '7d' | '30d' | '90d';
 export interface DashboardSummary {
   range: string;
   kpis: KpiCardDto[];
+  latestActualQuarter: string;
+  forecastQuarter: string;
+  windowQuarters: string[];
+  riskStatusDistribution: {
+    NORMAL: number;
+    CAUTION: number;
+    RISK: number;
+  };
+  riskStatusDistributionTrend: RiskStatusBucket[];
+}
+
+export type DataType = 'ACTUAL' | 'FORECAST';
+
+export interface RiskStatusBucket {
+  quarter: string;
+  dataType: DataType;
+  NORMAL: number;
+  CAUTION: number;
+  RISK: number;
 }
 
 export interface TimeSeriesPoint {
