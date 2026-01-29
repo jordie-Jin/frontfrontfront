@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login, register } from '../src/services/auth';
 
 type AuthMode = 'login' | 'register';
 
@@ -8,6 +9,8 @@ const Landing: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>('login');
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   // Form State
@@ -23,7 +26,7 @@ const Landing: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleAuthSubmit = (e: React.FormEvent) => {
+  const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const nextErrors: typeof errors = {};
     const trimmedEmail = email.trim();
@@ -56,18 +59,31 @@ const Landing: React.FC = () => {
     }
 
     setErrors(nextErrors);
+    setAuthError(null);
 
     if (Object.keys(nextErrors).length > 0) {
       return;
     }
-    // Simulate successful authentication/registration
-    console.log(`${authMode === 'login' ? '로그인' : '회원가입'}:`, { email, name });
-    navigate('/dashboard');
+
+    try {
+      setIsSubmitting(true);
+      if (isRegister) {
+        await register({ email: trimmedEmail, password, name: trimmedName });
+      } else {
+        await login({ email: trimmedEmail, password });
+      }
+      navigate('/dashboard');
+    } catch (error) {
+      setAuthError(isRegister ? '회원가입에 실패했습니다. 다시 시도해주세요.' : '로그인에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const toggleAuthMode = () => {
     setAuthMode(prev => prev === 'login' ? 'register' : 'login');
     setErrors({});
+    setAuthError(null);
     setConfirmPassword('');
   };
 
@@ -171,11 +187,16 @@ const Landing: React.FC = () => {
                 </div>
               )}
 
+              {authError && (
+                <p className="text-xs text-red-400">{authError}</p>
+              )}
+
               <button 
                 type="submit"
-                className="w-full py-5 bg-white text-black rounded-2xl font-bold text-xs uppercase tracking-[0.2em] hover:bg-slate-200 transition-all shadow-xl mt-4"
+                className="w-full py-5 bg-white text-black rounded-2xl font-bold text-xs uppercase tracking-[0.2em] hover:bg-slate-200 transition-all shadow-xl mt-4 disabled:cursor-not-allowed disabled:opacity-70"
+                disabled={isSubmitting}
               >
-                {authMode === 'login' ? '로그인' : '가입'}
+                {isSubmitting ? '처리 중...' : authMode === 'login' ? '로그인' : '가입'}
               </button>
             </form>
 

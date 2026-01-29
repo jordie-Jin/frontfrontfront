@@ -1,3 +1,4 @@
+import { getAuthToken } from './auth';
 import { mockGetCompanyDetail, mockRunModel, mockSearchCompanies, simulateLatency } from './mockApi';
 import { ModelRunRequest } from '../types/model';
 
@@ -29,10 +30,12 @@ const request = async <T>(method: HttpMethod, url: string, body?: unknown): Prom
     return mockRequest<T>(method, url, body);
   }
 
+  const token = getAuthToken();
   const response = await fetch(url, {
     method,
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: body ? JSON.stringify(body) : undefined
   });

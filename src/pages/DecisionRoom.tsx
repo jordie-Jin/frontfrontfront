@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DecisionRoomHeader from '../components/decisionRoom/DecisionRoomHeader';
 import BulletinGrid from '../components/decisionRoom/BulletinGrid';
 import BulletinModal from '../components/decisionRoom/BulletinModal';
@@ -17,8 +18,10 @@ import {
   fetchBulletins,
   fetchQaPosts,
 } from '../services/decisionRoomApi';
+import { logout } from '../services/auth';
 
 const DecisionRoom: React.FC = () => {
+  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('bulletins');
   const [bulletinMode, setBulletinMode] = useState<'active' | 'archive'>('active');
   const [bulletins, setBulletins] = useState<Bulletin[]>([]);
@@ -170,6 +173,15 @@ const DecisionRoom: React.FC = () => {
         onChangeTab={setTab}
         bulletinMode={bulletinMode}
         onChangeBulletinMode={setBulletinMode}
+        onLogout={async () => {
+          try {
+            await logout();
+          } catch (error) {
+            // ignore logout errors for now
+          } finally {
+            navigate('/');
+          }
+        }}
       />
 
       <div className="min-h-[680px]">

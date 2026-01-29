@@ -4,12 +4,14 @@ interface PartnersHeaderProps {
   searchValue: string;
   onSearchChange: (value: string) => void;
   onAddCompanyClick: () => void;
+  onLogout?: () => void;
 }
 
 const PartnersHeader: React.FC<PartnersHeaderProps> = ({
   searchValue,
   onSearchChange,
   onAddCompanyClick,
+  onLogout,
 }) => {
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -37,6 +39,15 @@ const PartnersHeader: React.FC<PartnersHeaderProps> = ({
         >
           기업 추가
         </button>
+        {onLogout && (
+          <button
+            type="button"
+            onClick={onLogout}
+            className="rounded-full border border-white/10 px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-200 transition hover:bg-white/10"
+          >
+            로그아웃
+          </button>
+        )}
       </div>
     </div>
   );

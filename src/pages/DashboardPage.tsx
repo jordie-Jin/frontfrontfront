@@ -1,17 +1,21 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../components/dashboard/DashboardHeader';
 import KpiCards from '../components/dashboard/KpiCards';
 import RiskStatusTrendChart from '../components/dashboard/RiskStatusTrendChart';
 import RiskDistributionCard from '../components/dashboard/RiskDistributionCard';
 import { partnerRiskQuarterlyMock } from '../mocks/partnerRiskQuarterly.mock';
+import { getStoredUser, logout } from '../services/auth';
 import { fetchDashboardSummary } from '../services/dashboardApi';
 import { DashboardRange, DashboardSummary } from '../types/dashboard';
 
 const DashboardPage: React.FC = () => {
+  const navigate = useNavigate();
   const [range, setRange] = useState<DashboardRange>('30d');
   const [data, setData] = useState<DashboardSummary | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
+  const [userName] = useState(() => getStoredUser()?.name ?? 'id');
 
   const loadSummary = useCallback(async () => {
     setIsLoading(true);
@@ -36,9 +40,24 @@ const DashboardPage: React.FC = () => {
     return data.riskDistribution.segments.length === 0 && partnerRiskQuarterlyMock.length === 0;
   }, [data]);
 
+  const handleLogout = useCallback(async () => {
+    try {
+      await logout();
+    } catch (error) {
+      // ignore logout errors for now
+    } finally {
+      navigate('/');
+    }
+  }, [navigate]);
+
   return (
     <div className="animate-in fade-in duration-700">
-      <DashboardHeader range={range} onChangeRange={setRange} />
+      <DashboardHeader
+        range={range}
+        onChangeRange={setRange}
+        onLogout={handleLogout}
+        userName={userName}
+      />
 
       {isLoading && (
         <div className="space-y-8">

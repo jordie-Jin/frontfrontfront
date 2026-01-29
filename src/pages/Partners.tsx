@@ -4,6 +4,7 @@ import AsyncState from '../components/common/AsyncState';
 import PartnerQuickViewDrawer from '../components/partners/PartnerQuickViewDrawer';
 import PartnersHeader from '../components/partners/PartnersHeader';
 import PartnersTable from '../components/partners/PartnersTable';
+import { logout } from '../services/auth';
 import { fetchPartnerDetail, fetchPartners } from '../services/partnersApi';
 import { usePartnersStore } from '../store/partnersStore';
 import { Partner, PartnerDetail } from '../types/partner';
@@ -79,6 +80,15 @@ const PartnersPage: React.FC = () => {
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         onAddCompanyClick={() => navigate('/companies/add')}
+        onLogout={async () => {
+          try {
+            await logout();
+          } catch (error) {
+            // ignore logout errors for now
+          } finally {
+            navigate('/');
+          }
+        }}
       />
 
       <AsyncState
