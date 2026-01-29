@@ -1,3 +1,4 @@
+# UPDATED based on described flow: company search -> confirm(add+cache/model) -> overview(detail aggregation) -> update-requests
 openapi: 3.0.3
 info:
   title: SENTINEL PoC API
@@ -440,6 +441,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponseMessage'
+  # 기업 추가 페이지: 기업명/기업코드 검색
   /companies/search:
     get:
       tags:
@@ -473,6 +475,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponseCompanySearch'
+  # 기업 추가 Confirm: DB에 결과 있으면 재사용, 없으면 모델 분석 트리거
   /companies/confirm:
     post:
       tags:
@@ -497,6 +500,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponseCompanyConfirm'
+  # 기업 상세 페이지 통합 오버뷰: 예측 그래프 + 핵심/보조지표 + AI 코멘트
   /companies/{companyId}/overview:
     get:
       tags:
@@ -515,6 +519,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponseCompanyOverview'
+  # 기업 요약 모달의 '업데이트 요청' 버튼 연동
   /companies/{companyId}/update-requests:
     post:
       tags:
