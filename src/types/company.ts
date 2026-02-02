@@ -1,3 +1,4 @@
+// 협력사 엔티티 타입 정의입니다.
 export type RiskLevel = 'SAFE' | 'WARN' | 'RISK';
 
 export type ModelStatus = 'EXISTING' | 'PROCESSING' | 'COMPLETED';

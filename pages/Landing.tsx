@@ -1,3 +1,4 @@
+// 애플리케이션 랜딩 페이지입니다.
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';

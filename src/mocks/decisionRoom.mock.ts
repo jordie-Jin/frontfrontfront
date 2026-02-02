@@ -1,3 +1,4 @@
+// 의사결정룸 화면용 목 데이터입니다.
 import { Bulletin, QaPost } from '../types/decisionRoom';
 
 const bulletinBodies = [

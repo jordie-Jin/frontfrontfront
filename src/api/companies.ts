@@ -1,3 +1,4 @@
+// 협력사 관련 API 호출 헬퍼입니다.
 import { apiGet, apiPost } from './client';
 import {
   CompanyConfirmRequest,

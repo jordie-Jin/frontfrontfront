@@ -1,3 +1,4 @@
+// 의사결정룸 데이터 타입 정의입니다.
 export type Tab = 'bulletins' | 'qa';
 
 export type BulletinTag = 'URGENT' | 'UPDATE' | 'ADVISORY';

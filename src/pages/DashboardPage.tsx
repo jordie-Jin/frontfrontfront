@@ -1,3 +1,4 @@
+// KPI와 리스크 위젯을 구성하는 대시보드 페이지 컴포넌트입니다.
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '../components/dashboard/DashboardHeader';

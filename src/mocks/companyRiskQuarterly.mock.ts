@@ -1,3 +1,4 @@
+// 분기별 협력사 리스크 트렌드 목 데이터입니다.
 import { CompanyQuarterRisk, RiskLevel } from '../types/risk';
 
 const companyPatterns: Array<{

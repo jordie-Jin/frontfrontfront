@@ -1,3 +1,4 @@
+// 선택된 협력사 상태를 관리하는 훅입니다.
 import { useCallback, useState } from 'react';
 import { CompanySearchItem } from '../types/company';
 

@@ -1,3 +1,4 @@
+// 로컬 목 데이터를 위한 API 레이어입니다.
 import {
   CompanyConfirmResult,
   CompanyOverview,

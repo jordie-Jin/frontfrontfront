@@ -1,3 +1,4 @@
+// KPI 포맷팅 및 계산 유틸리티입니다.
 import { CompanyQuarterRisk, RiskLevel } from '../types/risk';
 
 const sortByQuarter = (a: CompanyQuarterRisk, b: CompanyQuarterRisk): number =>

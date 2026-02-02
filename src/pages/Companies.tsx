@@ -1,3 +1,4 @@
+// 협력사 목록 페이지 컴포넌트입니다.
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AsyncState from '../components/common/AsyncState';

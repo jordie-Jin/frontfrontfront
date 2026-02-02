@@ -1,3 +1,4 @@
+// 공용 인터셉터를 포함한 HTTP 클라이언트 설정입니다.
 import { getAuthToken } from './auth';
 import {
   mockConfirmCompany,

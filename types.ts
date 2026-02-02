@@ -1,3 +1,4 @@
+// 앱 전반에서 사용하는 최상위 TypeScript 타입 모음입니다.
 
 export interface Partner {
   id: string;

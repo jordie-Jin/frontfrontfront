@@ -1,3 +1,4 @@
+// Cloudflare Turnstile 인증 위젯 컴포넌트입니다.
 import React, { useEffect, useRef, useState } from 'react';
 
 type TurnstileRenderOptions = {

@@ -1,3 +1,4 @@
+// 협력사 API 호출을 위한 서비스 레이어입니다.
 import { INITIAL_COMPANIES, getMockCompanyOverview } from '../mocks/companies.mock';
 import { CompanyOverview, CompanySummary } from '../types/company';
 

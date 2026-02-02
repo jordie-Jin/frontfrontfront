@@ -1,3 +1,4 @@
+// 협력사 데이터를 관리하는 상태 스토어입니다.
 import { useSyncExternalStore } from 'react';
 import { INITIAL_COMPANIES } from '../mocks/companies.mock';
 import { CompanySummary } from '../types/company';

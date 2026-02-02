@@ -1,3 +1,4 @@
+// 리스크 분포 시각화를 위한 목 데이터 생성기입니다.
 import { RiskDistribution } from '../types/dashboard';
 
 const distributions: Record<string, RiskDistribution> = {

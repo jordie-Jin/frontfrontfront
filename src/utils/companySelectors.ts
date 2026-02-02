@@ -1,3 +1,4 @@
+// 협력사 데이터 파생 셀렉터 유틸리티입니다.
 import type {
   CompanyOverview,
   CompanySignalItem,

@@ -1,3 +1,4 @@
+// 메인 애플리케이션 셸로 라우팅과 대시보드 레이아웃을 구성합니다.
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';

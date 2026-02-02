@@ -1,3 +1,4 @@
+// 인증 요청/응답 타입 정의입니다.
 export interface AuthUser {
   id: string;
   name: string;

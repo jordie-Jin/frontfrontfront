@@ -1,3 +1,4 @@
+// 대시보드 요약 지표 목 데이터입니다.
 import { DashboardRange, DashboardSummary } from '../types/dashboard';
 
 const summaries: Record<DashboardRange, DashboardSummary> = {

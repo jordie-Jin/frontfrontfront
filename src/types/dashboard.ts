@@ -1,3 +1,4 @@
+// 대시보드 요약 데이터 타입 정의입니다.
 import { KpiCardDto, Sector } from './company';
 
 export type DashboardRange = '7d' | '30d' | '90d';

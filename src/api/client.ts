@@ -1,3 +1,4 @@
+// HTTP 요청을 위한 API 클라이언트 래퍼입니다.
 import { getAuthToken } from '../services/auth';
 
 type HttpMethod = 'GET' | 'POST';

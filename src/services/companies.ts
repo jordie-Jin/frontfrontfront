@@ -1,3 +1,4 @@
+// 앱 흐름에 맞춘 협력사 서비스 헬퍼입니다.
 import { httpGet, httpPost } from './http';
 import {
   CompanyConfirmRequest,

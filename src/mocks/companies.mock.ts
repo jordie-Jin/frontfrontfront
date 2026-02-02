@@ -1,3 +1,4 @@
+// 협력사 목록을 위한 목 데이터입니다.
 import {
   CompanyOverview,
   CompanySummary,

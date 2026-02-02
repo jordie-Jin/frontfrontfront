@@ -1,3 +1,4 @@
+// 인증 API 헬퍼와 로컬 사용자 저장소 로직입니다.
 import { AuthSession, AuthUser, LoginRequest, RegisterRequest } from '../types/auth';
 
 const USE_MOCK_AUTH = true;

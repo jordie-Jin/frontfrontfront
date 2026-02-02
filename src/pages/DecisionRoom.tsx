@@ -1,3 +1,4 @@
+// 의사결정룸 페이지 컴포넌트입니다.
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DecisionRoomHeader from '../components/decisionRoom/DecisionRoomHeader';
