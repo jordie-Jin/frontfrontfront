@@ -100,6 +100,19 @@ public class SecurityConfig {
 				authorize.requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/*", "/api/posts/*/comments", "/api/categories")
 					.permitAll();
 				authorize.requestMatchers(HttpMethod.GET, "/api/companies/search").hasRole("USER");
+				authorize.requestMatchers(
+					HttpMethod.GET,
+					"/api/companies",
+					"/api/companies/*",
+					"/api/companies/*/overview",
+					"/api/dashboard/summary"
+				).hasRole("USER");
+				authorize.requestMatchers(
+					HttpMethod.POST,
+					"/api/companies/confirm",
+					"/api/companies/*/update-requests",
+					"/api/model/run"
+				).hasRole("USER");
 				authorize.requestMatchers(HttpMethod.GET, "/api/reports/metrics/grouped", "/api/reports/metrics/predict-latest")
 					.hasRole("USER");
 				authorize.requestMatchers(HttpMethod.GET, "/api/reports/files/*").hasRole("USER");
