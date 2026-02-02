@@ -1,0 +1,54 @@
+spring:
+  config:
+    import: optional:classpath:application-email.yml
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:${MYSQL_PORT:3306}/${MYSQL_DATABASE:bigprj}?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8}
+    username: ${SPRING_DATASOURCE_USERNAME:${MYSQL_USER:bigprj}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${MYSQL_PASSWORD:bigprj}}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100 # In-memory batch fetching for to-many associations
+        format_sql: true # SQL 쿼리 포맷팅 (개발 환경에서 유용)
+        highlight_sql: true # SQL 쿼리 하이라이팅 (개발 환경에서 유용)
+    show-sql: true # 콘솔에 SQL 쿼리 출력 (개발 환경에서 유용)
+  flyway:
+    locations: classpath:db/migration
+  test:
+    database:
+      replace: none
+logging:
+  level:
+    org.hibernate.SQL: debug # Hibernate가 생성하는 SQL을 콘솔에 출력 (개발 시 필수)
+    org.hibernate.orm.jdbc.bind: trace # SQL 파라미터 바인딩 정보 출력 (개발 시 필수)
+    com.github.gavlyukovskiy.p6spy: debug # P6Spy SQL 로깅 활성화 (개발 시 필수)
+    # JPQL 쿼리 로깅 (필요시 주석 해제)
+    # org.hibernate.hql.internal.ast.HqlSqlWalker: debug
+    # org.hibernate.hql.internal.ast.QueryTranslatorImpl: debug
+
+app:
+  cors:
+    allowed-origins: ${APP_BASE_URL:http://localhost:3000}
+  auth:
+    cookie:
+      secure: false
+      same-site: Lax
+  email:
+    verification:
+      skip: true
+      base-url: ${APP_BASE_URL:http://localhost:8080}
+      redirect-base-url: ${APP_BASE_URL:http://localhost:3000}
+  file:
+    upload:
+      max-size: 5242880
+      max-files: 3
+      validate-signature: false
+      upload-dir: ./upload/files
+
+turnstile:
+  secret-key: ${TURNSTILE_SECRET_KEY:}
+  site-key: ${TURNSTILE_SITE_KEY:}
+  debug-enabled: true

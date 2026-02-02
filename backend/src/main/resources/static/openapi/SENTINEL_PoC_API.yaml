@@ -1,0 +1,486 @@
+openapi: 3.0.1
+info:
+  title: SENTINEL PoC API
+  version: 1.2.0
+  description: >
+    SENTINEL is a corporate risk monitoring and early-warning platform.
+    This API is designed around risk status distribution monitoring and
+    metric-based forecasting, not partner performance tracking or single
+    health-score prediction.
+
+    Time window convention (important):
+    - Charts use quarterly buckets (YYYYQn).
+    - The displayed range is always: last 4 ACTUAL quarters (including latestActualQuarter) + 1 FORECAST quarter.
+    - FORECAST points are explicitly marked with dataType=FORECAST for visual differentiation (e.g., dashed line, shaded region).
+
+servers:
+  - url: https://api.sentinel.local
+
+tags:
+  - name: Dashboard
+    description: Aggregated risk monitoring dashboard
+  - name: Companies
+    description: Company search, registration, and risk analysis
+  - name: UpdateRequests
+    description: User-to-admin update request handling
+  - name: Auth
+    description: Authentication (JWT)
+
+
+paths:
+/auth/login:
+  post:
+    tags: [Auth]
+    summary: Login (JWT)
+    description: >
+      Authenticate user and return JWT access token.
+      In PoC, access token is used for API authorization (Bearer).
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginRequest'
+          examples:
+            example:
+              value:
+                email: user@company.com
+                password: "password123!"
+    responses:
+      '200':
+        description: Login success
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginResponse'
+      '401':
+        description: Invalid credentials
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout
+      description: >
+        PoC logout endpoint. Client should delete stored tokens locally.
+        Server may treat this as a no-op and return 204.
+        (If later you add refresh-token or token revocation, implement it here.)
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Logout success (no content)
+        '401':
+          description: Unauthorized (missing/invalid token)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current user
+      description: Returns current user profile using access token.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeResponse'
+        '401':
+          description: Unauthorized (missing/invalid token)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  /dashboard/summary:
+    get:
+      tags: [Dashboard]
+      summary: Risk status distribution dashboard
+      description: >
+        Returns aggregated dashboard data including current risk status distribution
+        and its change over time (NORMAL / CAUTION / RISK) on a quarterly basis.
+        The trend range follows the convention:
+        last 4 ACTUAL quarters (including latestActualQuarter) + 1 FORECAST quarter.
+
+        Note: This endpoint does NOT represent partner performance trends.
+      responses:
+        '200':
+          description: Dashboard summary response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardSummary'
+
+  /companies/search:
+    get:
+      tags: [Companies]
+      summary: Search companies
+      description: Search companies by name or company code.
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: code
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Company search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompanySearchItem'
+
+  /companies/confirm:
+    post:
+      tags: [Companies]
+      summary: Confirm company registration
+      description: >
+        Confirms a company for monitoring.
+        If existing model results are found, cached results are reused.
+        Otherwise, a new risk analysis process is triggered.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                companyId:
+                  type: string
+              required: [companyId]
+      responses:
+        '200':
+          description: Existing or completed analysis result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyConfirmResponse'
+        '202':
+          description: Analysis in progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyConfirmResponse'
+
+  /companies/{companyId}/overview:
+    get:
+      tags: [Companies]
+      summary: Company risk overview (metric-based forecasts)
+      description: >
+        Returns a comprehensive risk overview for a company.
+
+        Includes:
+        - Metric-based forecasts (per indicator) over the fixed quarterly range:
+          last 4 ACTUAL quarters + 1 FORECAST quarter
+        - Current key indicators (e.g., traffic-light signals)
+        - AI-generated commentary
+
+        This endpoint does NOT return a single health-score forecast.
+        FORECAST points must be visually differentiated on the client using dataType=FORECAST.
+      parameters:
+        - in: path
+          name: companyId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Company overview response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyOverview'
+
+  /companies/{companyId}/update-requests:
+    post:
+      tags: [UpdateRequests]
+      summary: Create update request
+      description: Sends an update request for a company to the administrator.
+      parameters:
+        - in: path
+          name: companyId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRequestCreate'
+      responses:
+        '201':
+          description: Update request created successfully
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required: [email, password]
+    
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token
+        tokenType:
+          type: string
+          example: Bearer
+        expiresIn:
+          type: integer
+          description: Access token expiry seconds
+          example: 3600
+        user:
+          $ref: '#/components/schemas/UserSummary'
+      required: [accessToken, tokenType, expiresIn, user]
+
+    MeResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserSummary'
+      required: [user]
+
+    UserSummary:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: "u_12345"
+        email:
+          type: string
+          example: user@company.com
+        name:
+          type: string
+          example: "홍길동"
+        role:
+          type: string
+          description: User role
+          enum: [USER, ADMIN]
+          example: USER
+      required: [userId, email, role]
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: AUTH_401
+        message:
+          type: string
+          example: Invalid credentials
+      required: [code, message]
+
+    Quarter:
+      type: string
+      description: Quarter label formatted as YYYYQn (e.g., 2025Q4)
+      example: 2025Q4
+      pattern: '^\d{4}Q[1-4]$'
+
+    DataType:
+      type: string
+      description: Indicates whether a data point is actual or forecast.
+      enum: [ACTUAL, FORECAST]
+
+    CompanySearchItem:
+      type: object
+      properties:
+        companyId:
+          type: string
+        companyName:
+          type: string
+        industry:
+          type: string
+      required: [companyId, companyName]
+
+    CompanyConfirmResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [EXISTING, PROCESSING, COMPLETED]
+        companyId:
+          type: string
+      required: [status, companyId]
+
+    DashboardSummary:
+      type: object
+      description: >
+        Aggregated dashboard data focused on company risk status distribution.
+        Trend values are quarterly and include 4 ACTUAL quarters + 1 FORECAST quarter.
+      properties:
+        latestActualQuarter:
+          $ref: '#/components/schemas/Quarter'
+        forecastQuarter:
+          $ref: '#/components/schemas/Quarter'
+        windowQuarters:
+          type: array
+          description: Ordered quarter labels for the chart window (length=5)
+          items:
+            $ref: '#/components/schemas/Quarter'
+        riskStatusDistribution:
+          type: object
+          description: Current distribution of companies by risk status (latest actual quarter)
+          properties:
+            NORMAL:
+              type: integer
+            CAUTION:
+              type: integer
+            RISK:
+              type: integer
+          required: [NORMAL, CAUTION, RISK]
+        riskStatusDistributionTrend:
+          type: array
+          description: >
+            Quarterly change in risk status distribution.
+            Each item represents a single quarter bucket and can be rendered as a 100% stacked area or stacked bar.
+            The FORECAST quarter is included to visualize expected distribution change.
+          items:
+            $ref: '#/components/schemas/RiskStatusBucket'
+      required:
+        - latestActualQuarter
+        - forecastQuarter
+        - windowQuarters
+        - riskStatusDistribution
+        - riskStatusDistributionTrend
+
+    RiskStatusBucket:
+      type: object
+      properties:
+        quarter:
+          $ref: '#/components/schemas/Quarter'
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        NORMAL:
+          type: integer
+        CAUTION:
+          type: integer
+        RISK:
+          type: integer
+      required: [quarter, dataType, NORMAL, CAUTION, RISK]
+
+    CompanyOverview:
+      type: object
+      description: >
+        Company risk overview based on multiple financial and risk indicators.
+        Forecasts are provided per metric, not as a single health score.
+
+        Range rule:
+        - metricForecasts[].timeline always contains 5 points:
+          4 ACTUAL quarters (including latestActualQuarter) + 1 FORECAST quarter.
+        - The client should render FORECAST points with a distinct style (e.g., dashed line, shaded background).
+      properties:
+        companyId:
+          type: string
+        latestActualQuarter:
+          $ref: '#/components/schemas/Quarter'
+        forecastQuarter:
+          $ref: '#/components/schemas/Quarter'
+        windowQuarters:
+          type: array
+          description: Ordered quarter labels for the chart window (length=5)
+          items:
+            $ref: '#/components/schemas/Quarter'
+        metricForecasts:
+          type: array
+          description: Forecasted values for key metrics (core + secondary metrics)
+          items:
+            $ref: '#/components/schemas/MetricForecast'
+        keyIndicators:
+          type: array
+          description: Current key risk indicators (traffic-light signals, etc.)
+          items:
+            $ref: '#/components/schemas/IndicatorItem'
+        aiCommentary:
+          type: string
+      required:
+        - companyId
+        - latestActualQuarter
+        - forecastQuarter
+        - windowQuarters
+        - metricForecasts
+        - keyIndicators
+        - aiCommentary
+
+    MetricForecast:
+      type: object
+      description: >
+        A single metric series over the fixed quarterly window.
+        Suggested metrics include:
+        - Core: ROA, CFO/Sales ratio, CFO growth rate, External reputation risk
+        - Secondary: ROE, Operating margin, Debt ratio, Equity ratio, Short-term borrowing ratio, Quick ratio, Current liabilities ratio
+      properties:
+        metricKey:
+          type: string
+          description: Stable key for programmatic use (e.g., ROA, CFO_SALES_RATIO)
+          example: ROA
+        metricName:
+          type: string
+          description: Display name (Korean/English allowed)
+          example: ROA
+        unit:
+          type: string
+          description: Unit label (e.g., %, ratio, score)
+          example: '%'
+        timeline:
+          type: array
+          description: Ordered quarterly points (length=5). Last point is FORECAST.
+          items:
+            $ref: '#/components/schemas/MetricPoint'
+      required: [metricKey, metricName, timeline]
+
+    MetricPoint:
+      type: object
+      properties:
+        quarter:
+          $ref: '#/components/schemas/Quarter'
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        value:
+          type: number
+      required: [quarter, dataType, value]
+
+    IndicatorItem:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: number
+        status:
+          type: string
+          enum: [NORMAL, CAUTION, RISK]
+      required: [name, value, status]
+
+    UpdateRequestCreate:
+      type: object
+      properties:
+        message:
+          type: string
+      required: [message]

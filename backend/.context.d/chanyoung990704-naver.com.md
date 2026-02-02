@@ -1,0 +1,181 @@
+# Per-User Session Log
+
+## 1. Owner (소유자)
+- id: chanyoung990704-naver.com
+- source: git config user.email
+- email: chanyoung990704@naver.com
+
+## 2. Recent Notes (최근 메모)
+- 2026-02-02 | 작업: 보고서 PDF 다운로드 API USER 권한 전환 3차 | 결과: `/reports/files/{id}` 경로로 이관하고 ROLE_USER 전용 보안 규칙, 다운로드 URL 경로 반영, 401/403/302 테스트 추가 | 이슈: 없음
+- 2026-02-02 | 작업: 보고서 지표 조회 API USER 권한 전환 2차 | 결과: `/reports/metrics/*` 경로로 이관하고 ROLE_USER 전용 보안 규칙 및 grouped/predict-latest 401/403/200 테스트 추가 | 이슈: 없음
+- 2026-02-02 | 작업: 기업 검색 API USER 권한 전환 1차 | 결과: `/admin/companies/search`를 `/companies/search`로 변경하고 ROLE_USER 전용 보안 규칙 및 401/403/200 테스트 추가 | 이슈: 없음
+- 2026-02-02 | 작업: 이메일 인증 JSON 응답 모드 정비 | 결과: redirect=false에서 status/message JSON 응답을 반환하도록 DTO 추가 및 WebMvc 테스트 보강 | 이슈: 없음
+- 2026-02-02 | 작업: 이메일 인증 리다이렉트 정책 강화 | 결과: verify-email에 status 매핑(success/expired/invalid/already_verified/error), returnUrl 화이트리스트 검증, redirect=true 302 처리 및 WebMvc 테스트 보강 | 이슈: 없음
+- 2026-02-01 | 작업: favicon 요청 처리 추가 | 결과: favicon 컨트롤러 및 테스트 추가로 예외 로그 제거 | 이슈: MockBean deprecated 경고
+- 2026-02-01 | 작업: dev 카테고리 API 통합 | 결과: DevCategoryController 제거 후 DevConsoleController로 통합, dev 전용 테스트 추가 | 이슈: MockBean deprecated 경고
+- 2026-02-01 | 작업: dev 인증 콘솔 컨트롤러 통합 | 결과: AuthConsoleController 제거 후 DevConsoleController로 통합 | 이슈: 없음
+- 2026-02-01 | 작업: dev 콘솔 경로 정리 | 결과: /dev/auth/console로 경로 이관 및 템플릿 링크 정합화 | 이슈: 없음
+- 2026-02-01 | 작업: 이메일 인증 리다이렉트 옵션 추가 | 결과: redirect 파라미터 지원 및 프론트 리다이렉트 URL 응답, 관련 MockMvc 테스트 추가 | 이슈: MockBean deprecated 경고
+- 2026-02-01 | 작업: 파일 다운로드 URL 조회 API 추가 | 결과: /files/{id}/url 응답 및 MockMvc 테스트 추가 | 이슈: MockBean deprecated 경고
+- 2026-02-01 | 작업: 카테고리 조회 API 추가 | 결과: /categories 컨트롤러 및 MockMvc 테스트 추가, 공개 경로 허용 | 이슈: MockBean deprecated 경고
+- 2026-02-01 | 작업: prod 보안/운영 설정 정비 | 결과: 공개 경로 축소, CORS origins 외부화, prod actuator/health/swagger 설정 보강 | 이슈: 없음
+- 2026-02-01 | 작업: prod compose에서 mysql 비활성화 | 결과: docker-compose.prod.yml에 mysql profiles=dev 추가 | 이슈: 없음
+- 2026-02-01 | 작업: storage_key 테스트 복구 | 결과: H2 마이그레이션 추가 및 test Turnstile 시크릿 기본값 설정, 전체 테스트 통과 | 이슈: 없음
+- 2026-01-31 | 작업: 리프레시 토큰 쿠키 정책 분리 | 결과: SameSite/secure 설정을 프로파일별로 적용하고 테스트 보강 | 이슈: MockBean deprecated 경고
+- 2026-01-31 | 작업: 헬스체크 접근 테스트 안정화 | 결과: 테스트용 컨트롤러 분리 및 MockMvc 테스트 통과 | 이슈: MockBean deprecated 경고
+- 2026-01-31 | 작업: 헬스체크 엔드포인트 접근 허용 | 결과: /actuator/health permitAll 추가 | 이슈: 없음
+- 2026-01-31 | 작업: 다운로드 리다이렉트 통합 테스트 추가 | 결과: presigned URL 응답 흐름 검증 | 이슈: MockBean deprecated 경고
+- 2026-01-31 | 작업: S3 presigned URL 다운로드 준비 | 결과: resolver 추가 및 presigner 설정, 단위 테스트 통과 | 이슈: 없음
+- 2026-01-31 | 작업: files에 storage_key 추가 | 결과: 저장 메타데이터 확장 및 저장소 테스트 보강 | 이슈: 없음
+- 2026-01-31 | 작업: 파일 업로드 크기 설정 분리 | 결과: FILE_MAX_SIZE_BYTES 도입 및 바인딩 테스트 보강 | 이슈: 없음
+- 2026-01-31 | 작업: prod에서 Redis만 compose로 실행 | 결과: start-server에서 prod 프로필 감지 시 Redis만 기동 | 이슈: 없음
+- 2026-01-31 | 작업: README 환경변수 요약 추가 | 결과: 공통/메일/S3 필수 변수 정리 | 이슈: 없음
+- 2026-01-31 | 작업: .env.example 환경변수 목록 정리 | 결과: 공통/DB(dev/prod 예시) 변수 한눈에 정리 | 이슈: 없음
+- 2026-01-31 | 작업: prod 이메일 설정 import 추가 | 결과: prod 프로파일에서도 application-email.yml 로딩 | 이슈: 없음
+- 2026-01-30 | 작업: prod 이메일 인증 유지 확인 | 결과: prod 설정에 skip=false 유지, dev는 skip=true로 복구 | 이슈: 없음
+- 2026-01-30 | 작업: env 예시/운영 env 템플릿 정합 | 결과: LOG_PATH/LOG_FILE 추가 및 README 로컬 실행 예시 갱신 | 이슈: 없음
+- 2026-01-30 | 작업: dev/prod DB 환경변수 체계 통일 | 결과: SPRING_DATASOURCE_* 기준으로 dev/prod 설정 정렬 | 이슈: 없음
+- 2026-01-30 | 작업: dev 전용 JPA SQL 로그/Turnstile 기본값 분리 | 결과: 공통 설정에서 dev 옵션 제거 및 prod에 Turnstile 키 요구 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 그룹/예측 응답 매퍼 적용 | 결과: ReportMapper에 그룹/예측 응답 매핑 추가 및 테스트 보강 | 이슈: 없음
+- 2026-01-30 | 작업: DART 동기화 응답 매핑 MapStruct 전환 | 결과: JobExecution → DartCorpSyncResponse 매퍼 추가 | 이슈: 없음
+- 2026-01-30 | 작업: DTO 매핑 MapStruct 전환 주석 보강 | 결과: mapper 전반 매핑 규칙 설명 주석 추가 및 테스트 통과 | 이슈: 없음
+- 2026-01-30 | 작업: 배치 런타임 의존성 보강 | 결과: spring-batch-core 추가로 ItemProcessor 클래스 로딩 실패 방지 | 이슈: 없음
+- 2026-01-30 | 작업: 테스트 프로파일/데이터 의존성 정리 | 결과: PostsRepositoryTest 등에서 test 프로파일 적용, 엑셀 파서 테스트는 메모리 워크북으로 전환 | 이슈: 없음
+- 2026-01-30 | 작업: 예측 보고서 콘솔 토큰 로딩 수정 | 결과: auth-console.tokens 기반으로 관리자 API 호출 가능 | 이슈: 없음
+- 2026-01-30 | 작업: 예측 보고서 콘솔 경로 허용 | 결과: report-predict-console 보안 허용 설정 추가 | 이슈: 없음
+- 2026-01-30 | 작업: 예측 보고서 조회 콘솔 추가 | 결과: 최신 예측값/PDF 조회 전용 dev 페이지 추가 | 이슈: 없음
+- 2026-01-30 | 작업: 예측 조회/보고서 PDF 다운로드 API 추가 | 결과: predict-latest 조회 및 PDF 다운로드 API/테스트 구현 | 이슈: 없음
+- 2026-01-30 | 작업: 최신 예측값 조회 서비스 추가 | 결과: 최신 버전 PDF/예측값 조회 로직 및 테스트 구현 | 이슈: 없음
+- 2026-01-30 | 작업: API 콘솔 보고서 발행 폼 추가 | 결과: 지표+PDF 발행 API를 콘솔에서 테스트 가능 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 지표+PDF 발행 API 추가 | 결과: multipart 발행 API 및 테스트 구현 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 지표+PDF 발행 서비스 추가 | 결과: 예측/실제값 저장 후 PDF 연결 및 published 처리 | 이슈: 없음
+- 2026-01-30 | 작업: API 콘솔 예측값 적재 UI 추가 | 결과: stockCode/quarterKey/metrics 입력 후 예측값 적재 요청 가능 | 이슈: 없음
+- 2026-01-30 | 작업: API 콘솔 기업 검색 UI 개선 | 결과: 디바운싱 결과를 입력 아래 리스트로 표시 | 이슈: 없음
+- 2026-01-30 | 작업: 예측 지표 적재 API 추가 | 결과: 예측값 컨트롤러/테스트 구현 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 지표 예측값 적재 서비스 추가 | 결과: metric_name_en 기반 적재 서비스/DTO/테스트 구현 | 이슈: 없음
+- 2026-01-30 | 작업: Auth Console 보호 API UX 개선 | 결과: 토큰 상태에 따른 버튼 제어/실패 메시지 보강 | 이슈: 없음
+- 2026-01-30 | 작업: 단일 로그아웃 Access 토큰 무효화 | 결과: logout 시 블랙리스트 적용 및 로그아웃 테스트 보강 | 이슈: 없음
+- 2026-01-30 | 작업: 로그아웃 전체 처리 검증 보강 | 결과: AccessTokenValidator 적용 및 로그아웃 후 클레임 실패 테스트 추가 | 이슈: 없음
+- 2026-01-30 | 작업: 로그아웃 테스트 중복 Role 처리 보정 | 결과: RoleRepository로 재사용 처리 | 이슈: 없음
+- 2026-01-30 | 작업: Auth Console 로그아웃 버튼 동작 보강 | 결과: 로그아웃 성공 시 로컬 토큰 초기화 처리 | 이슈: 없음
+- 2026-01-30 | 작업: 기업 검색 API/콘솔 연동 | 결과: 검색 컨트롤러/테스트/문서 및 콘솔 UI 연동 | 이슈: 없음
+- 2026-01-30 | 작업: 기업 검색 서비스 추가 | 결과: corp_name/corp_eng_name 검색 로직 및 테스트 구현 | 이슈: 없음
+- 2026-01-30 | 작업: dev API 콘솔에 보고서 지표 조회 버튼 추가 | 결과: 분기별 그룹 조회 UI 입력/호출 추가 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 지표 조회 API 추가 | 결과: 그룹핑 조회 컨트롤러/테스트 및 문서 추가 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 지표 분기별 그룹핑 응답 추가 | 결과: 그룹 DTO/서비스 처리 및 테스트 보강 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 지표 조회 서비스 추가 | 결과: 최신 버전 조회 서비스/DTO 및 테스트 구현 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 지표 최신 버전 조회 리포지토리 추가 | 결과: Projection/쿼리/테스트 추가 | 이슈: 없음
+- 2026-01-30 | 작업: 비동기 로그 설정 추가 | 결과: 콘솔/파일 AsyncAppender 및 롤링 정책 적용 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 지표 기업코드 패딩 규칙 보정 | 결과: 비숫자 포함 코드도 6자리 미만이면 좌측 패딩 적용 | 이슈: 없음
+- 2026-01-30 | 작업: 보고서 지표 기업코드 정규화 조정 | 결과: 비숫자 포함 코드는 원문 유지, 숫자 코드는 패딩 유지 | 이슈: 없음
+- 2026-01-29 | 작업: 보고서 지표 적재 로그 보강 | 결과: 엑셀 행/컬럼/헤더 기반 로그 추가 및 중복 감지 로그 보강 | 이슈: 없음
+- 2026-01-29 | 작업: API 콘솔/문서 업데이트 | 결과: 보고서 지표 업로드 버튼 추가 및 문서화 | 이슈: 없음
+- 2026-01-29 | 작업: 보고서 지표 업로드 API 추가 | 결과: 관리자 업로드 컨트롤러 및 MockMvc 테스트 구현 | 이슈: 없음
+- 2026-01-29 | 작업: 엑셀 지표 파서 추가 | 결과: input_demo.xlsx 헤더 매핑 파서 구현 및 테스트 추가 | 이슈: 없음
+- 2026-01-29 | 작업: 보고서 지표 적재 서비스 1단계 | 결과: 보고서/분기 생성 메서드 추가 및 적재 서비스/테스트 구현 | 이슈: 없음
+- 2026-01-29 | 작업: 분기 유틸/리포지토리 추가 | 결과: QuarterCalculator 및 보고서/분기/지표 리포지토리 추가, 분기 계산 테스트 작성 | 이슈: 없음
+- 2026-01-29 | 작업: DART 응답 버퍼 상향 설정 | 결과: WebClient maxInMemorySize 50MB 기본값 및 프로퍼티(dart.api.max-buffer-size) 추가 | 이슈: 없음
+- 2026-01-29 | 작업: API 콘솔에 DART 동기화 버튼 추가 | 결과: /admin/dart/corp-sync 호출 버튼 및 로그 출력 추가 | 이슈: 없음
+- 2026-01-29 | 작업: dev 관리자 회원가입 옵션 추가 | 결과: auth-console에 관리자 체크박스 추가, SignupRequest/SignUpService에 dev 전용 ROLE_ADMIN 처리 | 이슈: 없음
+- 2026-01-29 | 작업: 기업 동기화 JDBC 조회 컴파일 오류 수정 | 결과: NamedParameterJdbcTemplate query 모호성 해소 | 이슈: 없음
+- 2026-01-29 | 작업: DART 기업 동기화 운영 가이드 문서화 | 결과: 수동 실행 API/스케줄/환경변수/타임아웃 설정 정리 | 이슈: 없음
+- 2026-01-29 | 작업: DART 기업 동기화 테스트 추가 | 결과: Reader ZIP/XML 파싱 테스트 및 Processor 정규화 테스트 추가 | 이슈: 없음
+- 2026-01-29 | 작업: DART 배치 운영 설정 보강 | 결과: WebClient 타임아웃/재시도 설정, Batch 이력 테이블 마이그레이션 추가 | 이슈: 없음
+- 2026-01-29 | 작업: DART 기업 동기화 수동 실행/스케줄 구성 | 결과: 관리자 API, Job 실행 서비스, 스케줄러 토글 및 보안 경로 추가 | 이슈: 없음
+- 2026-01-29 | 작업: DART 기업 동기화 Reader/Writer 구현 | 결과: ZIP/XML 파싱 Reader, 변경분 기준 업서트 Writer 및 JDBC 저장소 추가 | 이슈: 없음
+- 2026-01-29 | 작업: DART 기업 동기화 배치 스캐폴딩 | 결과: Batch 의존성 추가, DART 설정/배치 Job·Step·Reader/Processor/Writer 스켈레톤 구성, 자동 실행 비활성화 | 이슈: 없음
+- 2026-01-29 | 작업: DART 기업 목록 동기화 요구사항 정리 | 결과: 초기 적재 후 변경분 갱신, 스케줄 기본 OFF, 관리자 API 트리거, DART_API_KEY 확정 | 이슈: 없음
+- 2026-01-29 | 작업: dev MySQL 전환 및 마이그레이션 정리 | 결과: dev datasource를 MySQL로 변경, docker compose에 mysql 추가, H2 마이그레이션 분리(db/migration-h2), metrics 시드 추가 | 이슈: 없음
+- 2026-01-29 | 작업: Auditing 통합 및 테스트 정합 | 결과: BaseEntity에 createdBy/updatedBy 통합, SecurityAuditorAware 추가, userId 클레임 추가 및 엔티티/서비스/테스트 정리 | 이슈: MockBean deprecated 경고 지속
+- 2026-01-28 | 작업: dev Auth Console 호환성 보강 | 결과: /auth/logout, /auth/logout-all 미구현 시 안내 및 버튼 비활성화 처리 | 이슈: 없음
+- 2026-01-28 | 작업: ERD 문서 정리 | 결과: ERD.md 추가 및 README에 스키마 안내 섹션 추가 | 이슈: 없음
+- 2026-01-28 | 작업: UserRoleRepository 컴파일 오류 수정 | 결과: 잘못된 \\t 문자 제거로 빌드 복구, 전체 테스트 통과 | 이슈: 없음
+- 2026-01-28 | 작업: 파일/인증 테스트 정합화 | 결과: session 키 변경 및 post_files 매핑 기반 조회로 통합 테스트 보정, 테스트 설정에 TestSecurityConfig 적용 | 이슈: 없음
+- 2026-01-28 | 작업: H2 마이그레이션/테스트 프로파일 정리 | 결과: H2 전용 Flyway 스키마 추가, dev/test DB URL 및 Flyway 경로 정비, CompaniesEntity CHAR 컬럼 정합 | 이슈: 없음
+- 2026-01-28 | 작업: 테스트 실패 원인 수정(카테고리 중복/테스트 JWT 키) | 결과: CommentIntegrationTest 카테고리 이름 고유화, EmailVerificationServiceTest에 TestSecurityConfig 적용 | 이슈: MockBean deprecated 경고 확인
+- 2026-01-28 | 작업: Flyway 도입 + ERD 정합화 1~2단계 | 결과: V1 초기 마이그레이션/ddl-auto validate 적용, ROLE_ 통일/refresh_tokens·files·조회수 분리 및 신규 엔티티 추가, 테스트 보정 | 이슈: 없음
+- 2026-01-28 | 작업: SENTINEL PoC OpenAPI 스펙 Swagger UI 연결 | 결과: 정적 YAML 제공 및 Swagger UI 다중 문서 목록 추가 | 이슈: 없음
+- 2026-01-27 | 작업: SecurityConfig 정적 리소스 허용 및 CSP 헤더 추가 | 결과: favicon/정적 경로 permitAll, Turnstile 도메인 포함 CSP를 Report-Only로 설정 | 이슈: 없음
+- 2026-01-27 | 작업: Turnstile 디버그 로그 강화 | 결과: 검증 요청/응답 상세 로그 추가 및 dev에서 debug 활성화 | 이슈: 없음
+- 2026-01-27 | 작업: dev Turnstile 콘솔/회원가입 위젯 추가 및 검증 API 연결 | 결과: auth/turnstile 콘솔에서 토큰 발급·검증·회원가입까지 확인 가능, dev 키 기본값 제거 | 이슈: 없음
+- 2026-01-26 | 작업: CodeDeploy 재시작 안정화 | 결과: stop-server 프로세스 탐지 보강 및 start-server에서 재시작 보장 | 이슈: 없음
+- 2026-01-26 | 작업: dev 홈 페이지 및 CodeDeploy 실행 명령 정비 | 결과: 루트 페이지 연결 화면 추가, dev 보안 허용, start-server 실행 커맨드 변경 | 이슈: 없음
+- 2026-01-26 | 작업: CodeBuild gradlew 실행 권한 보정 | 결과: buildspec에 chmod +x gradlew 추가 | 이슈: 없음
+- 2026-01-25 | 작업: SpringDoc 버전 재업데이트 | 결과: 2.6.0 -> 2.8.15로 변경하여 Spring 6.2 호환성 확보 | 이슈: 확인 중
+- 2026-01-25 | 작업: SpringDoc 버전 업그레이드 | 결과: 2.3.0 -> 2.6.0로 변경하여 OpenAPI 생성 오류 대응 | 이슈: 확인 중
+- 2026-01-25 | 작업: 작업 에이전트 워크플로우 문서화 | 결과: 단위 작업/테스트/커밋/종합 테스트 절차 명시 | 이슈: 없음
+- 2026-01-25 | 작업: Swagger 공개 경로 보안 허용 | 결과: /swagger-ui, /api-docs 인증 예외 처리 | 이슈: 없음
+- 2026-01-25 | 작업: Swagger API 버전 관리 설정 | 결과: OpenAPI 버전/베이스 경로 설정값 추가 | 이슈: 없음
+- 2026-01-25 | 작업: Swagger UI 커스텀 테마 적용 | 결과: custom.css 추가 및 springdoc 설정 반영 | 이슈: 없음
+- 2026-01-25 | 작업: API 예외 응답 문서화 | 결과: 주요 컨트롤러에 400/401/403/404/500 응답 정의 추가 | 이슈: 없음
+- 2026-01-25 | 작업: 에러 응답 Swagger 스키마 추가 | 결과: ErrorResponse/FieldErrorResponse에 @Schema 적용 | 이슈: 없음
+- 2026-01-25 | 작업: 개발/콘솔 및 이메일 인증 API 문서화 | 결과: EmailVerification/Dev/AuthConsole 컨트롤러에 Swagger 메타데이터 추가 | 이슈: 없음
+- 2026-01-25 | 작업: 파일 컨트롤러 Swagger 문서화 | 결과: File 업로드/조회/다운로드 API에 Tag/Operation/Response/파라미터 설명 추가 | 이슈: 없음
+- 2026-01-25 | 작업: Swagger 보안/공개 엔드포인트 정리 | 결과: 공개 엔드포인트 security 비활성화, 파일 API에 보안 요구사항 추가 | 이슈: 없음
+- 2026-01-25 | 작업: 핵심 컨트롤러 Swagger 문서화 | 결과: Auth/Post/Comment 컨트롤러에 Tag/Operation/Response/보안 요구사항 추가 | 이슈: 없음
+- 2026-01-25 | 작업: 파일 DTO Swagger 스키마 추가 | 결과: FileResponse에 @Schema 적용 | 이슈: 없음
+- 2026-01-25 | 작업: 핵심 DTO Swagger 스키마 추가 | 결과: Auth/Post/Comment/ApiResponse DTO에 @Schema 적용 | 이슈: 없음
+- 2026-01-25 | 작업: Swagger 기본 설정 추가 | 결과: OpenApiConfig 생성 및 springdoc 설정 추가 | 이슈: 없음
+- 2026-01-25 | 작업: test 프로파일 파일 스토리지 스텁 추가 | 결과: TestFileStorageConfig로 FileStorageService 기본 빈 제공, EmailVerificationServiceTest에서 스텁 의존 제거 | 이슈: 없음
+- 2026-01-25 | 작업: 전체 테스트 실패 원인 분석 및 수정 | 결과: EmailVerificationServiceTest에 FileStorageService MockBean 추가로 컨텍스트 로딩 실패 해결 | 이슈: 없음
+- 2026-01-23 | 작업: 파일 조회/다운로드 및 콘솔 화면 개선 | 결과: 파일 목록/다운로드 API 추가 및 dev 콘솔에서 조회 지원 | 이슈: 없음
+- 2026-01-23 | 작업: 파일 업로드 콘솔 페이지 추가 | 결과: /dev/file-console 템플릿 및 링크 추가 | 이슈: 없음
+- 2026-01-23 | 작업: 파일 업로드 통합/설정 테스트 추가 | 결과: MockMvc 통합, 설정 바인딩, 스텁 스토리지 테스트 추가 | 이슈: 없음
+- 2026-01-23 | 작업: 파일 업로드 테스트 추가 | 결과: 검증/서비스/로컬/S3 스토리지 단위 테스트 작성 및 통과 | 이슈: 없음
+- 2026-01-23 | 작업: 파일 업로드 커스텀 에러코드/예외 추가 | 결과: FileErrorCode/FileException/검증 상세 오류 분리 | 이슈: 없음
+- 2026-01-23 | 작업: 전역 파일 업로드 설정 추가 | 결과: multipart 설정 및 업로드 정책/검증기 적용 | 이슈: 없음
+- 2026-01-23 | 작업: 파일 업로드 기본 구성 추가 | 결과: 저장소/서비스/컨트롤러/설정/마이그레이션 추가 | 이슈: 없음
+- 2026-01-23 | 작업: 파일 엔티티 추가 | 결과: files 테이블 매핑 엔티티 생성 | 이슈: 없음
+- 2026-01-23 | 작업: 서비스 시그니처를 UserEntity/ID 기반으로 정리 | 결과: Post/Comment 서비스 중복 사용자 조회 제거 및 테스트 수정 | 이슈: 없음
+- 2026-01-23 | 작업: @CurrentUser 리졸버 추가 및 컨트롤러 적용 | 결과: Post/Comment 컨트롤러에서 JWT subject 파싱 제거, 관련 테스트 통과 | 이슈: 없음
+- 2026-01-23 | 작업: prod 이메일 인증 설정 추가 | 결과: application-prod.yaml에 base-url 및 skip 설정 추가 | 이슈: 없음
+- 2026-01-23 | 작업: 이메일 인증 URL 외부 접속 대응 | 결과: 인증 링크 base-url 설정 추가 및 EmailService에서 구성값 사용 | 이슈: 없음
+- 2026-01-23 | 작업: 미인증 로그인 응답 분리 및 이메일 발송 테스트 보강 | 결과: AuthErrorCode/로그인 예외 처리 추가, 회원가입 이메일 발송 테스트 추가 | 이슈: 없음
+- 2026-01-23 | 작업: compose 오버라이드 표준화 | 결과: docker-compose.override.yml 추가 및 dev 파일 제거 | 이슈: 없음
+- 2026-01-23 | 작업: docker compose dev/prod 오버라이드 추가 | 결과: docker-compose.dev.yml/docker-compose.prod.yml 추가 및 기본 compose 정리 | 이슈: 없음
+- 2026-01-23 | 작업: Redis compose 파일 통합 | 결과: docker-compose.redis.yml 삭제 후 docker-compose.yml로 통합 | 이슈: 없음
+- 2026-01-23 | 작업: Redis docker compose 파일 추가 | 결과: 개발용 Redis 실행용 docker-compose.redis.yml 추가 | 이슈: 없음
+- 2026-01-23 | 작업: dev 회원가입 이메일 인증 스킵 처리 | 결과: dev 프로파일에서 이메일 인증 생략 및 SignUpService 테스트 보강 | 이슈: 없음
+- 2026-01-23 | 작업: 이메일 인증 기능 추가 | 결과: 이메일 인증 엔티티/서비스/컨트롤러, 마이그레이션 및 테스트 추가 | 이슈: 없음
+- 2026-01-23 | 작업: 테스트 메일 빈 모킹 및 dev 이메일 설정 import | 결과: 테스트용 JavaMailSender 모킹 추가, dev 프로파일에서 application-email.yml 로딩 | 이슈: 없음
+- 2026-01-22 | 작업: 댓글 CRUD 컨트롤러 및 통합 테스트 추가 | 결과: CommentController와 CRUD 통합 테스트 추가, 전체 테스트 통과 | 이슈: 없음
+- 2026-01-22 | 작업: Repository 슬라이스 테스트 추가 | 결과: PostsRepository/CommentsRepository DataJpaTest 추가 및 전체 테스트 통과 | 이슈: 없음
+- 2026-01-22 | 작업: AccessTokenBlacklistService 단위 테스트 추가 | 결과: 블랙리스트/로그아웃 기준 로직 단위 테스트와 전체 테스트 통과 | 이슈: 없음
+- 2026-01-22 | 작업: 서비스 레이어 단위 테스트 추가 | 결과: PostService/UserDomainService 테스트 추가 및 전체 테스트 통과 | 이슈: 없음
+- 2026-01-22 | 작업: 게시글 JWT 컨트롤러/페이징 및 테스트 보강 | 결과: /posts 페이징 API 및 JWT subject 검증 테스트 추가, CommonException 핸들러 추가 | 이슈: 없음
+- 2026-01-21 | 작업: RefreshTokenServiceTest 불필요 스텁 제거 | 결과: 테스트별로 Redis 스텁 주입하도록 변경 | 이슈: 없음
+- 2026-01-21 | 작업: 회원가입 API 추가 | 결과: /auth/signup, USER 역할 매핑, 서비스/DTO/테스트 추가 | 이슈: 없음
+- 2026-01-21 | 작업: 로그아웃 전체 로그아웃 기준 시각 검증 보정 | 결과: issuedAt == logoutAllAt 허용 및 검증 테스트 추가 | 이슈: 없음
+- 2026-01-21 | 작업: 로그아웃/전체 로그아웃 및 블랙리스트 구현 | 결과: Access 토큰 블랙리스트/전체 로그아웃 검증 추가, 로그아웃 API 및 리프레시 토큰 폐기 로직/테스트 보강 | 이슈: 없음
+- 2026-01-21 | 작업: 업스트림 로그아웃 이슈 등록 | 결과: 로그아웃/전체 로그아웃 및 Access Token 블랙리스트 이슈 생성 | 이슈: 없음
+- 2026-01-21 | 작업: 테스트 보안 설정 정리 | 결과: TestSecurityConfig 추가 및 테스트 전반 Import 적용, JWT 키 파일 의존 제거 | 이슈: 없음
+- 2026-01-21 | 작업: 인증 통합 테스트/의존성 정리 | 결과: Auth 통합 테스트와 Redis 컨테이너 적용, 테스트 의존성 최소화, 실패 케이스 단위 테스트 보강 | 이슈: 없음
+- 2026-01-21 | 작업: 전역 예외 처리 리팩터링 | 결과: 공통 에러 코드/필드 에러 응답/GlobalExceptionHandler 추가 및 Auth 핸들러 통합 | 이슈: 없음
+- 2026-01-20 | 작업: 이슈 템플릿 추가 | 결과: 일반 이슈 템플릿 생성 | 이슈: 없음
+- 2026-01-20 | 작업: 테스트 설명/주석 보강 및 오류 수정 | 결과: Auth/RefreshToken 테스트 DisplayName과 given-when-then 추가 | 이슈: 없음
+- 2026-01-20 | 작업: JWT 인증 단위 테스트 추가 | 결과: Auth/RefreshToken/JwtToken 테스트 작성 | 이슈: 없음
+- 2026-01-20 | 작업: 레거시 ROLE_ 토큰 컷오프 적용 | 결과: 컷오프 이후 인증 실패 처리 | 이슈: 없음
+- 2026-01-20 | 작업: JWT 역할 호환 전환 구현 | 결과: ROLE_ 레거시 허용/만료 설정 추가 | 이슈: 없음
+- 2026-01-20 | 작업: JWT 권한 변환기 수정 | 결과: roles 클레임 처리 방식 권장안 반영 | 이슈: 없음
+- 2026-01-20 | 작업: JWT 인증 후속 작업 계획 정리 | 결과: 로그아웃/블랙리스트/Lua 동시성/마이그레이션 단계화 | 이슈: 없음
+- 2026-01-20 | 작업: JWT 인증 Phase1 구성 | 결과: 설정/토큰/리프레시 저장소 및 로그인·리프레시 API 추가 | 이슈: 없음
+- 2026-01-20 | 작업: JWT 인증 로직 추가 준비 | 결과: feat/jwt-auth 브랜치 생성 | 이슈: 없음
+- 2026-01-20 | 작업: withdraw 재호출 동작 테스트 추가 | 결과: 삭제 상태 유지 검증 | 이슈: 없음
+- 2026-01-20 | 작업: UserEntity UUID 자동 생성 테스트 추가 | 결과: 저장 시 UUID 생성 검증 | 이슈: 없음
+- 2026-01-20 | 작업: UserDetails 테스트 DisplayName 추가 | 결과: 테스트 목적을 한국어로 명시 | 이슈: 없음
+- 2026-01-20 | 작업: GrantedAuthority 제네릭 타입 오류 수정 | 결과: CustomUserDetails 스트림 타입 명시 | 이슈: 없음
+- 2026-01-20 | 작업: 코드 주석 한글화 | 결과: main/test 주석을 한국어로 변경 | 이슈: 없음
+- 2026-01-20 | 작업: 코드 전반 간단 주석 추가 | 결과: main/test 클래스에 1~2줄 설명 주석 삽입 | 이슈: 없음
+- 2026-01-20 | 작업: UserEntity 테스트 생성자 접근 이슈 해결 | 결과: 리플렉션 기반 생성 로직 추가 | 이슈: 없음
+- 2026-01-20 | 작업: UserDetails/withdraw 테스트 추가 | 결과: H2 기반 서비스/도메인 테스트 작성 | 이슈: 없음
+- 2026-01-20 | 작업: UserEntity 삭제/탈퇴 도메인 메서드 추가 | 결과: withdraw로 상태 전이와 soft delete 처리 | 이슈: 없음
+- 2026-01-20 | 작업: UserDetails 조회 fetch join 최적화 | 결과: 이메일 기준 user_roles fetch join 추가 | 이슈: 없음
+- 2026-01-20 | 작업: 분리형 UserDetails 구현 | 결과: CustomUserDetails/Service 및 저장소 추가 | 이슈: 없음
+- 2026-01-20 | 작업: RoleName 값 수정 및 UserRoleEntity 추가 | 결과: USER/ADMIN 역할과 user_roles 매핑 엔티티 설계 | 이슈: 없음
+- 2026-01-20 | 작업: UserEntity 정리 및 RoleEntity 추가 | 결과: roles 매핑 설계 및 BaseEntity 삭제 로직 개선 | 이슈: 없음
+- 2026-01-20 | 작업: UserEntity/Status 추가 | 결과: users 테이블 매핑 엔티티 설계 | 이슈: 없음
+- 2026-01-20 | 작업: H2 콘솔 접근 문제 완화 설정 추가 | 결과: dev 프로필 보안 설정에 H2 콘솔 허용 | 이슈: 없음
+- 2026-01-20 | 작업: 개인 로그 파일 생성 | 결과: 템플릿 생성 | 이슈: 없음
+
+## 3. History (이전 기록)
+- YYYY-MM-DD | 작업: ... | 결과: ... | 이슈: ...

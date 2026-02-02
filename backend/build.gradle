@@ -1,0 +1,96 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.9'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.aivle'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	mockitoAgent
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Web & Security & JPA
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.batch:spring-batch-core'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// Email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// Thymeleaf
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// MapStruct (Lombok 호환성 설정 포함)
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+	// Lombok과 MapStruct의 순서 충돌 방지를 위한 바인딩 라이브러리
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+	// DB Utilities
+	// P6Spy: 버전 명시 필요 (Boot 3 호환)
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+	implementation 'org.flywaydb:flyway-core'
+	runtimeOnly 'org.flywaydb:flyway-mysql'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Excel (Apache POI)
+	implementation 'org.apache.poi:poi-ooxml:5.4.0'
+
+	// API Documentation (Swagger)
+	// SpringDoc: 버전 명시 필요 (Boot 3.x 대응)
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15'
+
+	// AWS SDK (S3)
+	implementation platform('software.amazon.awssdk:bom:2.25.57')
+	implementation 'software.amazon.awssdk:s3'
+
+	// Annotation Processor
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	// Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
+	testImplementation 'io.projectreactor:reactor-test'
+	mockitoAgent('org.mockito:mockito-core') {
+		transitive = false
+	}
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	jvmArgs "-javaagent:${configurations.mockitoAgent.singleFile}"
+}
