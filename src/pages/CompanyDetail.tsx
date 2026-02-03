@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import AsyncState from '../components/common/AsyncState';
 import MetricForecastChartPanel from '../components/companyDetail/MetricForecastChartPanel';
 import MetricsPanel from '../components/companyDetail/MetricsPanel';
-import { fetchCompanyOverview } from '../services/companiesApi';
+import { getCompanyOverview } from '../api/companies';
 import { CompanyOverview } from '../types/company';
 import {
   getCompanyStatusLabel,
@@ -12,8 +12,6 @@ import {
   toMetricCards,
   toSignalCards,
 } from '../utils/companySelectors';
-
-const USE_API = false;
 
 const statusStyles: Record<string, string> = {
   정상: 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10',
@@ -41,9 +39,7 @@ const CompanyDetailPage: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = USE_API
-        ? await (await import('../api/companies')).getCompanyOverview(id)
-        : await fetchCompanyOverview(id);
+      const response = await getCompanyOverview(id);
       setDetail(response);
     } catch (err) {
       setError('협력사 상세 정보를 불러오지 못했습니다.');

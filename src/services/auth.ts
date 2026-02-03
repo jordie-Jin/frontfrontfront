@@ -1,7 +1,15 @@
 // 인증 API 헬퍼와 로컬 사용자 저장소 로직입니다.
-import { AuthSession, AuthUser, LoginRequest, RegisterRequest } from '../types/auth';
+import {
+  AuthLoginResponse,
+  AuthSession,
+  AuthUser,
+  LoginRequest,
+  RegisterRequest,
+  SignupResponse,
+} from '../types/auth';
+import { apiRequest } from '../api/client';
 
-const USE_MOCK_AUTH = true;
+const USE_MOCK_AUTH = import.meta.env.VITE_USE_MOCK_AUTH === 'true';
 const SESSION_STORAGE_KEY = 'sentinel.auth.session';
 
 const getStoredSession = (): AuthSession | null => {
@@ -42,44 +50,46 @@ export const login = async (payload: LoginRequest): Promise<AuthSession> => {
     return session;
   }
 
-  const response = await fetch('/api/auth/login', {
+  const response = await apiRequest<AuthLoginResponse>({
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    url: '/api/auth/login',
+    body: payload,
   });
 
-  if (!response.ok) {
-    throw new Error('로그인에 실패했습니다.');
-  }
+  const session: AuthSession = {
+    token: response.accessToken,
+    user: {
+      id: response.user.userId,
+      email: response.user.email,
+      name: response.user.name,
+    },
+  };
 
-  const session = (await response.json()) as AuthSession;
   storeSession(session);
   return session;
 };
 
-export const register = async (payload: RegisterRequest): Promise<AuthSession> => {
+export const register = async (payload: RegisterRequest): Promise<SignupResponse> => {
   if (USE_MOCK_AUTH) {
     const session: AuthSession = {
       token: `mock-${Date.now()}`,
       user: buildMockUser(payload.email, payload.name),
     };
     storeSession(session);
-    return session;
+    return {
+      id: 0,
+      uuid: session.user.id,
+      email: session.user.email,
+      status: 'ACTIVE',
+      role: 'USER',
+    };
   }
 
-  const response = await fetch('/api/auth/signup', {
+  return apiRequest<SignupResponse>({
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    url: '/api/auth/signup',
+    body: payload,
   });
-
-  if (!response.ok) {
-    throw new Error('회원가입에 실패했습니다.');
-  }
-
-  const session = (await response.json()) as AuthSession;
-  storeSession(session);
-  return session;
 };
 
 export const logout = async (): Promise<void> => {
@@ -88,9 +98,6 @@ export const logout = async (): Promise<void> => {
     return;
   }
 
-  const response = await fetch('/api/auth/logout', { method: 'POST' });
-  if (!response.ok) {
-    throw new Error('로그아웃에 실패했습니다.');
-  }
+  await apiRequest<void>({ method: 'POST', url: '/api/auth/logout' });
   storeSession(null);
 };

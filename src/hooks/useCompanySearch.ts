@@ -1,6 +1,6 @@
 // 협력사 검색 상태와 필터링을 관리하는 훅입니다.
 import { useCallback, useState } from 'react';
-import { searchCompanies } from '../services/companies';
+import { searchCompanies } from '../api/companies';
 import { CompanySearchItem } from '../types/company';
 
 type SearchParams = {

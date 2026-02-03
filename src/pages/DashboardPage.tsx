@@ -5,13 +5,25 @@ import DashboardHeader from '../components/dashboard/DashboardHeader';
 import KpiCards from '../components/dashboard/KpiCards';
 import RiskStatusTrendCard from '../features/dashboard/risk-status-trend/RiskStatusTrendCard';
 import RiskDistributionCard from '../components/dashboard/RiskDistributionCard';
+import { getDashboardSummary } from '../api/companies';
 import { companyRiskQuarterlyMock } from '../mocks/companyRiskQuarterly.mock';
-import { getMockRiskDistribution } from '../mocks/riskDistribution.mock';
 import { getStoredUser, logout } from '../services/auth';
-import { fetchDashboardSummary } from '../services/dashboardApi';
 import { DashboardRange, DashboardSummary, RiskDistribution } from '../types/dashboard';
 
-const USE_API = false;
+const buildRiskDistribution = (summary: DashboardSummary): RiskDistribution => {
+  const { NORMAL, CAUTION, RISK } = summary.riskStatusDistribution;
+  const total = NORMAL + CAUTION + RISK;
+  const ratio = (value: number) => (total === 0 ? 0 : Number((value / total).toFixed(2)));
+
+  return {
+    range: summary.range,
+    segments: [
+      { key: 'SAFE', label: '낮음', count: NORMAL, ratio: ratio(NORMAL) },
+      { key: 'WARN', label: '주의', count: CAUTION, ratio: ratio(CAUTION) },
+      { key: 'RISK', label: '높음', count: RISK, ratio: ratio(RISK) },
+    ],
+  };
+};
 
 const DashboardPage: React.FC = () => {
   // TODO(API 연결):
@@ -30,11 +42,9 @@ const DashboardPage: React.FC = () => {
     setIsError(false);
 
     try {
-      const response = USE_API
-        ? await (await import('../api/companies')).getDashboardSummary(range)
-        : await fetchDashboardSummary(range);
+      const response = await getDashboardSummary(range);
       setData(response);
-      setRiskDistribution(getMockRiskDistribution(range));
+      setRiskDistribution(buildRiskDistribution(response));
     } catch (error) {
       setIsError(true);
     } finally {
@@ -48,9 +58,8 @@ const DashboardPage: React.FC = () => {
 
   const emptyState = useMemo(() => {
     if (!riskDistribution || !data) return false;
-    return (
-      riskDistribution.segments.length === 0 && data.riskStatusDistributionTrend.length === 0
-    );
+    const isEmptyDistribution = riskDistribution.segments.every((segment) => segment.count === 0);
+    return isEmptyDistribution && data.riskStatusDistributionTrend.length === 0;
   }, [data, riskDistribution]);
 
   const handleLogout = useCallback(async () => {

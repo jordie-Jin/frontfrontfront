@@ -10,6 +10,27 @@ export interface AuthSession {
   user: AuthUser;
 }
 
+export interface AuthLoginResponse {
+  tokenType: string;
+  accessToken: string;
+  expiresIn: number;
+  passwordExpired: boolean;
+  user: {
+    userId: string;
+    email: string;
+    name: string;
+    role: string;
+  };
+}
+
+export interface SignupResponse {
+  id: number;
+  uuid: string;
+  email: string;
+  status: string;
+  role: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;

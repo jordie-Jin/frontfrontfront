@@ -6,11 +6,9 @@ import CompanyQuickViewDrawer from '../components/companies/CompanyQuickViewDraw
 import CompaniesHeader from '../components/companies/CompaniesHeader';
 import CompaniesTable from '../components/companies/CompaniesTable';
 import { logout } from '../services/auth';
-import { fetchCompanies, fetchCompanyOverview } from '../services/companiesApi';
+import { getCompanyOverview, listCompanies } from '../api/companies';
 import { useCompaniesStore } from '../store/companiesStore';
 import { CompanyOverview, CompanySummary } from '../types/company';
-
-const USE_API = false;
 
 const CompaniesPage: React.FC = () => {
   // TODO(API 연결):
@@ -37,9 +35,7 @@ const CompaniesPage: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = USE_API
-        ? await (await import('../api/companies')).listCompanies()
-        : await fetchCompanies();
+      const response = await listCompanies();
       setCompanies(response);
     } catch (err) {
       setError('협력사 목록을 불러오는 중 문제가 발생했습니다.');
@@ -61,9 +57,7 @@ const CompaniesPage: React.FC = () => {
     const fetchDetail = async () => {
       setDetailState({ isLoading: true, error: null, data: null });
       try {
-        const detail = USE_API
-          ? await (await import('../api/companies')).getCompanyOverview(selectedCompany.id)
-          : await fetchCompanyOverview(selectedCompany.id);
+        const detail = await getCompanyOverview(selectedCompany.id);
         setDetailState({ isLoading: false, error: null, data: detail });
       } catch (err) {
         setDetailState({ isLoading: false, error: '요약 정보를 불러오지 못했습니다.', data: null });

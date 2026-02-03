@@ -5,10 +5,8 @@ import SelectedCompanyPanel from '../../components/companies/SelectedCompanyPane
 import JsonPreview from '../../components/common/JsonPreview';
 import { useCompanySearch } from '../../hooks/useCompanySearch';
 import { useCompanySelection } from '../../hooks/useCompanySelection';
-import { confirmCompany, getCompanyOverview } from '../../services/companies';
+import { confirmCompany, getCompanyOverview } from '../../api/companies';
 import { CompanyConfirmResult, CompanyOverview, CompanySearchItem } from '../../types/company';
-
-const USE_API = false;
 
 const AddCompanyPage: React.FC = () => {
   // TODO(API 연결):
@@ -80,18 +78,14 @@ const AddCompanyPage: React.FC = () => {
         name: selectedCompany.name,
       };
 
-      const result = USE_API
-        ? await (await import('../../api/companies')).confirmCompany(confirmPayload)
-        : await confirmCompany(confirmPayload);
+      const result = await confirmCompany(confirmPayload);
       setConfirmResult(result);
 
       if (result.modelStatus === 'PROCESSING') {
         setCompletionMessage('분석이 진행 중입니다. 완료되면 다시 확인해 주세요.');
         // TODO(API 연결): PROCESSING 상태일 때 폴링/재요청 로직 추가
       } else {
-        const overview = USE_API
-          ? await (await import('../../api/companies')).getCompanyOverview(result.companyId)
-          : await getCompanyOverview(result.companyId);
+        const overview = await getCompanyOverview(result.companyId);
         setCompanyOverview(overview);
         setCompletionMessage('완료: 기존 분석 결과를 불러왔습니다.');
       }

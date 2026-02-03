@@ -16,19 +16,17 @@ export const searchCompanies = async (params: {
   limit?: number;
 }): Promise<CompanySearchResponse> => {
   // TODO(API 연결): 더미 데이터 제거 후 이 함수 사용
-  const response = await apiGet<{ data: CompanySearchResponse }>('/api/companies/search', params);
-  return response.data;
+  return apiGet<CompanySearchResponse>('/api/companies/search', params);
 };
 
 export const confirmCompany = async (
   payload: CompanyConfirmRequest,
 ): Promise<CompanyConfirmResult> => {
   // TODO(API 연결): 더미 데이터 제거 후 이 함수 사용
-  const response = await apiPost<{ data: CompanyConfirmResult }, CompanyConfirmRequest>(
+  return apiPost<CompanyConfirmResult, CompanyConfirmRequest>(
     '/api/companies/confirm',
     payload,
   );
-  return response.data;
 };
 
 export const listCompanies = async (params?: {
@@ -40,30 +38,24 @@ export const listCompanies = async (params?: {
   sort?: string;
 }): Promise<CompanySummary[]> => {
   // TODO(API 연결): 더미 데이터 제거 후 이 함수 사용
-  const response = await apiGet<{ data: { items: CompanySummary[] } }>('/api/companies', params);
-  return response.data.items;
+  return apiGet<CompanySummary[]>('/api/companies', params);
 };
 
 export const getCompanySummary = async (companyId: string): Promise<CompanySummary> => {
   // TODO(API 연결): 더미 데이터 제거 후 이 함수 사용
-  const response = await apiGet<{ data: CompanySummary }>(`/api/companies/${companyId}`);
-  return response.data;
+  return apiGet<CompanySummary>(`/api/companies/${companyId}`);
 };
 
 export const getCompanyOverview = async (companyId: string): Promise<CompanyOverview> => {
   // TODO(API 연결): 더미 데이터 제거 후 이 함수 사용
-  const response = await apiGet<{ data: CompanyOverview }>(
-    `/api/companies/${companyId}/overview`,
-  );
-  return response.data;
+  return apiGet<CompanyOverview>(`/api/companies/${companyId}/overview`);
 };
 
 export const getDashboardSummary = async (range?: string): Promise<DashboardSummary> => {
   // TODO(API 연결): 더미 데이터 제거 후 이 함수 사용
-  const response = await apiGet<{ data: DashboardSummary }>('/api/dashboard/summary', {
+  return apiGet<DashboardSummary>('/api/dashboard/summary', {
     range,
   });
-  return response.data;
 };
 
 export const createUpdateRequest = async (
@@ -71,9 +63,8 @@ export const createUpdateRequest = async (
   payload?: UpdateRequestCreate,
 ): Promise<{ id: number }> => {
   // TODO(API 연결): 더미 데이터 제거 후 이 함수 사용
-  const response = await apiPost<{ data: { id: number } }, UpdateRequestCreate | undefined>(
+  return apiPost<{ id: number }, UpdateRequestCreate | undefined>(
     `/api/companies/${companyId}/update-requests`,
     payload,
   );
-  return response.data;
 };
