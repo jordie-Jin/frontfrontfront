@@ -10,8 +10,24 @@ interface RequestOptions {
   params?: Record<string, string | number | boolean | undefined>;
 }
 
+export interface ApiErrorDetail {
+  field?: string;
+  message?: string;
+}
+
+export interface ApiError {
+  code?: string;
+  message?: string;
+  timestamp?: string;
+  path?: string;
+  errors?: ApiErrorDetail[];
+}
+
 export interface ApiResponse<T> {
+  success: boolean;
   data: T;
+  error?: ApiError | null;
+  timestamp: string;
 }
 
 const resolveBaseUrl = () => (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
@@ -43,30 +59,66 @@ const request = async <T>({ method, url, body, params }: RequestOptions): Promis
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  if (!response.ok) {
-    throw new Error('API request failed');
-  }
-
   if (response.status === 204) {
     return undefined as T;
   }
 
   const contentType = response.headers.get('content-type') ?? '';
   if (!contentType.includes('application/json')) {
+    if (!response.ok) {
+      throw new Error('API request failed');
+    }
     return undefined as T;
   }
 
-  return (await response.json()) as T;
+  const payload = (await response.json()) as T;
+
+  if (!response.ok) {
+    const message =
+      typeof (payload as { error?: { message?: string } }).error?.message === 'string'
+        ? (payload as { error: { message: string } }).error.message
+        : 'API request failed';
+    throw new Error(message);
+  }
+
+  return payload;
+};
+
+const isApiResponse = (payload: unknown): payload is ApiResponse<unknown> => {
+  if (typeof payload !== 'object' || payload === null) {
+    return false;
+  }
+
+  const record = payload as Record<string, unknown>;
+  return (
+    typeof record.success === 'boolean' &&
+    'data' in record &&
+    typeof record.timestamp === 'string'
+  );
+};
+
+const unwrapApiResponse = <T>(payload: unknown): T => {
+  if (!isApiResponse(payload)) {
+    throw new Error('Invalid API response format');
+  }
+
+  if (!payload.success || payload.error) {
+    const message =
+      typeof payload.error?.message === 'string' ? payload.error.message : 'API request failed';
+    throw new Error(message);
+  }
+
+  return payload.data;
 };
 
 export const apiGet = async <T>(url: string, params?: RequestOptions['params']): Promise<T> => {
   const response = await request<ApiResponse<T>>({ method: 'GET', url, params });
-  return response.data;
+  return unwrapApiResponse(response);
 };
 
 export const apiPost = async <T, B = unknown>(url: string, body: B): Promise<T> => {
   const response = await request<ApiResponse<T>>({ method: 'POST', url, body });
-  return response.data;
+  return unwrapApiResponse(response);
 };
 
 export const apiRequest = request;
