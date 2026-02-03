@@ -14,6 +14,7 @@ const Landing: React.FC = () => {
   const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [authError, setAuthError] = useState<string | null>(null);
   const [serverFieldErrors, setServerFieldErrors] = useState<Record<string, string>>({});
+  const [duplicateEmailError, setDuplicateEmailError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
@@ -109,12 +110,14 @@ const Landing: React.FC = () => {
         });
       }
 
-      if (Object.keys(fieldErrors).length > 0) {
-        setServerFieldErrors(fieldErrors);
-      }
       const isDuplicateEmail =
         isRegister &&
-        (/중복.*이메일/i.test(message) ||
+        ((error instanceof ApiRequestError &&
+          (error.apiError?.code === 'DUPLICATE_EMAIL' ||
+            error.apiError?.code === '409' ||
+            /duplicate|already|중복/i.test(error.apiError?.message ?? ''))) ||
+          /409/.test(message) ||
+          /중복.*이메일/i.test(message) ||
           /이메일.*중복/i.test(message) ||
           /email.*already/i.test(message) ||
           /already.*email/i.test(message) ||
@@ -123,10 +126,11 @@ const Landing: React.FC = () => {
 
       if (isDuplicateEmail) {
         setAuthError(null);
-        setServerFieldErrors((prev) => ({ ...prev, email: '\uC911\uBCF5\uB41C \uC774\uBA54\uC77C\uC785\uB2C8\uB2E4.' }));
-        setTurnstileToken('');
-        setTurnstileResetKey(prev => prev + 1);
+        setDuplicateEmailError('\uC774\uBBF8 \uC0AC\uC6A9 \uC911\uC778 \uC774\uBA54\uC77C\uC785\uB2C8\uB2E4.');
       } else {
+        if (Object.keys(fieldErrors).length > 0) {
+          setServerFieldErrors(fieldErrors);
+        }
         if (Object.keys(fieldErrors).length === 0) {
           setAuthError(isRegister ? '\\uD68C\\uC6D0\\uAC00\\uC785\\uC5D0 \\uC2E4\\uD328\\uD588\\uC2B5\\uB2C8\\uB2E4. \\uB2E4\\uC2DC \\uC2DC\\uB3C4\\uD574\\uC8FC\\uC138\\uC694.' : '\\uC774\\uBA54\\uC77C\\uC774\\uB098 \\uBE44\\uBC00\\uBC88\\uD638\\uAC00 \\uC62C\\uBC14\\uB974\\uC9C0 \\uC54A\\uC2B5\\uB2C8\\uB2E4.');
         }
@@ -211,13 +215,23 @@ const Landing: React.FC = () => {
                   type="email" 
                   required
                   value={email}
-                  onChange={(e) => { setEmail(e.target.value); setServerFieldErrors((prev) => { const { email, ...rest } = prev; return rest; }); }}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setDuplicateEmailError(null);
+                    setServerFieldErrors((prev) => {
+                      const { email, ...rest } = prev;
+                      return rest;
+                    });
+                  }}
                   placeholder="이메일을 입력해 주세요"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:border-white/30 transition-all outline-none text-white placeholder-slate-700"
                   aria-invalid={Boolean(errors.email)}
                 />
                 {errors.email && (
                   <p className="text-xs text-red-400">{errors.email}</p>
+                )}
+                {duplicateEmailError && (
+                  <p className="text-xs text-red-400">{duplicateEmailError}</p>
                 )}
                 {serverFieldErrors.email && (
                   <div className="mt-2 rounded-lg bg-red-500 text-black text-xs px-3 py-2">{serverFieldErrors.email}</div>
