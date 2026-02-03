@@ -14,6 +14,7 @@ const Landing: React.FC = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const navigate = useNavigate();
 
   // Form State
@@ -93,7 +94,21 @@ const Landing: React.FC = () => {
       }
       navigate('/dashboard');
     } catch (error) {
-      setAuthError(isRegister ? '회원가입에 실패했습니다. 다시 시도해주세요.' : '이메일이나 비밀번호가 올바르지 않습니다.');
+      const message = error instanceof Error ? error.message : '';
+      const isDuplicateEmail =
+        isRegister &&
+        (/중복.*이메일/i.test(message) ||
+          /이메일.*중복/i.test(message) ||
+          /email.*already/i.test(message) ||
+          /already.*email/i.test(message));
+
+      if (isDuplicateEmail) {
+        setAuthError('중복된 이메일입니다.');
+        setTurnstileToken('');
+        setTurnstileResetKey(prev => prev + 1);
+      } else {
+        setAuthError(isRegister ? '회원가입에 실패했습니다. 다시 시도해주세요.' : '이메일이나 비밀번호가 올바르지 않습니다.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -216,6 +231,7 @@ const Landing: React.FC = () => {
 
               {authMode === 'register' && (
                 <TurnstileWidget
+                  key={turnstileResetKey}
                   className="mt-2"
                   onVerify={(token) => {
                     setTurnstileToken(token);
