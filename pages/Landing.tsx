@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ApiRequestError } from '../src/api/client';
 import { login, register } from '../src/services/auth';
 import TurnstileWidget from '../src/components/TurnstileWidget';
 
@@ -12,7 +13,7 @@ const Landing: React.FC = () => {
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [authError, setAuthError] = useState<string | null>(null);
-  const [duplicateEmailError, setDuplicateEmailError] = useState<string | null>(null);
+  const [serverFieldErrors, setServerFieldErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
@@ -70,6 +71,7 @@ const Landing: React.FC = () => {
     }
 
     setErrors(nextErrors);
+    setServerFieldErrors({});
     setAuthError(null);
     setDuplicateEmailError(null);
 
@@ -97,20 +99,37 @@ const Landing: React.FC = () => {
       navigate('/dashboard');
     } catch (error) {
       const message = error instanceof Error ? error.message : '';
+      const fieldErrors: Record<string, string> = {};
+
+      if (error instanceof ApiRequestError && error.apiError?.errors?.length) {
+        error.apiError.errors.forEach((detail) => {
+          if (detail.field && detail.message) {
+            fieldErrors[detail.field] = detail.message;
+          }
+        });
+      }
+
+      if (Object.keys(fieldErrors).length > 0) {
+        setServerFieldErrors(fieldErrors);
+      }
       const isDuplicateEmail =
         isRegister &&
         (/중복.*이메일/i.test(message) ||
           /이메일.*중복/i.test(message) ||
           /email.*already/i.test(message) ||
-          /already.*email/i.test(message));
+          /already.*email/i.test(message) ||
+          (typeof fieldErrors.email === 'string' &&
+            (/\uC911\uBCF5/i.test(fieldErrors.email) || /duplicate|already/i.test(fieldErrors.email))));
 
       if (isDuplicateEmail) {
-        setDuplicateEmailError('\\uC911\\uBCF5\\uB41C \\uC774\\uBA54\\uC77C\\uC785\\uB2C8\\uB2E4.');
-        setAuthError('중복된 이메일입니다.');
+        setAuthError(null);
+        setServerFieldErrors((prev) => ({ ...prev, email: '\uC911\uBCF5\uB41C \uC774\uBA54\uC77C\uC785\uB2C8\uB2E4.' }));
         setTurnstileToken('');
         setTurnstileResetKey(prev => prev + 1);
       } else {
-        setAuthError(isRegister ? '회원가입에 실패했습니다. 다시 시도해주세요.' : '이메일이나 비밀번호가 올바르지 않습니다.');
+        if (Object.keys(fieldErrors).length === 0) {
+          setAuthError(isRegister ? '\\uD68C\\uC6D0\\uAC00\\uC785\\uC5D0 \\uC2E4\\uD328\\uD588\\uC2B5\\uB2C8\\uB2E4. \\uB2E4\\uC2DC \\uC2DC\\uB3C4\\uD574\\uC8FC\\uC138\\uC694.' : '\\uC774\\uBA54\\uC77C\\uC774\\uB098 \\uBE44\\uBC00\\uBC88\\uD638\\uAC00 \\uC62C\\uBC14\\uB974\\uC9C0 \\uC54A\\uC2B5\\uB2C8\\uB2E4.');
+        }
       }
     } finally {
       setIsSubmitting(false);
@@ -120,6 +139,7 @@ const Landing: React.FC = () => {
   const toggleAuthMode = () => {
     setAuthMode(prev => prev === 'login' ? 'register' : 'login');
     setErrors({});
+    setServerFieldErrors({});
     setAuthError(null);
     setDuplicateEmailError(null);
     setConfirmPassword('');
@@ -180,7 +200,9 @@ const Landing: React.FC = () => {
                   {errors.name && (
                     <p className="text-xs text-red-400">{errors.name}</p>
                   )}
-                </div>
+                  {serverFieldErrors.name && (
+                    <div className="mt-2 rounded-lg bg-red-500 text-black text-xs px-3 py-2">{serverFieldErrors.name}</div>
+                  )}</div>
               )}
               
               <div className="space-y-2">
@@ -189,7 +211,7 @@ const Landing: React.FC = () => {
                   type="email" 
                   required
                   value={email}
-                  onChange={(e) => { setEmail(e.target.value); setDuplicateEmailError(null); }}
+                  onChange={(e) => { setEmail(e.target.value); setServerFieldErrors((prev) => { const { email, ...rest } = prev; return rest; }); }}
                   placeholder="이메일을 입력해 주세요"
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:border-white/30 transition-all outline-none text-white placeholder-slate-700"
                   aria-invalid={Boolean(errors.email)}
@@ -197,8 +219,8 @@ const Landing: React.FC = () => {
                 {errors.email && (
                   <p className="text-xs text-red-400">{errors.email}</p>
                 )}
-                {duplicateEmailError && (
-                  <div className="mt-2 rounded-lg bg-red-500 text-black text-xs px-3 py-2">{duplicateEmailError}</div>
+                {serverFieldErrors.email && (
+                  <div className="mt-2 rounded-lg bg-red-500 text-black text-xs px-3 py-2">{serverFieldErrors.email}</div>
                 )}
               </div>
 
@@ -216,7 +238,9 @@ const Landing: React.FC = () => {
                 {errors.password && (
                   <p className="text-xs text-red-400">{errors.password}</p>
                 )}
-              </div>
+                {serverFieldErrors.password && (
+                  <div className="mt-2 rounded-lg bg-red-500 text-black text-xs px-3 py-2">{serverFieldErrors.password}</div>
+                )}</div>
 
               {authMode === 'register' && (
                 <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
@@ -233,7 +257,9 @@ const Landing: React.FC = () => {
                   {errors.confirmPassword && (
                     <p className="text-xs text-red-400">{errors.confirmPassword}</p>
                   )}
-                </div>
+                  {serverFieldErrors.confirmPassword && (
+                    <div className="mt-2 rounded-lg bg-red-500 text-black text-xs px-3 py-2">{serverFieldErrors.confirmPassword}</div>
+                  )}</div>
               )}
 
               {authMode === 'register' && (

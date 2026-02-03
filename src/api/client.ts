@@ -30,6 +30,16 @@ export interface ApiResponse<T> {
   timestamp: string;
 }
 
+export class ApiRequestError extends Error {
+  apiError?: ApiError;
+
+  constructor(message: string, apiError?: ApiError) {
+    super(message);
+    this.name = 'ApiRequestError';
+    this.apiError = apiError;
+  }
+}
+
 const resolveBaseUrl = () => (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
 
 const buildUrl = (url: string, params?: RequestOptions['params']): string => {
@@ -105,7 +115,7 @@ const unwrapApiResponse = <T>(payload: unknown): T => {
   if (!payload.success || payload.error) {
     const message =
       typeof payload.error?.message === 'string' ? payload.error.message : 'API request failed';
-    throw new Error(message);
+    throw new ApiRequestError(message, payload.error ?? undefined);
   }
 
   return payload.data;
