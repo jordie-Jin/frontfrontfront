@@ -7,7 +7,7 @@ import {
   RegisterRequest,
   SignupResponse,
 } from '../types/auth';
-import { apiRequest } from '../api/client';
+import { apiPost } from '../api/client';
 
 const USE_MOCK_AUTH = import.meta.env.VITE_USE_MOCK_AUTH === 'true';
 const SESSION_STORAGE_KEY = 'sentinel.auth.session';
@@ -50,11 +50,7 @@ export const login = async (payload: LoginRequest): Promise<AuthSession> => {
     return session;
   }
 
-  const response = await apiRequest<AuthLoginResponse>({
-    method: 'POST',
-    url: '/api/auth/login',
-    body: payload,
-  });
+  const response = await apiPost<AuthLoginResponse, LoginRequest>('/api/auth/login', payload);
 
   const session: AuthSession = {
     token: response.accessToken,
@@ -85,11 +81,7 @@ export const register = async (payload: RegisterRequest): Promise<SignupResponse
     };
   }
 
-  return apiRequest<SignupResponse>({
-    method: 'POST',
-    url: '/api/auth/signup',
-    body: payload,
-  });
+  return apiPost<SignupResponse, RegisterRequest>('/api/auth/signup', payload);
 };
 
 export const logout = async (): Promise<void> => {
@@ -98,6 +90,6 @@ export const logout = async (): Promise<void> => {
     return;
   }
 
-  await apiRequest<void>({ method: 'POST', url: '/api/auth/logout' });
+  await apiPost<void, Record<string, never>>('/api/auth/logout', {});
   storeSession(null);
 };
