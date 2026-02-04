@@ -45,18 +45,44 @@ const NoticesPage: React.FC = () => {
     loadNotices();
   }, [loadNotices]);
 
+  const parseLocalDateTime = useCallback((value: string): Date | null => {
+    if (!value) return null;
+    const trimmed = value.trim();
+    const direct = new Date(trimmed);
+    if (!Number.isNaN(direct.getTime())) {
+      return direct;
+    }
+    const match = trimmed.match(
+      /^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?$/
+    );
+    if (!match) return null;
+    const [, year, month, day, hour = '0', minute = '0', second = '0'] = match;
+    return new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour),
+      Number(minute),
+      Number(second)
+    );
+  }, []);
+
   const filteredPosts = useMemo(() => {
     if (noticeMode === 'active') {
       const threeMonthsAgo = new Date();
       threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+      threeMonthsAgo.setHours(0, 0, 0, 0);
       return posts.filter(
         (post) =>
           post.status === 'ACTIVE' &&
-          new Date(post.createdAt).getTime() >= threeMonthsAgo.getTime()
+          (() => {
+            const createdAt = parseLocalDateTime(post.createdAt);
+            return createdAt ? createdAt.getTime() >= threeMonthsAgo.getTime() : false;
+          })()
       );
     }
     return posts.filter((post) => post.status !== 'ACTIVE');
-  }, [noticeMode, posts]);
+  }, [noticeMode, parseLocalDateTime, posts]);
 
   const mapPostToBulletin = useCallback((post: PostItem): Bulletin => {
     const summary =
