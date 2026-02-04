@@ -126,13 +126,13 @@ const Landing: React.FC = () => {
 
       if (isDuplicateEmail) {
         setAuthError(null);
-        setDuplicateEmailError('\uC774\uBBF8 \uC0AC\uC6A9 \uC911\uC778 \uC774\uBA54\uC77C\uC785\uB2C8\uB2E4.');
+        setDuplicateEmailError('이미 사용 중인 이메일입니다.');
       } else {
         if (Object.keys(fieldErrors).length > 0) {
           setServerFieldErrors(fieldErrors);
         }
         if (Object.keys(fieldErrors).length === 0) {
-          setAuthError(isRegister ? '\\uD68C\\uC6D0\\uAC00\\uC785\\uC5D0 \\uC2E4\\uD328\\uD588\\uC2B5\\uB2C8\\uB2E4. \\uB2E4\\uC2DC \\uC2DC\\uB3C4\\uD574\\uC8FC\\uC138\\uC694.' : '\\uC774\\uBA54\\uC77C\\uC774\\uB098 \\uBE44\\uBC00\\uBC88\\uD638\\uAC00 \\uC62C\\uBC14\\uB974\\uC9C0 \\uC54A\\uC2B5\\uB2C8\\uB2E4.');
+          setAuthError(isRegister ? '회원가입에 실패했습니다. 다시 시도해주세요.' : '이메일이나 비밀번호가 일치하지 않습니다.');
         }
       }
     } finally {
@@ -469,7 +469,7 @@ const Landing: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                <div className="md:col-span-2 group cursor-pointer">
                   <div className="aspect-video bg-slate-900 overflow-hidden mb-8">
-                    <video src="/img/robot.mp4" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt="뉴스 1"
+                    <video src="/img/robot.mp4" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
                       autoPlay
                       muted
                       loop
