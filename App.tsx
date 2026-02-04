@@ -7,6 +7,7 @@ import CompanyDetail from './pages/CompanyDetail';
 import DecisionRoom from './pages/DecisionRoom';
 import Landing from './pages/Landing';
 import AddCompany from './pages/companies/add';
+import VerifyEmail from './pages/auth/VerifyEmail';
 
 const SidebarItem = ({ to, icon, label }: { to: string; icon: string; label: string }) => {
   const location = useLocation();
@@ -87,6 +88,7 @@ const App: React.FC = () => {
         <Route path="/companies/:id" element={<DashboardLayout children={<CompanyDetail />} />} />
         <Route path="/companies/add" element={<DashboardLayout children={<AddCompany />} />} />
         <Route path="/decisions" element={<DashboardLayout children={<DecisionRoom />} />} />
+        <Route path="/auth/verify-email" element={<VerifyEmail />} />
       </Routes>
     </Router>
   );
