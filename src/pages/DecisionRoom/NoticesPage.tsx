@@ -215,6 +215,7 @@ const NoticesPage: React.FC = () => {
         open={Boolean(selectedNoticeId)}
         bulletin={selectedNotice}
         onClose={() => setSelectedNoticeId(null)}
+        onDelete={isAdmin ? handleDelete : undefined}
       />
 
       {editorOpen && (
@@ -285,13 +286,6 @@ const NoticesPage: React.FC = () => {
             className="px-4 py-2 rounded-full bg-white/10 border border-white/20 text-[10px] uppercase tracking-[0.3em] text-white hover:bg-white/20 transition"
           >
             수정
-          </button>
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="px-4 py-2 rounded-full bg-rose-500/20 border border-rose-500/40 text-[10px] uppercase tracking-[0.3em] text-rose-200 hover:bg-rose-500/30 transition"
-          >
-            삭제
           </button>
         </div>
       )}

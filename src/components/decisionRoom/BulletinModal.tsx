@@ -5,6 +5,7 @@ interface BulletinModalProps {
   open: boolean;
   bulletin: Bulletin | null;
   onClose: () => void;
+  onDelete?: () => void;
 }
 
 const tagStyles: Record<string, string> = {
@@ -13,7 +14,7 @@ const tagStyles: Record<string, string> = {
   ADVISORY: 'text-sky-300 border-sky-900 bg-sky-950/40',
 };
 
-const BulletinModal: React.FC<BulletinModalProps> = ({ open, bulletin, onClose }) => {
+const BulletinModal: React.FC<BulletinModalProps> = ({ open, bulletin, onClose, onDelete }) => {
   if (!open || !bulletin) return null;
 
   return (
@@ -79,10 +80,10 @@ const BulletinModal: React.FC<BulletinModalProps> = ({ open, bulletin, onClose }
 
         <div className="mt-10 flex justify-end">
           <button
-            onClick={onClose}
+            onClick={onDelete ?? onClose}
             className="bg-white text-black px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-slate-200 transition-all"
           >
-            Acknowledge &amp; Close
+            {onDelete ? '삭제' : '닫기'}
           </button>
         </div>
       </div>
