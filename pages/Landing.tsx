@@ -124,22 +124,9 @@ const Landing: React.FC = () => {
 
       console.log('fieldErrors:', fieldErrors);
 
-      const isDuplicateEmail =
-        isRegister &&
-        (statusCode === 409 ||
-          (error instanceof ApiRequestError &&
-            (error.apiError?.status === 409 ||
-              error.apiError?.code === 'DUPLICATE_EMAIL' ||
-              error.apiError?.code === '409')) ||
-          /duplicate|already|중복/i.test(error instanceof ApiRequestError ? (error.apiError?.message ?? '') : '') ||
-          /duplicate|already|중복/i.test(message) ||
-          (typeof fieldErrors.email === 'string' &&
-            (/\uC911\uBCF5/i.test(fieldErrors.email) || /duplicate|already/i.test(fieldErrors.email))));
-
-      if (isDuplicateEmail) {
+      if (isRegister && statusCode === 409) {
         const duplicateMessage =
           (error instanceof ApiRequestError && error.apiError?.message) ||
-          fieldErrors.email ||
           message;
         setAuthError(null);
         setDuplicateEmailError(duplicateMessage ?? null);
