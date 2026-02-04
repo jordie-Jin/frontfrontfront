@@ -8,6 +8,7 @@ interface RequestOptions {
   url: string;
   body?: unknown;
   params?: Record<string, string | number | boolean | undefined>;
+  skipAuth?: boolean;
 }
 
 export interface ApiErrorDetail {
@@ -58,8 +59,14 @@ const buildUrl = (url: string, params?: RequestOptions['params']): string => {
   return finalUrl.toString();
 };
 
-const request = async <T>({ method, url, body, params }: RequestOptions): Promise<T> => {
-  const token = getAuthToken();
+const request = async <T>({
+  method,
+  url,
+  body,
+  params,
+  skipAuth = false,
+}: RequestOptions): Promise<T> => {
+  const token = skipAuth ? null : getAuthToken();
   const response = await fetch(buildUrl(url, params), {
     method,
     headers: {
@@ -136,23 +143,38 @@ const unwrapApiResponse = <T>(
   return payload.data;
 };
 
-export const apiGet = async <T>(url: string, params?: RequestOptions['params']): Promise<T> => {
-  const response = await request<ApiResponse<T>>({ method: 'GET', url, params });
+export const apiGet = async <T>(
+  url: string,
+  params?: RequestOptions['params'],
+  options?: Pick<RequestOptions, 'skipAuth'>,
+): Promise<T> => {
+  const response = await request<ApiResponse<T>>({ method: 'GET', url, params, ...options });
   return unwrapApiResponse(response);
 };
 
-export const apiPost = async <T, B = unknown>(url: string, body: B): Promise<T> => {
-  const response = await request<ApiResponse<T>>({ method: 'POST', url, body });
+export const apiPost = async <T, B = unknown>(
+  url: string,
+  body: B,
+  options?: Pick<RequestOptions, 'skipAuth'>,
+): Promise<T> => {
+  const response = await request<ApiResponse<T>>({ method: 'POST', url, body, ...options });
   return unwrapApiResponse(response);
 };
 
-export const apiPatch = async <T, B = unknown>(url: string, body: B): Promise<T> => {
-  const response = await request<ApiResponse<T>>({ method: 'PATCH', url, body });
+export const apiPatch = async <T, B = unknown>(
+  url: string,
+  body: B,
+  options?: Pick<RequestOptions, 'skipAuth'>,
+): Promise<T> => {
+  const response = await request<ApiResponse<T>>({ method: 'PATCH', url, body, ...options });
   return unwrapApiResponse(response);
 };
 
-export const apiDelete = async <T>(url: string): Promise<T> => {
-  const response = await request<ApiResponse<T>>({ method: 'DELETE', url });
+export const apiDelete = async <T>(
+  url: string,
+  options?: Pick<RequestOptions, 'skipAuth'>,
+): Promise<T> => {
+  const response = await request<ApiResponse<T>>({ method: 'DELETE', url, ...options });
   return unwrapApiResponse(response);
 };
 

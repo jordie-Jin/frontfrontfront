@@ -53,7 +53,9 @@ export const login = async (payload: LoginRequest): Promise<AuthSession> => {
     return session;
   }
 
-  const response = await apiPost<AuthLoginResponse, LoginRequest>('/api/auth/login', payload);
+  const response = await apiPost<AuthLoginResponse, LoginRequest>('/api/auth/login', payload, {
+    skipAuth: true,
+  });
 
   const session: AuthSession = {
     token: response.accessToken,
@@ -85,7 +87,9 @@ export const register = async (payload: RegisterRequest): Promise<SignupResponse
     };
   }
 
-  return apiPost<SignupResponse, RegisterRequest>('/api/auth/signup', payload);
+  return apiPost<SignupResponse, RegisterRequest>('/api/auth/signup', payload, {
+    skipAuth: true,
+  });
 };
 
 export const logout = async (): Promise<void> => {
@@ -94,7 +98,7 @@ export const logout = async (): Promise<void> => {
     return;
   }
 
-  await apiPost<void, Record<string, never>>('/api/auth/logout', {});
+  await apiPost<void, Record<string, never>>('/api/auth/logout', {}, { skipAuth: true });
   storeSession(null);
 };
 
@@ -110,5 +114,7 @@ export const refreshAccessToken = async (
     };
   }
 
-  return apiPost<RefreshTokenResponse, RefreshTokenRequest>('/api/auth/refresh', payload);
+  return apiPost<RefreshTokenResponse, RefreshTokenRequest>('/api/auth/refresh', payload, {
+    skipAuth: true,
+  });
 };
