@@ -101,6 +101,13 @@ const Landing: React.FC = () => {
     } catch (error) {
       const message = error instanceof Error ? error.message : '';
       const fieldErrors: Record<string, string> = {};
+      const status =
+        (error as { response?: { status?: number | string } })?.response?.status ??
+        (error instanceof ApiRequestError ? error.apiError?.status : undefined);
+
+      console.log('status:', (error as { response?: { status?: number | string } })?.response?.status);
+      console.log('axios data:', (error as { response?: { data?: unknown } })?.response?.data);
+      console.log('message:', message);
 
       if (error instanceof ApiRequestError && error.apiError?.errors?.length) {
         error.apiError.errors.forEach((detail) => {
@@ -108,25 +115,28 @@ const Landing: React.FC = () => {
             fieldErrors[detail.field] = detail.message;
           }
         });
+        console.log('apiError:', error.apiError);
       }
+
+      console.log('fieldErrors:', fieldErrors);
 
       const isDuplicateEmail =
         isRegister &&
-        ((error instanceof ApiRequestError &&
-          (error.apiError?.code === 'DUPLICATE_EMAIL' ||
-            error.apiError?.code === '409' ||
-            /duplicate|already|중복/i.test(error.apiError?.message ?? ''))) ||
-          /409/.test(message) ||
-          /중복.*이메일/i.test(message) ||
-          /이메일.*중복/i.test(message) ||
-          /email.*already/i.test(message) ||
-          /already.*email/i.test(message) ||
+        (status === 409 ||
+          status === '409' ||
+          (error instanceof ApiRequestError &&
+            (error.apiError?.code === 'DUPLICATE_EMAIL' ||
+              error.apiError?.code === 409 ||
+              error.apiError?.code === '409')) ||
+          /duplicate|already|중복/i.test(error instanceof ApiRequestError ? (error.apiError?.message ?? '') : '') ||
+          /duplicate|already|중복/i.test(message) ||
           (typeof fieldErrors.email === 'string' &&
             (/\uC911\uBCF5/i.test(fieldErrors.email) || /duplicate|already/i.test(fieldErrors.email))));
 
       if (isDuplicateEmail) {
         setAuthError(null);
         setDuplicateEmailError('이미 사용 중인 이메일입니다.');
+        return;
       } else {
         if (Object.keys(fieldErrors).length > 0) {
           setServerFieldErrors(fieldErrors);
