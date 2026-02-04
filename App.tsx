@@ -44,7 +44,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                 className="w-20 h-20 rounded-full object-cover"
               />
             </div>
-            <h1 className="text-xl font-bold tracking-widest serif text-white">SENTIENEL</h1>
+            <h1 className="text-xl font-bold tracking-widest serif text-white">SENTINEL</h1>
           </Link>
         </div>
 
