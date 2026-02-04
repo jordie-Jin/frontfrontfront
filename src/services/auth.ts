@@ -43,6 +43,16 @@ export const getAuthToken = (): string | null => getStoredSession()?.token ?? nu
 
 export const getStoredUser = (): AuthUser | null => getStoredSession()?.user ?? null;
 
+export const updateStoredToken = (token: string): void => {
+  const session = getStoredSession();
+  if (!session) return;
+  storeSession({ ...session, token });
+};
+
+export const clearStoredSession = (): void => {
+  storeSession(null);
+};
+
 export const login = async (payload: LoginRequest): Promise<AuthSession> => {
   if (USE_MOCK_AUTH) {
     const session: AuthSession = {
@@ -94,19 +104,21 @@ export const register = async (payload: RegisterRequest): Promise<SignupResponse
 
 export const logout = async (): Promise<void> => {
   if (USE_MOCK_AUTH) {
-    storeSession(null);
+    clearStoredSession();
     return;
   }
 
-  try {
-    await apiPost<void, Record<string, never>>('/api/auth/logout', {}, { skipAuth: true });
-  } finally {
-    storeSession(null);
-  }
+  const logoutPromise = apiPost<void, Record<string, never>>(
+    '/api/auth/logout',
+    {},
+    { withCredentials: true }
+  );
+  clearStoredSession();
+  await logoutPromise;
 };
 
 export const refreshAccessToken = async (
-  payload: RefreshTokenRequest
+  payload: RefreshTokenRequest = {}
 ): Promise<RefreshTokenResponse> => {
   if (USE_MOCK_AUTH) {
     return {
@@ -119,5 +131,6 @@ export const refreshAccessToken = async (
 
   return apiPost<RefreshTokenResponse, RefreshTokenRequest>('/api/auth/refresh', payload, {
     skipAuth: true,
+    withCredentials: true,
   });
 };

@@ -1,5 +1,10 @@
 // HTTP 요청을 위한 API 클라이언트 래퍼입니다.
-import { getAuthToken } from '../services/auth';
+import {
+  clearStoredSession,
+  getAuthToken,
+  refreshAccessToken,
+  updateStoredToken,
+} from '../services/auth';
 
 type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
@@ -9,6 +14,8 @@ interface RequestOptions {
   body?: unknown;
   params?: Record<string, string | number | boolean | undefined>;
   skipAuth?: boolean;
+  withCredentials?: boolean;
+  retryAttempted?: boolean;
 }
 
 export interface ApiErrorDetail {
@@ -65,17 +72,37 @@ const request = async <T>({
   body,
   params,
   skipAuth = false,
+  withCredentials = false,
+  retryAttempted = false,
 }: RequestOptions): Promise<T> => {
   const token = skipAuth ? null : getAuthToken();
-  const response = await fetch(buildUrl(url, params), {
+  const resolvedUrl = buildUrl(url, params);
+  const response = await fetch(resolvedUrl, {
     method,
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    credentials: 'include',
+    credentials: withCredentials ? 'include' : 'omit',
     body: body ? JSON.stringify(body) : undefined,
   });
+
+  if (
+    response.status === 401 &&
+    !skipAuth &&
+    !retryAttempted &&
+    !isRefreshEndpoint(resolvedUrl)
+  ) {
+    try {
+      const refreshResponse = await refreshAccessToken();
+      updateStoredToken(refreshResponse.accessToken);
+      return request({ method, url, body, params, skipAuth, withCredentials, retryAttempted: true });
+    } catch (error) {
+      clearStoredSession();
+      window.location.href = '/';
+      throw error;
+    }
+  }
 
   if (response.status === 204) {
     return undefined as T;
@@ -128,6 +155,15 @@ const isApiResponse = (payload: unknown): payload is ApiResponse<unknown> => {
   );
 };
 
+const isRefreshEndpoint = (resolvedUrl: string): boolean => {
+  try {
+    const url = new URL(resolvedUrl, window.location.origin);
+    return url.pathname.endsWith('/api/auth/refresh');
+  } catch {
+    return false;
+  }
+};
+
 const unwrapApiResponse = <T>(
   payload: ApiResponse<T>
 ): T => {
@@ -146,7 +182,7 @@ const unwrapApiResponse = <T>(
 export const apiGet = async <T>(
   url: string,
   params?: RequestOptions['params'],
-  options?: Pick<RequestOptions, 'skipAuth'>,
+  options?: Pick<RequestOptions, 'skipAuth' | 'withCredentials'>,
 ): Promise<T> => {
   const response = await request<ApiResponse<T>>({ method: 'GET', url, params, ...options });
   return unwrapApiResponse(response);
@@ -155,7 +191,7 @@ export const apiGet = async <T>(
 export const apiPost = async <T, B = unknown>(
   url: string,
   body: B,
-  options?: Pick<RequestOptions, 'skipAuth'>,
+  options?: Pick<RequestOptions, 'skipAuth' | 'withCredentials'>,
 ): Promise<T> => {
   const response = await request<ApiResponse<T>>({ method: 'POST', url, body, ...options });
   return unwrapApiResponse(response);
@@ -164,7 +200,7 @@ export const apiPost = async <T, B = unknown>(
 export const apiPatch = async <T, B = unknown>(
   url: string,
   body: B,
-  options?: Pick<RequestOptions, 'skipAuth'>,
+  options?: Pick<RequestOptions, 'skipAuth' | 'withCredentials'>,
 ): Promise<T> => {
   const response = await request<ApiResponse<T>>({ method: 'PATCH', url, body, ...options });
   return unwrapApiResponse(response);
@@ -172,7 +208,7 @@ export const apiPatch = async <T, B = unknown>(
 
 export const apiDelete = async <T>(
   url: string,
-  options?: Pick<RequestOptions, 'skipAuth'>,
+  options?: Pick<RequestOptions, 'skipAuth' | 'withCredentials'>,
 ): Promise<T> => {
   const response = await request<ApiResponse<T>>({ method: 'DELETE', url, ...options });
   return unwrapApiResponse(response);
