@@ -137,8 +137,13 @@ const Landing: React.FC = () => {
             (/\uC911\uBCF5/i.test(fieldErrors.email) || /duplicate|already/i.test(fieldErrors.email))));
 
       if (isDuplicateEmail) {
+        const duplicateMessage =
+          (error instanceof ApiRequestError && error.apiError?.message) ||
+          fieldErrors.email ||
+          message ||
+          '중복된 이메일입니다';
         setAuthError(null);
-        setDuplicateEmailError('중복된 이메일입니다');
+        setDuplicateEmailError(duplicateMessage);
         return;
       } else {
         if (Object.keys(fieldErrors).length > 0) {
@@ -242,13 +247,13 @@ const Landing: React.FC = () => {
                   aria-describedby={duplicateEmailError ? 'duplicate-email-tooltip' : undefined}
                 />
                 {duplicateEmailError && (
-                  <div
+                  <p
                     id="duplicate-email-tooltip"
-                    role="tooltip"
-                    className="absolute right-2 -top-2 -translate-y-full rounded-lg bg-red-500 px-3 py-2 text-[10px] font-bold text-black shadow-lg"
+                    role="alert"
+                    className="text-xs text-red-400"
                   >
                     중복된 이메일입니다
-                  </div>
+                  </p>
                 )}
                 {errors.email && (
                   <p className="text-xs text-red-400">{errors.email}</p>
