@@ -7,8 +7,8 @@ import { userQnaApi } from '../../services/qna/userQnaApi';
 
 const QnaPage: React.FC = () => {
   const currentUser = getStoredUser();
-  const isAdmin = currentUser?.role === 'ADMIN';
-  console.log('[QNA] role:', currentUser?.role, 'isAdmin:', isAdmin, 'user:', currentUser);
+  const role = currentUser?.role;
+  const isAdmin = role === 'ADMIN' || role === 'ROLE_ADMIN';
 
   return (
     <div className="animate-in fade-in duration-700 space-y-8">
