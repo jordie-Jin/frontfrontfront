@@ -98,8 +98,11 @@ export const logout = async (): Promise<void> => {
     return;
   }
 
-  await apiPost<void, Record<string, never>>('/api/auth/logout', {}, { skipAuth: true });
-  storeSession(null);
+  try {
+    await apiPost<void, Record<string, never>>('/api/auth/logout', {}, { skipAuth: true });
+  } finally {
+    storeSession(null);
+  }
 };
 
 export const refreshAccessToken = async (
