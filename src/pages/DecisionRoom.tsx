@@ -1,10 +1,11 @@
-// 의사결정룸 페이지 컴포넌트입니다.
+﻿// ?섏궗寃곗젙猷??섏씠吏 而댄룷?뚰듃?낅땲??
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DecisionRoomHeader from '../components/decisionRoom/DecisionRoomHeader';
 import BulletinGrid from '../components/decisionRoom/BulletinGrid';
 import BulletinModal from '../components/decisionRoom/BulletinModal';
 import QaList, { QaStatusFilter } from '../components/decisionRoom/QaList';
+import AdminAuthorPanel, { AuthorSort } from '../components/decisionRoom/AdminAuthorPanel';
 import QaThread from '../components/decisionRoom/QaThread';
 import QaComposer from '../components/decisionRoom/QaComposer';
 import AsyncState from '../components/common/AsyncState';
@@ -19,7 +20,7 @@ import {
   fetchBulletins,
   fetchQaPosts,
 } from '../services/decisionRoomApi';
-import { logout } from '../services/auth';
+import { getStoredUser, logout } from '../services/auth';
 
 const DecisionRoom: React.FC = () => {
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ const DecisionRoom: React.FC = () => {
   const [errorQa, setErrorQa] = useState<string | null>(null);
   const [qaSearch, setQaSearch] = useState<string>('');
   const [qaStatusFilter, setQaStatusFilter] = useState<QaStatusFilter>('all');
+  const [qaAuthorFilter, setQaAuthorFilter] = useState<string>('all');
+  const [qaAuthorSearch, setQaAuthorSearch] = useState<string>('');
+  const [qaAuthorSort, setQaAuthorSort] = useState<AuthorSort>('recent');
   const [replyText, setReplyText] = useState<string>('');
   const [composerOpen, setComposerOpen] = useState<boolean>(false);
   const [composerTitle, setComposerTitle] = useState<string>('');
@@ -42,6 +46,8 @@ const DecisionRoom: React.FC = () => {
   const [composerError, setComposerError] = useState<string | null>(null);
   const [replyError, setReplyError] = useState<string | null>(null);
   const [hasLoadedQa, setHasLoadedQa] = useState<boolean>(false);
+  const role = getStoredUser()?.role?.toUpperCase();
+  const isAdmin = role === 'ADMIN';
 
   const loadBulletins = useCallback(async () => {
     setIsLoadingBulletins(true);
@@ -51,7 +57,7 @@ const DecisionRoom: React.FC = () => {
       const response = await fetchBulletins(bulletinMode);
       setBulletins(response);
     } catch (error) {
-      setErrorBulletins('공지 데이터를 불러오는 중 문제가 발생했습니다.');
+      setErrorBulletins('怨듭? ?곗씠?곕? 遺덈윭?ㅻ뒗 以?臾몄젣媛 諛쒖깮?덉뒿?덈떎.');
     } finally {
       setIsLoadingBulletins(false);
     }
@@ -69,7 +75,7 @@ const DecisionRoom: React.FC = () => {
       }
       setHasLoadedQa(true);
     } catch (error) {
-      setErrorQa('Q&A 데이터를 불러오는 중 문제가 발생했습니다.');
+      setErrorQa('Q&A ?곗씠?곕? 遺덈윭?ㅻ뒗 以?臾몄젣媛 諛쒖깮?덉뒿?덈떎.');
     } finally {
       setIsLoadingQa(false);
     }
@@ -90,6 +96,9 @@ const DecisionRoom: React.FC = () => {
     return qaPosts.filter((post) => {
       const statusMatch = qaStatusFilter === 'all' || post.status === qaStatusFilter;
       if (!statusMatch) return false;
+      if (isAdmin && qaAuthorFilter !== 'all' && post.author !== qaAuthorFilter) {
+        return false;
+      }
       if (!searchLower) return true;
       const inTags = post.tags?.some((tag) => tag.toLowerCase().includes(searchLower));
       const inReplies = post.replies.some((reply) => reply.body.toLowerCase().includes(searchLower));
@@ -101,7 +110,39 @@ const DecisionRoom: React.FC = () => {
         inReplies
       );
     });
-  }, [qaPosts, qaSearch, qaStatusFilter]);
+  }, [isAdmin, qaAuthorFilter, qaPosts, qaSearch, qaStatusFilter]);
+
+  const qaAuthors = useMemo(() => {
+    const authorMap = new Map<string, string>();
+    qaPosts.forEach((post) => {
+      if (!post.author) return;
+      const current = authorMap.get(post.author);
+      if (!current || post.createdAt > current) {
+        authorMap.set(post.author, post.createdAt);
+      }
+    });
+    return Array.from(authorMap.entries()).map(([name, lastCreatedAt]) => ({
+      name,
+      lastCreatedAt,
+    }));
+  }, [qaPosts]);
+
+  const filteredQaAuthors = useMemo(() => {
+    const searchLower = qaAuthorSearch.trim().toLowerCase();
+    const filtered = qaAuthors.filter((author) => {
+      if (!searchLower) return true;
+      return author.name.toLowerCase().includes(searchLower);
+    });
+    const sorted = [...filtered];
+    if (qaAuthorSort === 'name-asc') {
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (qaAuthorSort === 'name-desc') {
+      sorted.sort((a, b) => b.name.localeCompare(a.name));
+    } else {
+      sorted.sort((a, b) => (b.lastCreatedAt ?? '').localeCompare(a.lastCreatedAt ?? ''));
+    }
+    return sorted;
+  }, [qaAuthors, qaAuthorSearch, qaAuthorSort]);
 
   const selectedPost = useMemo(
     () => qaPosts.find((post) => post.id === selectedPostId) ?? null,
@@ -115,7 +156,7 @@ const DecisionRoom: React.FC = () => {
 
   const handleCreatePost = useCallback(async () => {
     if (!composerTitle.trim() || !composerBody.trim()) {
-      setComposerError('제목과 내용을 모두 입력해주세요.');
+      setComposerError('?쒕ぉ怨??댁슜??紐⑤몢 ?낅젰?댁＜?몄슂.');
       return;
     }
     setComposerError(null);
@@ -132,14 +173,15 @@ const DecisionRoom: React.FC = () => {
       setComposerBody('');
       setComposerOpen(false);
     } catch (error) {
-      setComposerError('질문 등록에 실패했습니다. 다시 시도해주세요.');
+      setComposerError('吏덈Ц ?깅줉???ㅽ뙣?덉뒿?덈떎. ?ㅼ떆 ?쒕룄?댁＜?몄슂.');
     }
   }, [composerBody, composerTitle]);
 
   const handleAddReply = useCallback(async () => {
+    if (!isAdmin) return;
     if (!selectedPostId) return;
     if (!replyText.trim()) {
-      setReplyError('답변 내용을 입력해주세요.');
+      setReplyError('?듬? ?댁슜???낅젰?댁＜?몄슂.');
       return;
     }
     setReplyError(null);
@@ -163,9 +205,9 @@ const DecisionRoom: React.FC = () => {
       );
       setReplyText('');
     } catch (error) {
-      setReplyError('답변 등록 중 문제가 발생했습니다.');
+      setReplyError('?듬? ?깅줉 以?臾몄젣媛 諛쒖깮?덉뒿?덈떎.');
     }
-  }, [replyText, selectedPostId]);
+  }, [isAdmin, replyText, selectedPostId]);
 
   return (
     <div className="animate-in fade-in duration-700 space-y-8">
@@ -207,7 +249,7 @@ const DecisionRoom: React.FC = () => {
               error={errorBulletins}
               empty={!isLoadingBulletins && !errorBulletins && bulletins.length === 0}
               onRetry={loadBulletins}
-              emptyMessage="공지사항이 준비되면 이 영역에 표시됩니다."
+              emptyMessage="怨듭??ы빆??以鍮꾨릺硫????곸뿭???쒖떆?⑸땲??"
             >
               <BulletinGrid bulletins={bulletins} onOpen={setSelectedBulletinId} />
             </AsyncState>
@@ -221,26 +263,54 @@ const DecisionRoom: React.FC = () => {
                   Collaborative threads with operations and compliance.
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setComposerError(null);
-                  setComposerOpen(true);
-                }}
-                className="px-5 py-2 rounded-full bg-white text-black text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-slate-200 transition"
-              >
-                질문 작성
-              </button>
+              {!isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setComposerError(null);
+                    setComposerOpen(true);
+                  }}
+                  className="px-5 py-2 rounded-full bg-white text-black text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-slate-200 transition"
+                >
+                  질문 작성
+                </button>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] gap-6 min-h-[560px]">
+            {isAdmin && (
+              <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-slate-300">
+                <span className="uppercase tracking-[0.2em] text-slate-500">선택된 질문자</span>
+                <span className="text-white">
+                  {qaAuthorFilter === 'all' ? '전체' : qaAuthorFilter}
+                </span>
+              </div>
+            )}
+
+            <div
+              className={`grid grid-cols-1 gap-6 min-h-[560px] ${
+                isAdmin
+                  ? 'lg:grid-cols-[minmax(0,0.22fr)_minmax(0,0.34fr)_minmax(0,0.44fr)]'
+                  : 'lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)]'
+              }`}
+            >
               <AsyncState
                 isLoading={isLoadingQa}
                 error={errorQa}
                 empty={!isLoadingQa && !errorQa && qaPosts.length === 0}
                 onRetry={loadQaPosts}
-                emptyMessage="등록된 Q&A가 없습니다. 질문을 작성해보세요."
+                emptyMessage="?깅줉??Q&A媛 ?놁뒿?덈떎. 吏덈Ц???묒꽦?대낫?몄슂."
               >
+                {isAdmin && (
+                  <AdminAuthorPanel
+                    authors={filteredQaAuthors}
+                    selectedAuthor={qaAuthorFilter}
+                    onSelectAuthor={setQaAuthorFilter}
+                    searchValue={qaAuthorSearch}
+                    onSearchChange={setQaAuthorSearch}
+                    sortValue={qaAuthorSort}
+                    onSortChange={setQaAuthorSort}
+                  />
+                )}
                 <QaList
                   posts={filteredQaPosts}
                   selectedId={selectedPostId}
@@ -261,6 +331,7 @@ const DecisionRoom: React.FC = () => {
                 }}
                 onAddReply={handleAddReply}
                 errorMessage={replyError}
+                canReply={isAdmin}
               />
             </div>
           </div>
@@ -295,3 +366,5 @@ const DecisionRoom: React.FC = () => {
 };
 
 export default DecisionRoom;
+
+

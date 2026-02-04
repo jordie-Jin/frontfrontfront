@@ -11,6 +11,10 @@ interface QaListProps {
   onSearchChange: (value: string) => void;
   statusFilter: QaStatusFilter;
   onStatusFilterChange: (value: QaStatusFilter) => void;
+  showAuthorFilter?: boolean;
+  authorOptions?: string[];
+  selectedAuthor?: string;
+  onAuthorChange?: (value: string) => void;
 }
 
 const statusStyles: Record<QaStatusFilter, string> = {
@@ -27,6 +31,10 @@ const QaList: React.FC<QaListProps> = ({
   onSearchChange,
   statusFilter,
   onStatusFilterChange,
+  showAuthorFilter = false,
+  authorOptions = [],
+  selectedAuthor = 'all',
+  onAuthorChange,
 }) => {
   return (
     <div className="glass-panel rounded-3xl p-6 h-full flex flex-col">
@@ -44,6 +52,28 @@ const QaList: React.FC<QaListProps> = ({
             />
           </div>
         </div>
+
+        {showAuthorFilter && (
+          <div>
+            <label className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+              질문자
+            </label>
+            <div className="mt-2">
+              <select
+                value={selectedAuthor}
+                onChange={(event) => onAuthorChange?.(event.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-white/20"
+              >
+                <option value="all">전체</option>
+                {authorOptions.map((author) => (
+                  <option key={author} value={author}>
+                    {author}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
 
         <div>
           <label className="text-[10px] uppercase tracking-[0.3em] text-slate-500">Status</label>

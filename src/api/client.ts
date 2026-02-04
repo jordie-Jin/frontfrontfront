@@ -1,7 +1,7 @@
 // HTTP 요청을 위한 API 클라이언트 래퍼입니다.
 import { getAuthToken } from '../services/auth';
 
-type HttpMethod = 'GET' | 'POST';
+type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 interface RequestOptions {
   method: HttpMethod;
@@ -143,6 +143,16 @@ export const apiGet = async <T>(url: string, params?: RequestOptions['params']):
 
 export const apiPost = async <T, B = unknown>(url: string, body: B): Promise<T> => {
   const response = await request<ApiResponse<T>>({ method: 'POST', url, body });
+  return unwrapApiResponse(response);
+};
+
+export const apiPatch = async <T, B = unknown>(url: string, body: B): Promise<T> => {
+  const response = await request<ApiResponse<T>>({ method: 'PATCH', url, body });
+  return unwrapApiResponse(response);
+};
+
+export const apiDelete = async <T>(url: string): Promise<T> => {
+  const response = await request<ApiResponse<T>>({ method: 'DELETE', url });
   return unwrapApiResponse(response);
 };
 

@@ -7,6 +7,14 @@ import {
   QaReplyInput,
 } from '../types/decisionRoom';
 import { getMockBulletins, getMockQaPosts } from '../mocks/decisionRoom.mock';
+import {
+  createPost,
+  deletePost,
+  getPost,
+  listPosts,
+  updatePost,
+} from '../api/posts';
+import { PostItem } from '../types/post';
 
 let qaStore: QaPost[] = getMockQaPosts();
 
@@ -24,40 +32,26 @@ export async function fetchBulletins(mode: 'active' | 'archive'): Promise<Bullet
 }
 
 export async function fetchQaPosts(): Promise<QaPost[]> {
-  // TODO: Replace with real API call when backend is available.
-  // Example:
-  // const response = await fetch('/api/decision-room/qa');
-  // if (!response.ok) throw new Error('Failed to fetch Q&A posts');
-  // return response.json() as Promise<QaPost[]>;
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([...qaStore]);
-    }, 450);
+  const response = await listPosts({
+    page: 1,
+    size: 20,
+    sortBy: 'createdAt',
+    direction: 'DESC',
   });
+  const mapped = response.content.map(mapPostToQaPost);
+  qaStore = mapped;
+  return mapped;
 }
 
 export async function createQaPost(input: QaPostInput): Promise<QaPost> {
-  // TODO: Replace with real API call when backend is available.
-  // Example:
-  // const response = await fetch('/api/decision-room/qa', { method: 'POST', body: JSON.stringify(input) });
-  // if (!response.ok) throw new Error('Failed to create Q&A post');
-  // return response.json() as Promise<QaPost>;
-  const created: QaPost = {
-    id: `qa-${Date.now()}`,
+  const created = await createPost({
     title: input.title,
-    body: input.body,
-    author: input.author,
-    createdAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
-    status: 'pending',
-    replies: [],
-  };
-
-  qaStore = [created, ...qaStore];
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(created);
-    }, 300);
+    content: input.body,
+    categoryId: 1,
   });
+  const mapped = mapPostToQaPost(created);
+  qaStore = [mapped, ...qaStore];
+  return mapped;
 }
 
 export async function addQaReply(postId: string, input: QaReplyInput): Promise<QaReply> {
@@ -94,3 +88,39 @@ export async function addQaReply(postId: string, input: QaReplyInput): Promise<Q
     }, 300);
   });
 }
+
+export async function fetchQaPostDetail(postId: number | string): Promise<QaPost> {
+  const response = await getPost(postId);
+  return mapPostToQaPost(response);
+}
+
+export async function updateQaPost(
+  postId: number | string,
+  input: QaPostInput,
+): Promise<QaPost> {
+  const response = await updatePost(postId, {
+    title: input.title,
+    content: input.body,
+    categoryId: 1,
+  });
+  const mapped = mapPostToQaPost(response);
+  qaStore = qaStore.map((post) => (post.id === String(postId) ? mapped : post));
+  return mapped;
+}
+
+export async function deleteQaPost(postId: number | string): Promise<void> {
+  await deletePost(postId);
+  qaStore = qaStore.filter((post) => post.id !== String(postId));
+}
+
+const mapPostToQaPost = (post: PostItem): QaPost => ({
+  id: String(post.id),
+  title: post.title,
+  body: post.content,
+  author: `User ${post.userId}`,
+  createdAt: post.createdAt,
+  updatedAt: post.updatedAt,
+  status: 'pending',
+  tags: post.isPinned ? ['pinned'] : undefined,
+  replies: [],
+});

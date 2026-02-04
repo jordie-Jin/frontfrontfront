@@ -32,10 +32,11 @@ const storeSession = (session: AuthSession | null) => {
   window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
 };
 
-const buildMockUser = (email: string, name?: string): AuthUser => ({
+const buildMockUser = (email: string, name?: string, role: string = 'USER'): AuthUser => ({
   id: `user-${email}`,
   email,
   name: name ?? email.split('@')[0],
+  role,
 });
 
 export const getAuthToken = (): string | null => getStoredSession()?.token ?? null;
@@ -46,7 +47,7 @@ export const login = async (payload: LoginRequest): Promise<AuthSession> => {
   if (USE_MOCK_AUTH) {
     const session: AuthSession = {
       token: `mock-${Date.now()}`,
-      user: buildMockUser(payload.email),
+      user: buildMockUser(payload.email, undefined, 'USER'),
     };
     storeSession(session);
     return session;
@@ -60,6 +61,7 @@ export const login = async (payload: LoginRequest): Promise<AuthSession> => {
       id: response.user.userId,
       email: response.user.email,
       name: response.user.name,
+      role: response.user.role,
     },
   };
 
@@ -71,7 +73,7 @@ export const register = async (payload: RegisterRequest): Promise<SignupResponse
   if (USE_MOCK_AUTH) {
     const session: AuthSession = {
       token: `mock-${Date.now()}`,
-      user: buildMockUser(payload.email, payload.name),
+      user: buildMockUser(payload.email, payload.name, 'USER'),
     };
     storeSession(session);
     return {

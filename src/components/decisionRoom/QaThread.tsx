@@ -7,6 +7,7 @@ interface QaThreadProps {
   onReplyChange: (value: string) => void;
   onAddReply: () => void;
   errorMessage?: string | null;
+  canReply?: boolean;
 }
 
 const QaThread: React.FC<QaThreadProps> = ({
@@ -15,12 +16,13 @@ const QaThread: React.FC<QaThreadProps> = ({
   onReplyChange,
   onAddReply,
   errorMessage,
+  canReply = true,
 }) => {
   if (!post) {
     return (
       <div className="glass-panel rounded-3xl p-10 h-full flex items-center justify-center text-center text-slate-400">
         <div>
-          <div className="text-lg text-white mb-2">왼쪽에서 글을 선택하세요.</div>
+          <div className="text-lg text-white mb-2">좌측에서 글을 선택해주세요.</div>
           <p className="text-sm text-slate-500">질문을 선택하면 상세 스레드가 표시됩니다.</p>
         </div>
       </div>
@@ -63,25 +65,27 @@ const QaThread: React.FC<QaThreadProps> = ({
         )}
       </div>
 
-      <div className="mt-6 border-t border-white/10 pt-4">
-        <label className="text-[10px] uppercase tracking-[0.3em] text-slate-500">답변 등록</label>
-        <textarea
-          value={replyText}
-          onChange={(event) => onReplyChange(event.target.value)}
-          placeholder="답변 내용을 입력하세요"
-          className="mt-2 w-full min-h-[120px] bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-white/20"
-        />
-        <div className="mt-3 flex justify-end">
-          <button
-            type="button"
-            onClick={onAddReply}
-            className="px-5 py-2 rounded-full bg-white text-black text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-slate-200 transition"
-          >
-            답변 등록
-          </button>
+      {canReply && (
+        <div className="mt-6 border-t border-white/10 pt-4">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-slate-500">답변 등록</label>
+          <textarea
+            value={replyText}
+            onChange={(event) => onReplyChange(event.target.value)}
+            placeholder="답변 내용을 입력해 주세요."
+            className="mt-2 w-full min-h-[120px] bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-white/20"
+          />
+          <div className="mt-3 flex justify-end">
+            <button
+              type="button"
+              onClick={onAddReply}
+              className="px-5 py-2 rounded-full bg-white text-black text-[10px] uppercase tracking-[0.3em] font-semibold hover:bg-slate-200 transition"
+            >
+              답변 등록
+            </button>
+          </div>
+          {errorMessage && <p className="mt-3 text-xs text-rose-400">{errorMessage}</p>}
         </div>
-        {errorMessage && <p className="mt-3 text-xs text-rose-400">{errorMessage}</p>}
-      </div>
+      )}
     </div>
   );
 };
