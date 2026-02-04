@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { ApiRequestError } from '../src/api/client';
 import { login, register } from '../src/services/auth';
 import TurnstileWidget from '../src/components/TurnstileWidget';
+import SuccessModal from '../src/components/common/SuccessModal';
 
 type AuthMode = 'login' | 'register';
 
 const Landing: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [showSignupSuccess, setShowSignupSuccess] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [authError, setAuthError] = useState<string | null>(null);
   const [serverFieldErrors, setServerFieldErrors] = useState<Record<string, string>>({});
@@ -94,10 +96,12 @@ const Landing: React.FC = () => {
           name: trimmedName,
           turnstileToken,
         });
+        setShowAuth(false);
+        setShowSignupSuccess(true);
       } else {
         await login({ email: trimmedEmail, password });
+        navigate('/dashboard');
       }
-      navigate('/dashboard');
     } catch (error) {
       const message = error instanceof Error ? error.message : '';
       const fieldErrors: Record<string, string> = {};
@@ -169,8 +173,27 @@ const Landing: React.FC = () => {
     }
   }, []);
 
+  const handleSignupSuccessConfirm = () => {
+    setShowSignupSuccess(false);
+    setAuthMode('login');
+    setShowAuth(true);
+    setErrors({});
+    setServerFieldErrors({});
+    setAuthError(null);
+    setDuplicateEmailError(null);
+    setPassword('');
+    setConfirmPassword('');
+  };
+
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-slate-500 selection:text-white relative">
+      <SuccessModal
+        open={showSignupSuccess}
+        title="회원가입 완료"
+        message="회원가입이 완료되었습니다. 로그인하여 계속 진행해 주세요."
+        confirmLabel="로그인 하러가기"
+        onConfirm={handleSignupSuccessConfirm}
+      />
       
       {/* Auth Portal Overlay */}
       {showAuth && (
