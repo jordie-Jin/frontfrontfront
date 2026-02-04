@@ -14,7 +14,7 @@ const USE_MOCK_AUTH = import.meta.env.VITE_USE_MOCK_AUTH === 'true';
 const SESSION_STORAGE_KEY = 'sentinel.auth.session';
 
 const getStoredSession = (): AuthSession | null => {
-  const raw = window.localStorage.getItem(SESSION_STORAGE_KEY);
+  const raw = window.sessionStorage.getItem(SESSION_STORAGE_KEY);
   if (!raw) return null;
   try {
     return JSON.parse(raw) as AuthSession;
@@ -25,10 +25,10 @@ const getStoredSession = (): AuthSession | null => {
 
 const storeSession = (session: AuthSession | null) => {
   if (!session) {
-    window.localStorage.removeItem(SESSION_STORAGE_KEY);
+    window.sessionStorage.removeItem(SESSION_STORAGE_KEY);
     return;
   }
-  window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+  window.sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
 };
 
 const buildMockUser = (email: string, name?: string): AuthUser => ({
