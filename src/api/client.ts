@@ -21,6 +21,7 @@ export interface ApiError {
   timestamp?: string;
   path?: string;
   errors?: ApiErrorDetail[];
+  status?: number;
 }
 
 export interface ApiResponse<T> {

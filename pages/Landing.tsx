@@ -123,10 +123,8 @@ const Landing: React.FC = () => {
       const isDuplicateEmail =
         isRegister &&
         (status === 409 ||
-          status === '409' ||
           (error instanceof ApiRequestError &&
             (error.apiError?.code === 'DUPLICATE_EMAIL' ||
-              error.apiError?.code === 409 ||
               error.apiError?.code === '409')) ||
           /duplicate|already|중복/i.test(error instanceof ApiRequestError ? (error.apiError?.message ?? '') : '') ||
           /duplicate|already|중복/i.test(message) ||
