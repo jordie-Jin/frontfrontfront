@@ -77,22 +77,35 @@ const request = async <T>({ method, url, body, params }: RequestOptions): Promis
   const contentType = response.headers.get('content-type') ?? '';
   if (!contentType.includes('application/json')) {
     if (!response.ok) {
-      throw new Error('API request failed');
+      throw new ApiRequestError('API request failed', { status: response.status });
     }
     return undefined as T;
   }
 
-  const payload = (await response.json()) as T;
+  const payload = (await response.json()) as unknown;
 
   if (!response.ok) {
-    const message =
-      typeof (payload as { error?: { message?: string } }).error?.message === 'string'
-        ? (payload as { error: { message: string } }).error.message
-        : 'API request failed';
-    throw new Error(message);
+    let apiError: ApiError | undefined;
+    let message = 'API request failed';
+
+    if (isApiResponse(payload)) {
+      apiError = payload.error ?? undefined;
+      if (typeof apiError?.message === 'string') {
+        message = apiError.message;
+      }
+    } else if (payload && typeof payload === 'object') {
+      const record = payload as Record<string, unknown>;
+      if (typeof record.message === 'string') {
+        message = record.message;
+      }
+      apiError = { message, status: response.status };
+    }
+
+    apiError = { ...(apiError ?? {}), status: apiError?.status ?? response.status };
+    throw new ApiRequestError(message, apiError);
   }
 
-  return payload;
+  return payload as T;
 };
 
 const isApiResponse = (payload: unknown): payload is ApiResponse<unknown> => {

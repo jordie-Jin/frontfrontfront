@@ -104,6 +104,10 @@ const Landing: React.FC = () => {
       const status =
         (error as { response?: { status?: number | string } })?.response?.status ??
         (error instanceof ApiRequestError ? error.apiError?.status : undefined);
+      const statusCode =
+        typeof status === 'string'
+          ? Number(status)
+          : status;
 
       console.log('status:', (error as { response?: { status?: number | string } })?.response?.status);
       console.log('axios data:', (error as { response?: { data?: unknown } })?.response?.data);
@@ -122,9 +126,10 @@ const Landing: React.FC = () => {
 
       const isDuplicateEmail =
         isRegister &&
-        (status === 409 ||
+        (statusCode === 409 ||
           (error instanceof ApiRequestError &&
-            (error.apiError?.code === 'DUPLICATE_EMAIL' ||
+            (error.apiError?.status === 409 ||
+              error.apiError?.code === 'DUPLICATE_EMAIL' ||
               error.apiError?.code === '409')) ||
           /duplicate|already|중복/i.test(error instanceof ApiRequestError ? (error.apiError?.message ?? '') : '') ||
           /duplicate|already|중복/i.test(message) ||
