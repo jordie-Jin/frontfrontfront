@@ -1,4 +1,4 @@
-﻿// ?좏뵆由ъ??댁뀡 ?쒕뵫 ?섏씠吏?낅땲??
+﻿// 애플리케이션 랜딩 페이지
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -52,26 +52,26 @@ const Landing: React.FC = () => {
     const isRegister = authMode === 'register';
 
     if (!trimmedEmail) {
-      nextErrors.email = '?대찓?쇱쓣 ?낅젰??二쇱꽭??';
+      nextErrors.email = '이메일을 입력해 주세요.';
     } else if (!emailPattern.test(trimmedEmail)) {
-      nextErrors.email = '?щ컮瑜??대찓???뺤떇???낅젰??二쇱꽭??';
+      nextErrors.email = '올바른 이메일 형식을 입력해 주세요.';
     }
 
     if (!password) {
-      nextErrors.password = '鍮꾨?踰덊샇瑜??낅젰??二쇱꽭??';
+      nextErrors.password = '비밀번호를 입력해 주세요.';
     } else if (password.length < 8) {
-      nextErrors.password = '鍮꾨?踰덊샇??8???댁긽?댁뼱???⑸땲??';
+      nextErrors.password = '비밀번호는 8자 이상이어야 합니다.';
     }
 
     if (isRegister) {
       if (!trimmedName) {
-        nextErrors.name = '?대쫫???낅젰??二쇱꽭??';
+        nextErrors.name = '이름을 입력해 주세요.';
       }
 
       if (!confirmPassword) {
-        nextErrors.confirmPassword = '鍮꾨?踰덊샇 ?뺤씤???낅젰??二쇱꽭??';
+        nextErrors.confirmPassword = '비밀번호 확인을 입력해 주세요.';
       } else if (password !== confirmPassword) {
-        nextErrors.confirmPassword = '鍮꾨?踰덊샇媛 ?쇱튂?섏? ?딆뒿?덈떎.';
+        nextErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
       }
     }
 
@@ -85,7 +85,7 @@ const Landing: React.FC = () => {
     }
 
     if (isRegister && !turnstileToken) {
-      setAuthError('Turnstile ?몄쬆???꾨즺??二쇱꽭??');
+      setAuthError('Turnstile 인증을 완료해 주세요.');
       return;
     }
 
@@ -151,7 +151,7 @@ const Landing: React.FC = () => {
           setServerFieldErrors(fieldErrors);
         }
         if (Object.keys(fieldErrors).length === 0) {
-          setAuthError(isRegister ? '?뚯썝媛?낆뿉 ?ㅽ뙣?덉뒿?덈떎. ?ㅼ떆 ?쒕룄?댁＜?몄슂.' : '?대찓?쇱씠??鍮꾨?踰덊샇媛 ?쇱튂?섏? ?딆뒿?덈떎.');
+          setAuthError(isRegister ? '회원가입에 실패했습니다. 다시 시도해 주세요.' : '이메일 또는 비밀번호가 일치하지 않습니다.');
         }
       }
     } finally {
@@ -434,7 +434,6 @@ const Landing: React.FC = () => {
         
         <div className="relative z-10 fade-up flex flex-col items-center mb-12">
           <button 
-            //濡쒓렇??湲곕뒫 ?ㅽ궢 onClick={() => { setAuthMode('login'); setShowAuth(true); }}
             onClick={handleSentinelClick}
             className="btn-primary group !bg-white/10 !text-white !backdrop-blur-xl border border-white/20 px-12 py-5 hover:!bg-white hover:!text-black transition-all shadow-2xl"
           >
@@ -457,16 +456,16 @@ const Landing: React.FC = () => {
               <span className="w-2 h-2 bg-slate-400 mr-2"></span> STRAGITY / INSIGHT
             </div>
             <h2 className="text-5xl md:text-6xl font-light leading-[1.1] text-white mb-0">
-              ?꾨왂, 由ъ뒪?? AI瑜?<br/>
-              ?듯빐 <br/>
-              <span className="text-slate-500 italic">?쒕윭?대떎.</span>
+              통합, 리스크 AI로<br/>
+              비즈니스를 <br/>
+              <span className="text-slate-500 italic">선도합니다.</span>
             </h2>
           </div>
           <div className="md:col-span-6">
             <p className="text-lg text-slate-400 font-light leading-relaxed mb-8 ">
-              ?섏쓽 李⑥씠媛 ?먭뺨吏??땲源?Human?<br />
+              불확실성이 커지는 지금,<br />
               <br />
-              SENTINEL? 湲곗뾽??蹂듭옟???묐젰 ?앺깭怨꾨? ?꾨왂?곸쑝濡??먯깋?섍퀬 ?쒖뼱?????덈룄濡?吏?먰빀?덈떎.
+              SENTINEL은 기업의 복잡한 위험 신호를 정밀하게 탐지하고 의사결정을 지원합니다.
             </p>
             <button className="group flex items-center space-x-3 text-[10px] uppercase tracking-widest font-bold text-white">
               <span className="bg-white/10 p-4 rounded-full group-hover:bg-white group-hover:text-black transition-all">
@@ -479,9 +478,9 @@ const Landing: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { num: '01.', title: '由ъ뒪??遺꾩꽍', desc: '遺꾩궛??吏?쒕? 寃고빀??湲곗뾽???좎옱???꾪뿕???뺣??섍쾶 ?앸퀎?⑸땲??', icon: 'fa-microscope' },
-            { num: '02.', title: '?듯빀 ?몄궗?댄듃', desc: '蹂듭옟??湲곗뾽 ?뺣낫瑜?寃고빀?섏뿬 ?섏궗寃곗젙 ?쒓컙???⑥쑉?곸쑝濡?愿由ы빀?덈떎.', icon: 'fa-vial' },
-            { num: '03.', title: '?먮쫫?덉륫 AI', desc: '怨쇨굅? ?꾩옱 ?곗씠?곕? 湲곕컲?쇰줈 ?ν썑 遺꾧린???먮쫫???좎젣?곸쑝濡??덉륫?⑸땲??', icon: 'fa-brain' },
+            { num: '01.', title: '리스크 분석', desc: '분산된 지표와 데이터를 결합해 기업의 현재 위험을 정교하게 측정합니다.', icon: 'fa-microscope' },
+            { num: '02.', title: '통합 인사이트', desc: '복잡한 기업 정보를 결합해 의사결정 시간을 획기적으로 줄입니다.', icon: 'fa-vial' },
+            { num: '03.', title: '예측형 AI', desc: '과거와 현재 데이터를 기반으로 향후 분기 리스크를 예측합니다.', icon: 'fa-brain' },
           ].map((feat, i) => (
             <div key={i} className="p-10 border border-white/5 bg-white/[0.01] hover:bg-white/[0.03] transition-all duration-500 group">
               <div className="mb-12 flex justify-between items-start">
@@ -503,7 +502,7 @@ const Landing: React.FC = () => {
       <section className="py-32 px-10 border-t border-white/5">
          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <div className="relative aspect-[4/3] rounded-sm overflow-hidden bg-slate-900">
-               <img src="/img/team.jpg" alt="? ?ъ쭊" className="w-full h-full object-cover translate-y-5 grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-1000" />
+               <img src="/img/team.jpg" alt="팀 사진" className="w-full h-full object-cover translate-y-5 grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-1000" />
                <div className="absolute inset-0 border-[20px] border-[#050505] pointer-events-none"></div>
             </div>
             <div>
@@ -511,21 +510,19 @@ const Landing: React.FC = () => {
                   <span className="w-2 h-2 bg-slate-400 mr-2"></span> Our Company
                </div>
                <h2 className="text-4xl md:text-5xl serif leading-tight mb-8">
-                 ?곕━??<br/>
+                 우리의<br/>
                  <span className="italic text-slate-400">데이터</span>를 쓰고, <br/>
-                 ?먮떒 媛?ν븳 ?몄궗?댄듃濡?<br/> ?쒓났?⑸땲??
+                 간단하지만 강력한 인사이트로<br/>제공합니다.
                </h2>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                  <p className="text-sm text-slate-500 leading-relaxed">?꾨Ц媛??吏곴????섏〈?섎뜕 ?먮떒???곗씠??湲곕컲 ?몄궗?댄듃濡??꾪솚??
-議곗쭅????鍮좊Ⅴ怨??쇨????섏궗寃곗젙???대┫ ???덈룄濡??뺤뒿?덈떎.</p>
-                  <p className="text-sm text-slate-500 leading-relaxed">?곕━??臾몄젣媛 諛쒖깮?????ㅻ챸?섎뒗 ?꾧뎄媛 ?꾨땲??
-?꾪뿕???쒕윭?섍린 ?꾩뿉 ?좏샇瑜??ъ갑?섎뒗 ?쒖뒪?쒖쓣 吏?ν빀?덈떎.</p>
+                  <p className="text-sm text-slate-500 leading-relaxed">전문가의 직관에 의존하던 의사결정을 데이터 기반 인사이트로 전환합니다.</p>
+                  <p className="text-sm text-slate-500 leading-relaxed">문제가 발생한 뒤가 아니라, 위험이 커지기 전에 신호를 포착합니다.</p>
                </div>
                <button className="flex items-center space-x-3 text-[10px] uppercase tracking-widest font-bold text-white group">
                   <span className="bg-white text-black p-4 rounded-full group-hover:bg-slate-200 transition-all">
                     <i className="fas fa-plus"></i>
                   </span>
-                  <span>沅곴툑?섏떗?덇퉴?</span>
+                  <span>문의하기</span>
                </button>
             </div>
          </div>
@@ -535,9 +532,9 @@ const Landing: React.FC = () => {
       <section className="py-32 px-10 border-t border-white/5 bg-white/[0.01]">
          <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-end mb-20">
-               <h2 className="text-6xl serif font-light">?뚯떇??沅곴툑?섏떊媛??</h2>
+               <h2 className="text-6xl serif font-light">최신 인사이트</h2>
                <button className="px-6 py-2 border border-white/20 rounded-full text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all">
-                 紐⑤뱺 ?댁뒪移대뱶 蹂닿린 <i className="fas fa-arrow-right ml-2"></i>
+                 모든 뉴스 보기 <i className="fas fa-arrow-right ml-2"></i>
                </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -552,18 +549,18 @@ const Landing: React.FC = () => {
                      />
                   </div>
                   <div className="flex justify-between text-[10px] text-slate-500 uppercase tracking-widest mb-4"><span>RECENT</span><span>2026.01.26</span></div>
-                  <h3 className="text-3xl serif mb-4 group-hover:text-slate-300 transition-colors">?곗씠??湲곕컲 ?듯빀 由ъ뒪???좏샇 ?ъ갑</h3>
-                  <p className="text-slate-500 text-sm mb-6 max-w-xl">?щТ 吏?? ?꾧툑?먮쫫, ?몃? ?섍꼍 ?곗씠?곕? 寃고빀??湲곗뾽??援ъ“???꾪뿕 ?좏샇瑜?議곌린???앸퀎, <br/>?몄궗?댄듃瑜??쒓났?⑸땲??</p>
-                  <span className="text-[10px] uppercase tracking-widest font-bold border-b border-white/20 pb-1 group-hover:border-white transition-all">湲곗궗 ?쎄린</span>
+                  <h3 className="text-3xl serif mb-4 group-hover:text-slate-300 transition-colors">데이터 기반 통합 리스크 조기 경보</h3>
+                  <p className="text-slate-500 text-sm mb-6 max-w-xl">수요 지표, 공급망, 외부 환경 데이터를 결합해 기업 위험 신호를 조기에 포착합니다.</p>
+                  <span className="text-[10px] uppercase tracking-widest font-bold border-b border-white/20 pb-1 group-hover:border-white transition-all">기사 읽기</span>
                </div>
                <div className="space-y-12">
                   {[
-                    { date: '2025??12??18??, title: '?묒옄?꾩궛???덉륫?섎뒗 ?щТ ?⑦꽩 ?뺤옣' },
-                    { date: '2025??12??2??, title: '?ш굔???꾨땶 ?쒓컙?쇰줈 由ъ뒪?ъ쓽 ?먮쫫??蹂대떎' },
-                    { date: '2025??11??21??, title: 'AI 湲곕컲 湲곗뾽 由ъ뒪??遺꾩꽍, ?ㅻТ???곸슜?섎떎' }
+                    { date: '2025.12.18', title: '투자 리스크를 줄이는 공급망 확장 전략' },
+                    { date: '2025.12.02', title: '사건 이후가 아닌 사전 위험 예측의 중요성' },
+                    { date: '2025.11.21', title: 'AI 기반 기업 리스크 분석, 국내 적용 사례' }
                   ].map((item, i) => (
                     <div key={i} className="group cursor-pointer border-t border-white/10 pt-8">
-                      <div className="flex justify-between text-[9px] text-slate-600 uppercase tracking-[0.2em] mb-3"><span>?뚯떇</span><span>{item.date}</span></div>
+                      <div className="flex justify-between text-[9px] text-slate-600 uppercase tracking-[0.2em] mb-3"><span>뉴스</span><span>{item.date}</span></div>
                       <h4 className="text-xl serif leading-snug group-hover:text-slate-300 transition-colors">{item.title}</h4>
                       <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity"><i className="fas fa-arrow-right text-xs"></i></div>
                     </div>
@@ -579,7 +576,7 @@ const Landing: React.FC = () => {
             <img src="/img/robot.jpg" className="w-full h-full object-cover" />
          </div>
          <div className="relative z-10 max-w-3xl">
-            <h2 className="text-4xl md:text-5xl serif leading-tight mb-12">?곕━??湲곗뾽 ?ㅽ듃?뚰겕??遺덊솗?ㅼ꽦??<br/>?곗씠???명뀛由ъ쟾?ㅻ줈 <br/>?좎젣?곸쑝濡??댁꽍?⑸땲??</h2>
+            <h2 className="text-4xl md:text-5xl serif leading-tight mb-12">우리의 기업 네트워크는 불확실성을<br/>데이터 인텔리전스로<br/>해결합니다.</h2>
             <button 
               onClick={() => { setAuthMode('register'); setShowAuth(true); }}
               className="inline-flex items-center space-x-4 group"
@@ -594,15 +591,15 @@ const Landing: React.FC = () => {
       <footer className="pt-24 pb-12 px-10 bg-[#0a0a0a] border-t border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 text-[10px] uppercase tracking-widest text-slate-500">
-             <div className="md:col-span-4"><p className="mb-4">짤 2026 SENTINEL. All rights reserved.</p></div>
+             <div className="md:col-span-4"><p className="mb-4">© 2026 SENTINEL. All rights reserved.</p></div>
              <div className="md:col-span-2 flex flex-col space-y-2">
-                <span className="text-white font-bold mb-2">?섎윭蹂닿린</span>
+                <span className="text-white font-bold mb-2">둘러보기</span>
                 <a href="#" className="hover:text-white transition-colors">플랫폼</a>
-                <a href="#" className="hover:text-white transition-colors">?뚯궗</a>
+                <a href="#" className="hover:text-white transition-colors">회사</a>
                 <a href="#" className="hover:text-white transition-colors">뉴스룸</a>
              </div>
              <div className="md:col-span-2 flex flex-col space-y-2">
-                <span className="text-white font-bold mb-2">?곌껐</span>
+                <span className="text-white font-bold mb-2">연락처</span>
                 <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
                 <a href="#" className="hover:text-white transition-colors">X</a>
              </div>
@@ -614,4 +611,9 @@ const Landing: React.FC = () => {
 };
 
 export default Landing;
+
+
+
+
+
 
