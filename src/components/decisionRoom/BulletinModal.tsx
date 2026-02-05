@@ -20,11 +20,6 @@ const BulletinModal: React.FC<BulletinModalProps> = ({ open, bulletin, onClose, 
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
-  const resolveApiUrl = useCallback((path: string) => {
-    const baseUrl = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
-    return path.startsWith('http') ? path : `${baseUrl}${path}`;
-  }, []);
-
   const triggerDownload = (url: string, filename: string) => {
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -66,34 +61,21 @@ const BulletinModal: React.FC<BulletinModalProps> = ({ open, bulletin, onClose, 
       if (link.fileId) {
         setDownloadingId(link.fileId);
         try {
-          const token = getAuthToken();
-          const response = await fetch(resolveApiUrl(`/api/files/${link.fileId}`), {
-            method: 'GET',
-            headers: {
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            redirect: 'manual',
-          });
-
-          if (response.status === 302) {
-            const location =
-              response.headers.get('Location') ??
-              response.headers.get('location') ??
-              response.url;
-            if (location) {
-              triggerDownload(location, filename);
-              return;
-            }
+          const response = await getFileDownloadUrl(link.fileId);
+          const url = response?.url;
+          if (!url) {
+            throw new Error('download url missing');
           }
 
-          if (!response.ok) {
+          const downloadResponse = await fetch(url);
+          if (!downloadResponse.ok) {
             throw new Error('download failed');
           }
 
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          triggerDownload(url, filename);
-          URL.revokeObjectURL(url);
+          const blob = await downloadResponse.blob();
+          const objectUrl = URL.createObjectURL(blob);
+          triggerDownload(objectUrl, filename);
+          URL.revokeObjectURL(objectUrl);
         } catch (error) {
           setDownloadError('파일 다운로드에 실패했습니다.');
         } finally {
@@ -106,7 +88,7 @@ const BulletinModal: React.FC<BulletinModalProps> = ({ open, bulletin, onClose, 
         triggerDownload(link.url, filename);
       }
     },
-    [resolveApiUrl],
+    [],
   );
 
   if (!open || !bulletin) return null;
