@@ -72,7 +72,19 @@ const BulletinModal: React.FC<BulletinModalProps> = ({ open, bulletin, onClose, 
             headers: {
               ...(token ? { Authorization: `Bearer ${token}` } : {}),
             },
+            redirect: 'manual',
           });
+
+          if (response.status === 302) {
+            const location =
+              response.headers.get('Location') ??
+              response.headers.get('location') ??
+              response.url;
+            if (location) {
+              triggerDownload(location, filename);
+              return;
+            }
+          }
 
           if (!response.ok) {
             throw new Error('download failed');
