@@ -54,7 +54,46 @@ export const toMetricForecast = (forecast?: ForecastResponse) => {
       companyId: '',
     };
   }
-  return forecast;
+  const METRIC_LABEL_MAP: Record<string, string> = {
+    ROA: 'ROA',
+    ROE: 'ROE',
+    OpMargin: '매출액영업이익률',
+    DbRatio: '부채비율',
+    EqRatio: '자기자본비율',
+    CapImpRatio: '자본잠식률',
+    STDebtRatio: '단기차입금비율',
+    CurRatio: '유동비율',
+    QkRatio: '당좌비율',
+    CurLibRatio: '유동부채비율',
+    CFO_AsRatio: 'CFO 자산비율',
+    CFO_Sale: 'CFO 매출액비율',
+  };
+  const LABEL_KEY_MAP = Object.fromEntries(
+    Object.entries(METRIC_LABEL_MAP).map(([key, label]) => [label, key]),
+  ) as Record<string, string>;
+  const ALLOWED_METRIC_KEYS = Object.keys(METRIC_LABEL_MAP);
+  const METRIC_ORDER = new Map(
+    ALLOWED_METRIC_KEYS.map((key, index) => [key, index]),
+  );
+
+  const normalizedSeries = forecast.metricSeries
+    .map((series) => {
+      const normalizedKey =
+        METRIC_LABEL_MAP[series.key] ? series.key : LABEL_KEY_MAP[series.label] ?? series.key;
+      return {
+        ...series,
+        key: normalizedKey,
+        label: METRIC_LABEL_MAP[normalizedKey] ?? series.label,
+        unit: '%',
+      };
+    })
+    .filter((series) => ALLOWED_METRIC_KEYS.includes(series.key))
+    .sort((a, b) => (METRIC_ORDER.get(a.key) ?? 0) - (METRIC_ORDER.get(b.key) ?? 0));
+
+  return {
+    ...forecast,
+    metricSeries: normalizedSeries,
+  };
 };
 
 export const toMetricCards = (metrics?: MetricItem[]) => {
