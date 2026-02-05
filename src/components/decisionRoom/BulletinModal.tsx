@@ -93,16 +93,27 @@ const BulletinModal: React.FC<BulletinModalProps> = ({ open, bulletin, onClose, 
               <span className="text-slate-500">첨부 문서가 없습니다.</span>
             )}
             {(bulletin.links ?? []).map((link) => (
-              <button
+              <div
                 key={link.label}
-                type="button"
-                onClick={() => handleDownload(link)}
-                disabled={Boolean(link.fileId && downloadingId === link.fileId)}
-                className="flex items-center justify-between px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-white/30 transition"
+                className="flex items-center justify-between gap-3 px-4 py-2 rounded-lg bg-white/5 border border-white/10"
               >
-                <span>{link.label}</span>
-                <i className="fas fa-external-link-alt text-xs text-slate-500"></i>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => handleDownload(link)}
+                  disabled={Boolean(link.fileId && downloadingId === link.fileId)}
+                  className="flex-1 text-left text-sm text-slate-300 hover:text-white transition"
+                >
+                  {link.label}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDownload(link)}
+                  disabled={Boolean(link.fileId && downloadingId === link.fileId)}
+                  className="px-3 py-1 rounded-full border border-white/10 text-[10px] uppercase tracking-[0.2em] text-slate-300 hover:bg-white/10 transition"
+                >
+                  다운로드
+                </button>
+              </div>
             ))}
             {downloadError && <span className="text-rose-400 text-xs">{downloadError}</span>}
           </div>
