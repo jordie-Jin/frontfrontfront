@@ -63,6 +63,16 @@ const BASE_TIMELINE: CompanyTimelineItem[] = [
   { date: '2024-01-18', title: '파트너십 갱신 계약 체결', tone: 'positive' },
 ];
 
+const clampPercent = (value: number) => Math.max(1, Math.min(99, value));
+
+const makeSeriesPoints = (base: number) => [
+  { quarter: '2024Q4', value: clampPercent(base - 3), type: 'ACTUAL' as const },
+  { quarter: '2025Q1', value: clampPercent(base - 1), type: 'ACTUAL' as const },
+  { quarter: '2025Q2', value: clampPercent(base + 1), type: 'ACTUAL' as const },
+  { quarter: '2025Q3', value: clampPercent(base + 2), type: 'ACTUAL' as const },
+  { quarter: '2025Q4', value: clampPercent(base + 3), type: 'PRED' as const },
+];
+
 const makeForecast = (company: CompanySummary): ForecastResponse => ({
   companyId: company.id,
   latestActualQuarter: '2025Q3',
@@ -72,37 +82,73 @@ const makeForecast = (company: CompanySummary): ForecastResponse => ({
       key: 'ROA',
       label: 'ROA',
       unit: '%',
-      points: [
-        { quarter: '2024Q4', value: Math.max(1, company.overallScore / 20 - 0.3), type: 'ACTUAL' },
-        { quarter: '2025Q1', value: Math.max(1, company.overallScore / 20 - 0.1), type: 'ACTUAL' },
-        { quarter: '2025Q2', value: Math.max(1, company.overallScore / 20 + 0.2), type: 'ACTUAL' },
-        { quarter: '2025Q3', value: Math.max(1, company.overallScore / 20 + 0.1), type: 'ACTUAL' },
-        { quarter: '2025Q4', value: Math.max(1, company.overallScore / 20 + 0.3), type: 'PRED' },
-      ],
+      points: makeSeriesPoints(company.overallScore * 0.9),
     },
     {
-      key: 'CFO_MARGIN',
-      label: 'CFO/매출액 비율',
+      key: 'ROE',
+      label: 'ROE',
       unit: '%',
-      points: [
-        { quarter: '2024Q4', value: Math.max(3, company.overallScore / 3), type: 'ACTUAL' },
-        { quarter: '2025Q1', value: Math.max(3, company.overallScore / 3 + 1), type: 'ACTUAL' },
-        { quarter: '2025Q2', value: Math.max(3, company.overallScore / 3 + 2), type: 'ACTUAL' },
-        { quarter: '2025Q3', value: Math.max(3, company.overallScore / 3 + 1), type: 'ACTUAL' },
-        { quarter: '2025Q4', value: Math.max(3, company.overallScore / 3 + 2), type: 'PRED' },
-      ],
+      points: makeSeriesPoints(company.overallScore * 0.85 + 4),
     },
     {
-      key: 'EXT_REPUTATION_RISK',
-      label: '외부 평판 리스크',
-      unit: '점',
-      points: [
-        { quarter: '2024Q4', value: Math.min(100, company.overallScore + 6), type: 'ACTUAL' },
-        { quarter: '2025Q1', value: Math.min(100, company.overallScore + 4), type: 'ACTUAL' },
-        { quarter: '2025Q2', value: Math.min(100, company.overallScore + 2), type: 'ACTUAL' },
-        { quarter: '2025Q3', value: Math.min(100, company.overallScore + 3), type: 'ACTUAL' },
-        { quarter: '2025Q4', value: Math.min(100, company.overallScore + 1), type: 'PRED' },
-      ],
+      key: 'OpMargin',
+      label: '매출액영업이익률',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.7 + 6),
+    },
+    {
+      key: 'DbRatio',
+      label: '부채비율',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.95 - 6),
+    },
+    {
+      key: 'EqRatio',
+      label: '자기자본비율',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.75 + 10),
+    },
+    {
+      key: 'CapImpRatio',
+      label: '자본잠식률',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.6 + 8),
+    },
+    {
+      key: 'STDebtRatio',
+      label: '단기차입금비율',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.65 + 7),
+    },
+    {
+      key: 'CurRatio',
+      label: '유동비율',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.8 + 5),
+    },
+    {
+      key: 'QkRatio',
+      label: '당좌비율',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.78 + 3),
+    },
+    {
+      key: 'CurLibRatio',
+      label: '유동부채비율',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.7 + 9),
+    },
+    {
+      key: 'CFO_AsRatio',
+      label: 'CFO_자산비율',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.6 + 12),
+    },
+    {
+      key: 'CFO_Sale',
+      label: 'CFO_매출액비율',
+      unit: '%',
+      points: makeSeriesPoints(company.overallScore * 0.62 + 11),
     },
   ],
   modelInfo: {
