@@ -113,6 +113,13 @@ export async function deleteQaPost(postId: number | string): Promise<void> {
   qaStore = qaStore.filter((post) => post.id !== String(postId));
 }
 
+const toQaStatus = (value?: string): QaPost['status'] => {
+  const normalized = (value ?? '').toLowerCase();
+  if (normalized === 'answered') return 'answered';
+  if (normalized === 'pending') return 'pending';
+  return 'pending';
+};
+
 const mapPostToQaPost = (post: PostItem): QaPost => ({
   id: String(post.id),
   userId: post.userId,
@@ -121,7 +128,7 @@ const mapPostToQaPost = (post: PostItem): QaPost => ({
   author: `User ${post.userId}`,
   createdAt: post.createdAt,
   updatedAt: post.updatedAt,
-  status: 'pending',
+  status: toQaStatus(post.status),
   tags: post.isPinned ? ['pinned'] : undefined,
   replies: [],
 });
