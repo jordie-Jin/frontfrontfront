@@ -27,7 +27,7 @@ const AiCommentaryCard: React.FC<AiCommentaryCardProps> = ({
   if (variant === 'embedded') {
     return (
       <div
-        className={`flex h-[260px] flex-col rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur ${className ?? ''}`}
+        className={`flex h-[380px] flex-col rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur ${className ?? ''}`}
       >
         <div className="mb-3 flex items-center gap-2">
           <i className="fas fa-brain text-slate-500"></i>
