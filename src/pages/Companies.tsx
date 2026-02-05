@@ -7,6 +7,7 @@ import CompaniesHeader from '../components/companies/CompaniesHeader';
 import CompaniesTable from '../components/companies/CompaniesTable';
 import { logout } from '../services/auth';
 import { getCompanyOverview, listCompanies } from '../api/companies';
+import { getMockCompanyOverview, INITIAL_COMPANIES } from '../mocks/companies.mock';
 import { useCompaniesStore } from '../store/companiesStore';
 import { CompanyOverview, CompanySummary } from '../types/company';
 
@@ -20,6 +21,7 @@ const CompaniesPage: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [fallbackMessage, setFallbackMessage] = useState<string | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<CompanySummary | null>(null);
   const [detailState, setDetailState] = useState<{
     isLoading: boolean;
@@ -34,11 +36,13 @@ const CompaniesPage: React.FC = () => {
   const loadCompanies = async () => {
     setIsLoading(true);
     setError(null);
+    setFallbackMessage(null);
     try {
       const response = await listCompanies();
       setCompanies(response);
     } catch (err) {
-      setError('협력사 목록을 불러오는 중 문제가 발생했습니다.');
+      setCompanies(INITIAL_COMPANIES);
+      setFallbackMessage('협력사 API 응답 오류로 목 데이터를 표시하고 있어요.');
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +64,9 @@ const CompaniesPage: React.FC = () => {
         const detail = await getCompanyOverview(selectedCompany.id);
         setDetailState({ isLoading: false, error: null, data: detail });
       } catch (err) {
-        setDetailState({ isLoading: false, error: '요약 정보를 불러오지 못했습니다.', data: null });
+        const fallbackDetail = getMockCompanyOverview(selectedCompany.id);
+        setFallbackMessage('협력사 API 응답 오류로 목 데이터를 표시하고 있어요.');
+        setDetailState({ isLoading: false, error: null, data: fallbackDetail });
       }
     };
 
@@ -103,6 +109,11 @@ const CompaniesPage: React.FC = () => {
         emptyMessage={searchValue ? '검색 조건에 맞는 협력사가 없습니다.' : '등록된 협력사가 없습니다.'}
         onRetry={loadCompanies}
       >
+        {fallbackMessage && (
+          <div className="mb-4 rounded-2xl border border-amber-500/40 bg-amber-500/10 px-6 py-4 text-sm text-amber-100">
+            {fallbackMessage}
+          </div>
+        )}
         <CompaniesTable companies={filteredCompanies} onSelect={setSelectedCompany} />
       </AsyncState>
 

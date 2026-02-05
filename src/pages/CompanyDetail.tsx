@@ -5,6 +5,7 @@ import AsyncState from '../components/common/AsyncState';
 import MetricForecastChartPanel from '../components/companyDetail/MetricForecastChartPanel';
 import MetricsPanel from '../components/companyDetail/MetricsPanel';
 import { getCompanyOverview } from '../api/companies';
+import { getMockCompanyOverview } from '../mocks/companies.mock';
 import { CompanyOverview } from '../types/company';
 import {
   getCompanyStatusLabel,
@@ -27,6 +28,7 @@ const CompanyDetailPage: React.FC = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [fallbackMessage, setFallbackMessage] = useState<string | null>(null);
   const [detail, setDetail] = useState<CompanyOverview | null>(null);
 
   const loadDetail = async () => {
@@ -38,11 +40,14 @@ const CompanyDetailPage: React.FC = () => {
 
     setIsLoading(true);
     setError(null);
+    setFallbackMessage(null);
     try {
       const response = await getCompanyOverview(id);
       setDetail(response);
     } catch (err) {
-      setError('협력사 상세 정보를 불러오지 못했습니다.');
+      const fallbackDetail = getMockCompanyOverview(id);
+      setDetail(fallbackDetail);
+      setFallbackMessage('협력사 API 응답 오류로 목 데이터를 표시하고 있어요.');
     } finally {
       setIsLoading(false);
     }
@@ -66,6 +71,11 @@ const CompanyDetailPage: React.FC = () => {
         onRetry={loadDetail}
         emptyMessage="협력사 상세 정보가 없습니다."
       >
+        {fallbackMessage && (
+          <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 px-6 py-4 text-sm text-amber-100">
+            {fallbackMessage}
+          </div>
+        )}
         {detail && (
           <>
             <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
