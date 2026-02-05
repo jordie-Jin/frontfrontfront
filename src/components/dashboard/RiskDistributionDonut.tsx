@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import { Cell, Pie, PieChart, type PieLabelRenderProps, ResponsiveContainer } from 'recharts';
 import { RiskSegment } from '../../types/dashboard';
 
 type RiskKey = 'SAFE' | 'WARN' | 'RISK';
@@ -23,24 +23,18 @@ const COLORS: Record<RiskKey, string> = {
 const RADIAN = Math.PI / 180;
 
 const renderLabel = ({
-  cx,
-  cy,
-  midAngle,
-  outerRadius,
-  percent,
+  cx = 0,
+  cy = 0,
+  midAngle = 0,
+  outerRadius = 0,
+  percent = 0,
   name,
-}: {
-  cx: number;
-  cy: number;
-  midAngle: number;
-  outerRadius: number;
-  percent: number;
-  name: string;
-}) => {
+}: PieLabelRenderProps) => {
   const radius = outerRadius + 18;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
   const percentage = Number.isFinite(percent) ? Math.round(percent * 100) : 0;
+  const labelText = name ? String(name) : '';
 
   return (
     <text
@@ -51,7 +45,7 @@ const renderLabel = ({
       dominantBaseline="central"
       className="text-xs"
     >
-      {`${name} ${percentage}%`}
+      {`${labelText} ${percentage}%`}
     </text>
   );
 };

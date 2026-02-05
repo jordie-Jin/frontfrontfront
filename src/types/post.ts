@@ -22,7 +22,7 @@ export interface PostListData {
   last: boolean;
 }
 
-export interface PostListParams {
+export interface PostListParams extends Record<string, string | number | boolean | undefined> {
   page?: number;
   size?: number;
   sortBy?: string;
