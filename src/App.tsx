@@ -9,7 +9,7 @@ import NoticesPage from './pages/DecisionRoom/NoticesPage';
 import Landing from './pages/Landing';
 import AddCompany from './pages/companies/add';
 import VerifyEmail from './pages/auth/VerifyEmail';
-import { getStoredUser } from './src/services/auth';
+import { getStoredUser } from './services/auth';
 
 const SidebarItem = ({ to, icon, label }: { to: string; icon: string; label: string }) => {
   const location = useLocation();
