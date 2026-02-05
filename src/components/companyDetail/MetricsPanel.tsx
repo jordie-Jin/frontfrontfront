@@ -1,7 +1,7 @@
 import React from 'react';
 import { KpiTooltipContent } from '../../types/kpi';
 import { TrafficLight } from '../../utils/companySelectors';
-import IndicatorSignalList from '../kpi/IndicatorSignalList';
+import IndicatorSignalList, { type IndicatorSignalItem } from '../kpi/IndicatorSignalList';
 import KpiCard from '../kpi/KpiCard';
 
 interface MetricsPanelProps {
@@ -10,10 +10,10 @@ interface MetricsPanelProps {
 }
 
 const MetricsPanel: React.FC<MetricsPanelProps> = ({ metrics, signals }) => {
-  const signalItems = signals.map((signal) => ({
+  const signalItems: IndicatorSignalItem[] = signals.map((signal) => ({
     label: signal.label,
     status: signal.status === 'green' ? 'good' : signal.status === 'yellow' ? 'warn' : 'risk',
-    tooltip: signal.tooltip,
+    tooltip: signal.tooltip ?? { title: '', description: '' },
   }));
 
   return (

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { KpiTooltipContent } from '../../types/kpi';
 import KpiTooltip from './KpiTooltip';
 
-interface IndicatorSignalItem {
+export interface IndicatorSignalItem {
   label: string;
   status: 'good' | 'warn' | 'risk';
   tooltip: KpiTooltipContent;
