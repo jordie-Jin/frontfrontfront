@@ -46,6 +46,7 @@ export interface QaPostInput {
   title: string;
   body: string;
   author: string;
+  categoryId?: number;
 }
 
 export interface QaReplyInput {

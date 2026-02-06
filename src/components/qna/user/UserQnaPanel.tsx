@@ -85,11 +85,12 @@ const UserQnaPanel: React.FC<UserQnaPanelProps> = ({ api, currentUser }) => {
     setComposerError(null);
 
     try {
-      const created = await api.createPost({
-        title: composerTitle.trim(),
-        body: composerBody.trim(),
-        author: currentUser?.name ?? 'User',
-      });
+        const created = await api.createPost({
+          title: composerTitle.trim(),
+          body: composerBody.trim(),
+          author: currentUser?.name ?? 'User',
+          categoryId: 2,
+        });
       setQaPosts((prev) => [created, ...prev]);
       setSelectedPostId(created.id);
       setComposerTitle('');
