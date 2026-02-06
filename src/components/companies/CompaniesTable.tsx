@@ -27,7 +27,7 @@ const CompaniesTable: React.FC<CompaniesTableProps> = ({ companies, onSelect }) 
           <tr>
             <th className="px-6 py-4">협력사</th>
             <th className="px-6 py-4">산업군</th>
-            <th className="px-6 py-4">건강도</th>
+            <th className="px-6 py-4">내부 건강도</th>
             <th className="px-6 py-4">외부 건강도</th>
             <th className="px-6 py-4">상태</th>
             <th className="px-6 py-4">상세</th>
