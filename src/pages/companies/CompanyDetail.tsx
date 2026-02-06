@@ -1,19 +1,19 @@
 // 협력사 상세 페이지 컴포넌트입니다.
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import AsyncState from '../components/common/AsyncState';
-import MetricForecastChartPanel from '../components/companyDetail/MetricForecastChartPanel';
-import MetricsPanel from '../components/companyDetail/MetricsPanel';
-import { getCompanyOverview } from '../api/companies';
-import { getMockCompanyOverview } from '../mocks/companies.mock';
-import { CompanyOverview } from '../types/company';
+import AsyncState from '../../components/common/AsyncState';
+import MetricForecastChartPanel from '../../components/companyDetail/MetricForecastChartPanel';
+import MetricsPanel from '../../components/companyDetail/MetricsPanel';
+import { getCompanyOverview } from '../../api/companies';
+import { getMockCompanyOverview } from '../../mocks/companies.mock';
+import { CompanyOverview } from '../../types/company';
 import {
   getCompanyStatusFromHealth,
   getCompanyHealthScore,
   toMetricForecast,
   toMetricCards,
   toSignalCards,
-} from '../utils/companySelectors';
+} from '../../utils/companySelectors';
 
 const statusStyles: Record<string, string> = {
   정상: 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10',

@@ -1,15 +1,15 @@
 // 협력사 목록 페이지 컴포넌트입니다.
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AsyncState from '../components/common/AsyncState';
-import CompanyQuickViewDrawer from '../components/companies/CompanyQuickViewDrawer';
-import CompaniesHeader from '../components/companies/CompaniesHeader';
-import CompaniesTable from '../components/companies/CompaniesTable';
-import { logout } from '../services/auth';
-import { getCompanyOverview, listCompanies } from '../api/companies';
-import { getMockCompanyOverview, INITIAL_COMPANIES } from '../mocks/companies.mock';
-import { useCompaniesStore } from '../store/companiesStore';
-import { CompanyOverview, CompanySummary } from '../types/company';
+import AsyncState from '../../components/common/AsyncState';
+import CompanyQuickViewDrawer from '../../components/companies/CompanyQuickViewDrawer';
+import CompaniesHeader from '../../components/companies/CompaniesHeader';
+import CompaniesTable from '../../components/companies/CompaniesTable';
+import { logout } from '../../services/auth';
+import { getCompanyOverview, listCompanies } from '../../api/companies';
+import { getMockCompanyOverview, INITIAL_COMPANIES } from '../../mocks/companies.mock';
+import { useCompaniesStore } from '../../store/companiesStore';
+import { CompanyOverview, CompanySummary } from '../../types/company';
 
 const CompaniesPage: React.FC = () => {
   // TODO(API 연결):

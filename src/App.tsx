@@ -2,10 +2,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Dashboard from './pages/DashboardPage';
-import Companies from './pages/Companies';
-import CompanyDetail from './pages/CompanyDetail';
-import QnaPage from './pages/DecisionRoom/QnaPage';
-import NoticesPage from './pages/DecisionRoom/NoticesPage';
+import Companies from './pages/companies/Companies';
+import CompanyDetail from './pages/companies/CompanyDetail';
+import QnaPage from './pages/decisionRoom/QnaPage';
+import NoticesPage from './pages/decisionRoom/NoticesPage';
 import Landing from './pages/Landing';
 import AddCompany from './pages/companies/AddCompany';
 import VerifyEmail from './pages/auth/VerifyEmail';
