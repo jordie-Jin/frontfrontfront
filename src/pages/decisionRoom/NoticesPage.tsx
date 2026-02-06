@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import BulletinGrid from '../../components/decisionRoom/BulletinGrid';
 import BulletinModal from '../../components/decisionRoom/BulletinModal';
 import AsyncState from '../../components/common/AsyncState';
@@ -8,6 +9,7 @@ import { PostFileItem, PostItem } from '../../types/post';
 import { getStoredUser } from '../../services/auth';
 
 const NoticesPage: React.FC = () => {
+  const location = useLocation();
   const currentUser = getStoredUser();
   const role = currentUser?.role;
   const isAdmin = role === 'ADMIN' || role === 'ROLE_ADMIN';
@@ -72,8 +74,9 @@ const NoticesPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!location.pathname.startsWith('/decision-room/notices')) return;
     loadNotices();
-  }, [loadNotices]);
+  }, [loadNotices, location.pathname]);
 
   useEffect(() => {
     setCurrentPage(1);
