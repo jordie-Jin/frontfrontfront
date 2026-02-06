@@ -213,3 +213,27 @@ export function getMockQaPosts(): QaPost[] {
     },
   ];
 }
+
+const attachUserIds = (posts: QaPost[], userIds: Array<string | number>) => {
+  return posts.map((post, index) => ({
+    ...post,
+    userId: userIds[index % userIds.length],
+  }));
+};
+
+export function getMockQaPostsForUser(userId: string | number): QaPost[] {
+  if (decisionRoomMockOptions.emptyQa) {
+    return [];
+  }
+  return getMockQaPosts().map((post) => ({
+    ...post,
+    userId,
+  }));
+}
+
+export function getMockQaPostsForAdmin(): QaPost[] {
+  if (decisionRoomMockOptions.emptyQa) {
+    return [];
+  }
+  return attachUserIds(getMockQaPosts(), [101, 102, 103, 104, 105]);
+}

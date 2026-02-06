@@ -9,6 +9,7 @@ import { AuthUser } from '../../../types/auth';
 type UserQnaApi = {
   listPosts: () => Promise<QaPost[]>;
   createPost: (input: QaPostInput) => Promise<QaPost>;
+  wasFallback?: () => boolean;
 };
 
 interface UserQnaPanelProps {
@@ -27,6 +28,7 @@ const UserQnaPanel: React.FC<UserQnaPanelProps> = ({ api, currentUser }) => {
   const [composerTitle, setComposerTitle] = useState<string>('');
   const [composerBody, setComposerBody] = useState<string>('');
   const [composerError, setComposerError] = useState<string | null>(null);
+  const [isFallback, setIsFallback] = useState(false);
 
   const loadQaPosts = useCallback(async () => {
     setIsLoadingQa(true);
@@ -35,6 +37,7 @@ const UserQnaPanel: React.FC<UserQnaPanelProps> = ({ api, currentUser }) => {
     try {
       const response = await api.listPosts();
       setQaPosts(response);
+      setIsFallback(api.wasFallback?.() ?? false);
       if (!selectedPostId && response.length > 0) {
         setSelectedPostId(response[0].id);
       }
@@ -99,6 +102,11 @@ const UserQnaPanel: React.FC<UserQnaPanelProps> = ({ api, currentUser }) => {
 
   return (
     <div className="space-y-6">
+      {isFallback && (
+        <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 px-6 py-4 text-sm text-amber-100">
+          Q&amp;A 데이터를 불러오지 못해 임시 데이터를 표시하고 있습니다.
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h3 className="text-2xl font-light serif text-white mb-2">Company Q&amp;A</h3>
