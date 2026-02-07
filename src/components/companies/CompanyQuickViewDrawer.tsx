@@ -1,16 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CompanyOverview, CompanySummary } from '../../types/company';
+import { CompanyInsightItem, CompanyOverview, CompanySummary } from '../../types/company';
 import {
   getCompanyHealthScore,
   getCompanyStatusFromHealth,
   getHealthTone,
 } from '../../utils/companySelectors';
-import { getCompanyTimeline } from '../../mocks/companies.mock';
 
 interface CompanyQuickViewDrawerProps {
   isOpen: boolean;
   detail?: CompanyOverview | null;
+  newsItems?: CompanyInsightItem[];
   isLoading: boolean;
   error?: string | null;
   onClose: () => void;
@@ -25,6 +25,7 @@ const toneColor: Record<string, string> = {
 const CompanyQuickViewDrawer: React.FC<CompanyQuickViewDrawerProps> = ({
   isOpen,
   detail,
+  newsItems = [],
   isLoading,
   error,
   onClose,
@@ -34,7 +35,14 @@ const CompanyQuickViewDrawer: React.FC<CompanyQuickViewDrawerProps> = ({
   }
 
   const summary = detail?.company;
-  const timeline = summary ? getCompanyTimeline(summary.id) : [];
+  const newsTimeline = newsItems
+    .filter((item) => item.type === 'NEWS')
+    .slice(0, 6)
+    .map((item) => ({
+      title: item.title,
+      date: item.publishedAt ?? '—',
+      tone: 'neutral' as const,
+    }));
   const summaryAsPreview: CompanySummary | null = summary
     ? {
         id: summary.id,
@@ -121,13 +129,16 @@ const CompanyQuickViewDrawer: React.FC<CompanyQuickViewDrawerProps> = ({
             </div>
 
             <div>
-              <h4 className="text-[11px] uppercase tracking-[0.3em] text-slate-500">주요 이력</h4>
+              <h4 className="text-[11px] uppercase tracking-[0.3em] text-slate-500">주요 뉴스</h4>
               <div className="mt-6 space-y-6">
-                {timeline.map((item, index) => (
+                {newsTimeline.length === 0 && (
+                  <div className="text-sm text-slate-500">표시할 뉴스가 없습니다.</div>
+                )}
+                {newsTimeline.map((item, index) => (
                   <div key={`${item.date}-${index}`} className="flex gap-4">
                     <div className="flex flex-col items-center">
                       <span className={`mt-1 h-2 w-2 rounded-full ${toneColor[item.tone]}`} />
-                      {index < timeline.length - 1 && <span className="mt-2 h-full w-px bg-white/10" />}
+                      {index < newsTimeline.length - 1 && <span className="mt-2 h-full w-px bg-white/10" />}
                     </div>
                     <div>
                       <p className="text-sm text-slate-200">{item.title}</p>

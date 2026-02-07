@@ -6,10 +6,14 @@ import CompanyQuickViewDrawer from '../../components/companies/CompanyQuickViewD
 import CompaniesHeader from '../../components/companies/CompaniesHeader';
 import CompaniesTable from '../../components/companies/CompaniesTable';
 import { logout } from '../../services/auth';
-import { getCompanyOverview, listCompanies } from '../../api/companies';
-import { getMockCompanyOverview, INITIAL_COMPANIES } from '../../mocks/companies.mock';
+import { getCompanyInsights, getCompanyOverview, listCompanies } from '../../api/companies';
+import {
+  getMockCompanyInsights,
+  getMockCompanyOverview,
+  INITIAL_COMPANIES,
+} from '../../mocks/companies.mock';
 import { useCompaniesStore } from '../../store/companiesStore';
-import { CompanyOverview, CompanySummary } from '../../types/company';
+import { CompanyInsightItem, CompanyOverview, CompanySummary } from '../../types/company';
 
 const CompaniesPage: React.FC = () => {
   // TODO(API 연결):
@@ -31,6 +35,15 @@ const CompaniesPage: React.FC = () => {
     isLoading: false,
     error: null,
     data: null,
+  });
+  const [insightsState, setInsightsState] = useState<{
+    isLoading: boolean;
+    error: string | null;
+    data: CompanyInsightItem[];
+  }>({
+    isLoading: false,
+    error: null,
+    data: [],
   });
 
   const loadCompanies = async () => {
@@ -55,11 +68,13 @@ const CompaniesPage: React.FC = () => {
   useEffect(() => {
     if (!selectedCompany) {
       setDetailState({ isLoading: false, error: null, data: null });
+      setInsightsState({ isLoading: false, error: null, data: [] });
       return;
     }
 
     const fetchDetail = async () => {
       setDetailState({ isLoading: true, error: null, data: null });
+      setInsightsState({ isLoading: true, error: null, data: [] });
       try {
         const detail = await getCompanyOverview(selectedCompany.id);
         setDetailState({ isLoading: false, error: null, data: detail });
@@ -67,6 +82,14 @@ const CompaniesPage: React.FC = () => {
         const fallbackDetail = getMockCompanyOverview(selectedCompany.id);
         setFallbackMessage('협력사 API 응답 오류로 목 데이터를 표시하고 있어요.');
         setDetailState({ isLoading: false, error: null, data: fallbackDetail });
+      }
+
+      try {
+        const response = await getCompanyInsights(selectedCompany.id);
+        setInsightsState({ isLoading: false, error: null, data: response ?? [] });
+      } catch (err) {
+        const fallbackInsights = getMockCompanyInsights(selectedCompany.id);
+        setInsightsState({ isLoading: false, error: null, data: fallbackInsights });
       }
     };
 
@@ -120,6 +143,7 @@ const CompaniesPage: React.FC = () => {
       <CompanyQuickViewDrawer
         isOpen={Boolean(selectedCompany)}
         detail={detailState.data}
+        newsItems={insightsState.data}
         isLoading={detailState.isLoading}
         error={detailState.error}
         onClose={() => setSelectedCompany(null)}
