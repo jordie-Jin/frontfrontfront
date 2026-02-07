@@ -197,7 +197,77 @@ const makeKeyMetrics = (company: CompanySummary): MetricItem[] => [
 
 const makeSignals = (): SignalLight[] => [
   {
-    key: 'current_ratio',
+    key: 'ROA',
+    label: 'ROA',
+    level: 'GREEN',
+    tooltip: {
+      description: '총자산 대비 순이익 비율입니다.',
+      interpretation: '높을수록 자산 활용 효율이 좋습니다.',
+      actionHint: '하락 시 자산 회전율과 수익 구조를 점검하세요.',
+    },
+  },
+  {
+    key: 'ROE',
+    label: 'ROE',
+    level: 'YELLOW',
+    tooltip: {
+      description: '자기자본 대비 순이익 비율입니다.',
+      interpretation: '급락은 자본 효율 둔화를 의미합니다.',
+      actionHint: '수익성 저하 요인과 재무 레버리지 변화를 확인하세요.',
+    },
+  },
+  {
+    key: 'OpMargin',
+    label: '매출액영업이익률',
+    level: 'GREEN',
+    tooltip: {
+      description: '매출 대비 영업이익이 차지하는 비율입니다.',
+      interpretation: '하락은 수익성 둔화 신호입니다.',
+      actionHint: '원가율과 고정비 변화를 함께 확인하세요.',
+    },
+  },
+  {
+    key: 'DbRatio',
+    label: '부채비율',
+    level: 'RED',
+    tooltip: {
+      description: '자기자본 대비 총부채 비율입니다.',
+      interpretation: '높을수록 재무 위험이 커집니다.',
+      actionHint: '차입 구조와 상환 계획을 점검하세요.',
+    },
+  },
+  {
+    key: 'EqRatio',
+    label: '자기자본비율',
+    level: 'GREEN',
+    tooltip: {
+      description: '총자산 대비 자기자본이 차지하는 비중입니다.',
+      interpretation: '낮을수록 재무 레버리지 의존도가 큽니다.',
+      actionHint: '부채 구조와 자본 확충 계획을 검토하세요.',
+    },
+  },
+  {
+    key: 'CapImpRatio',
+    label: '자본잠식률',
+    level: 'RED',
+    tooltip: {
+      description: '자본금 대비 누적 결손의 비율입니다.',
+      interpretation: '높을수록 재무 건전성이 취약합니다.',
+      actionHint: '손익 구조 개선과 자본 확충 방안을 검토하세요.',
+    },
+  },
+  {
+    key: 'STDebtRatio',
+    label: '단기차입금비율',
+    level: 'YELLOW',
+    tooltip: {
+      description: '총차입금 중 단기차입금이 차지하는 비율입니다.',
+      interpretation: '높을수록 만기 리스크가 커집니다.',
+      actionHint: '차입 만기 분산과 재조달 계획을 확인하세요.',
+    },
+  },
+  {
+    key: 'CurRatio',
     label: '유동비율',
     level: 'GREEN',
     tooltip: {
@@ -207,37 +277,17 @@ const makeSignals = (): SignalLight[] => [
     },
   },
   {
-    key: 'cfo_sales_ratio',
-    label: 'CFO / 매출액 비율',
-    level: 'GREEN',
-    tooltip: {
-      description: '영업활동 현금흐름이 매출에서 차지하는 비중입니다.',
-      interpretation: '낮을수록 매출 대비 현금 창출력이 약합니다.',
-      actionHint: '매출채권 회수와 재고 회전 속도를 확인하세요.',
-    },
-  },
-  {
-    key: 'equity_ratio',
-    label: '자기자본비율',
+    key: 'QkRatio',
+    label: '당좌비율',
     level: 'YELLOW',
     tooltip: {
-      description: '총자산 대비 자기자본이 차지하는 비중입니다.',
-      interpretation: '낮을수록 재무 레버리지 의존도가 큽니다.',
-      actionHint: '부채 구조와 자본 확충 계획을 검토하세요.',
+      description: '재고자산을 제외한 유동자산의 상환 능력입니다.',
+      interpretation: '낮아질수록 단기 유동성 위험이 증가합니다.',
+      actionHint: '현금성 자산 비중과 단기 부채 구조를 확인하세요.',
     },
   },
   {
-    key: 'short_term_debt',
-    label: '단기차입금 비중',
-    level: 'YELLOW',
-    tooltip: {
-      description: '총차입금 중 단기차입금이 차지하는 비율입니다.',
-      interpretation: '높을수록 만기 리스크가 커집니다.',
-      actionHint: '차입 만기 분산과 재조달 계획을 확인하세요.',
-    },
-  },
-  {
-    key: 'current_liability_ratio',
+    key: 'CurLibRatio',
     label: '유동부채비율',
     level: 'RED',
     tooltip: {
@@ -247,13 +297,33 @@ const makeSignals = (): SignalLight[] => [
     },
   },
   {
-    key: 'operating_margin',
-    label: '매출액영업이익률',
+    key: 'CFO_AsRatio',
+    label: 'CFO_자산비율',
+    level: 'GREEN',
+    tooltip: {
+      description: '영업활동 현금흐름이 자산 대비 얼마나 생성되는지 나타냅니다.',
+      interpretation: '낮을수록 자산 대비 현금 창출력이 약합니다.',
+      actionHint: '현금흐름 개선 계획과 자산 효율을 점검하세요.',
+    },
+  },
+  {
+    key: 'CFO_Sale',
+    label: 'CFO_매출액비율',
+    level: 'YELLOW',
+    tooltip: {
+      description: '영업활동 현금흐름이 매출에서 차지하는 비중입니다.',
+      interpretation: '낮을수록 매출 대비 현금 창출력이 약합니다.',
+      actionHint: '매출채권 회수와 재고 회전 속도를 확인하세요.',
+    },
+  },
+  {
+    key: 'CFO_GR',
+    label: 'CFO증감률',
     level: 'RED',
     tooltip: {
-      description: '매출 대비 영업이익이 차지하는 비율입니다.',
-      interpretation: '하락은 수익성 둔화 신호입니다.',
-      actionHint: '원가율과 고정비 변화를 함께 확인하세요.',
+      description: '영업활동 현금흐름의 증감율을 의미합니다.',
+      interpretation: '급락은 현금흐름 리스크 확대 신호입니다.',
+      actionHint: '현금흐름 악화 원인과 비용 구조를 점검하세요.',
     },
   },
 ];

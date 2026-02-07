@@ -13,6 +13,7 @@ type AdminQnaApi = {
     createdAt: string;
     body: string;
   }>;
+  deletePost?: (categoryName: string, postId: string | number) => Promise<void>;
   wasFallback?: () => boolean;
 };
 

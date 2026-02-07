@@ -59,7 +59,7 @@ const NoticesPage: React.FC = () => {
     setErrorNotices(null);
 
     try {
-      const response = await listPosts({
+      const response = await listPosts('notices', {
         page: 1,
         size: 50,
         sortBy: 'createdAt',
@@ -211,8 +211,7 @@ const NoticesPage: React.FC = () => {
 
     try {
       if (editingPost) {
-        const updated = await updatePost(editingPost.id, {
-          categoryId: editingPost.categoryId,
+        const updated = await updatePost('notices', editingPost.id, {
           title: editorTitle.trim(),
           content: editorContent.trim(),
         });
@@ -225,8 +224,7 @@ const NoticesPage: React.FC = () => {
           await loadNoticeFiles(String(updated.id));
         }
       } else {
-        const created = await createPost({
-          categoryId: 1,
+        const created = await createPost('notices', {
           title: editorTitle.trim(),
           content: editorContent.trim(),
         });
@@ -247,7 +245,7 @@ const NoticesPage: React.FC = () => {
     if (!selectedNoticeId) return;
     if (!window.confirm('이 공지를 삭제하시겠습니까?')) return;
     try {
-      await deletePost(selectedNoticeId);
+      await deletePost('notices', selectedNoticeId);
       setPosts((prev) => prev.filter((item) => String(item.id) !== selectedNoticeId));
       setSelectedNoticeId(null);
     } catch (error) {
