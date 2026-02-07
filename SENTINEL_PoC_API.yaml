@@ -298,6 +298,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/QaReplyResponse'
 
+  /dashboard/risk-records:
+    get:
+      tags: [Dashboard]
+      summary: Dashboard risk records for dwell time
+      description: Returns company risk records by quarter for dwell time calculation.
+      parameters:
+        - in: query
+          name: range
+          required: false
+          schema:
+            type: string
+          description: Quarter range string (e.g., 2024Q1~2025Q4)
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Risk records list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompanyQuarterRisk'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -592,6 +619,21 @@ components:
           nullable: true
         timestamp:
           type: string
+
+    CompanyQuarterRisk:
+      type: object
+      properties:
+        companyId:
+          type: string
+        companyName:
+          type: string
+        quarter:
+          type: string
+          description: Quarter label formatted as YYYYQn
+          example: 2025Q1
+        riskLevel:
+          type: string
+          enum: [MIN, WARN, RISK]
 
     CompanyInsightItem:
       type: object

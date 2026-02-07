@@ -5,11 +5,12 @@ import DashboardHeader from '../components/dashboard/DashboardHeader';
 import KpiCards from '../components/dashboard/KpiCards';
 import RiskStatusTrendCard from '../features/dashboard/risk-status-trend/RiskStatusTrendCard';
 import RiskDistributionCard from '../components/dashboard/RiskDistributionCard';
-import { getDashboardSummary } from '../api/companies';
+import { getDashboardRiskRecords, getDashboardSummary } from '../api/companies';
 import { companyRiskQuarterlyMock } from '../mocks/companyRiskQuarterly.mock';
 import { getMockDashboardSummary } from '../mocks/dashboardSummary.mock';
 import { getStoredUser, logout } from '../services/auth';
 import { DashboardSummary, RiskDistribution } from '../types/dashboard';
+import { CompanyQuarterRisk } from '../types/risk';
 
 const buildRiskDistribution = (summary: DashboardSummary): RiskDistribution => {
   const { NORMAL, CAUTION, RISK } = summary.riskStatusDistribution;
@@ -33,6 +34,7 @@ const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardSummary | null>(null);
   const [riskDistribution, setRiskDistribution] = useState<RiskDistribution | null>(null);
+  const [riskRecords, setRiskRecords] = useState<CompanyQuarterRisk[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [fallbackMessage, setFallbackMessage] = useState<string | null>(null);
@@ -47,10 +49,17 @@ const DashboardPage: React.FC = () => {
       const response = await getDashboardSummary();
       setData(response);
       setRiskDistribution(buildRiskDistribution(response));
+      try {
+        const riskResponse = await getDashboardRiskRecords({ limit: 200 });
+        setRiskRecords(riskResponse);
+      } catch (riskError) {
+        setRiskRecords(companyRiskQuarterlyMock);
+      }
     } catch (error) {
       const fallback = getMockDashboardSummary();
       setData(fallback);
       setRiskDistribution(buildRiskDistribution(fallback));
+      setRiskRecords(companyRiskQuarterlyMock);
       setFallbackMessage('대시보드 API 응답 오류로 목 데이터를 표시하고 있어요.');
     } finally {
       setIsLoading(false);
@@ -123,7 +132,7 @@ const DashboardPage: React.FC = () => {
               {fallbackMessage}
             </div>
           )}
-          <KpiCards kpis={data.kpis} riskRecords={companyRiskQuarterlyMock} />
+          <KpiCards kpis={data.kpis} riskRecords={riskRecords} />
 
           {emptyState && (
             <div className="glass-panel p-10 rounded-2xl text-center text-slate-400 mb-10">
@@ -133,7 +142,7 @@ const DashboardPage: React.FC = () => {
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <RiskStatusTrendCard />
+            <RiskStatusTrendCard summary={data} />
             <RiskDistributionCard distribution={riskDistribution} />
           </div>
         </div>

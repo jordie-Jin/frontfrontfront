@@ -10,6 +10,7 @@ import {
   UpdateRequestCreate,
 } from '../types/company';
 import { DashboardSummary } from '../types/dashboard';
+import { CompanyQuarterRisk } from '../types/risk';
 
 export const searchCompanies = async (params: {
   keyword: string;
@@ -60,6 +61,12 @@ export const getCompanyInsights = async (
 export const getDashboardSummary = async (): Promise<DashboardSummary> => {
   // TODO(API 연결): 더미 데이터 제거 후 이 함수 사용
   return apiGet<DashboardSummary>('/api/dashboard/summary');
+};
+
+export const getDashboardRiskRecords = async (
+  params?: { range?: string; limit?: number }
+): Promise<CompanyQuarterRisk[]> => {
+  return apiGet<CompanyQuarterRisk[]>('/api/dashboard/risk-records', params);
 };
 
 export const createUpdateRequest = async (
