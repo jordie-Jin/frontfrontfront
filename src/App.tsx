@@ -1,6 +1,13 @@
 // 메인 애플리케이션 셸로 라우팅과 대시보드 레이아웃을 구성합니다.
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import Dashboard from './pages/DashboardPage';
 import Companies from './pages/companies/Companies';
 import CompanyDetail from './pages/companies/CompanyDetail';
@@ -13,11 +20,18 @@ import { getStoredUser } from './services/auth';
 
 const SidebarItem = ({ to, icon, label }: { to: string; icon: string; label: string }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isActive = location.pathname.startsWith(to);
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isActive) return;
+    event.preventDefault();
+    navigate(to, { replace: true, state: { resetKey: Date.now() } });
+  };
 
   return (
     <Link
       to={to}
+      onClick={handleClick}
       className={`flex items-center space-x-4 px-6 py-4 transition-all duration-300 ${
         isActive ? 'sidebar-active text-white bg-white/5' : 'text-slate-500 hover:text-slate-300'
       }`}
@@ -29,9 +43,16 @@ const SidebarItem = ({ to, icon, label }: { to: string; icon: string; label: str
 };
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
   const user = getStoredUser();
   const displayName = user?.name ?? user?.email ?? 'Unknown User';
   const displayMeta = user?.email ?? 'Signed in';
+  const resetKey = (location.state as { resetKey?: number } | null)?.resetKey;
+
+  useEffect(() => {
+    if (!resetKey) return;
+    window.scrollTo(0, 0);
+  }, [resetKey]);
 
   return (
     <div className="flex h-screen w-full bg-[#050505]">

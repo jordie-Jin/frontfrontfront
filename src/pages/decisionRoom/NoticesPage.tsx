@@ -24,6 +24,7 @@ const NoticesPage: React.FC = () => {
   const currentUser = getStoredUser();
   const role = currentUser?.role;
   const isAdmin = role === 'ADMIN' || role === 'ROLE_ADMIN';
+  const resetKey = (location.state as { resetKey?: number } | null)?.resetKey;
   const [noticeMode, setNoticeMode] = useState<'active' | 'archive'>('active');
   const [posts, setPosts] = useState<PostItem[]>([]);
   const [selectedNoticeId, setSelectedNoticeId] = useState<string | null>(null);
@@ -95,6 +96,12 @@ const NoticesPage: React.FC = () => {
     if (!location.pathname.startsWith('/decision-room/notices')) return;
     loadNotices();
   }, [loadNotices, location.pathname]);
+
+  useEffect(() => {
+    if (!resetKey) return;
+    setSelectedNoticeId(null);
+    setEditorOpen(false);
+  }, [resetKey]);
 
   useEffect(() => {
     setCurrentPage(1);
