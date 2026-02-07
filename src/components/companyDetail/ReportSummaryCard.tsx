@@ -46,7 +46,7 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
       </div>
       {isOpen && (
         <div className="flex-1 overflow-y-auto pr-2">
-          <p className="text-sm leading-relaxed text-slate-200 whitespace-pre-line">{fallbackSummary}</p>
+          <p className="text-base leading-relaxed text-slate-200 whitespace-pre-line">{fallbackSummary}</p>
           {summary.trim().length === 0 && (
             <ul className="mt-3 list-disc space-y-1 pl-4 text-[11px] text-slate-400">
               {bulletItems.length > 0 ? (

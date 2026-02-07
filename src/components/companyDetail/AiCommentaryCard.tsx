@@ -53,7 +53,7 @@ const AiCommentaryCard: React.FC<AiCommentaryCardProps> = ({
         </div>
         {isOpen && (
           <div className="flex-1 overflow-y-auto pr-2">
-            <p className="text-sm leading-relaxed text-slate-200 whitespace-pre-line">
+            <p className="text-base leading-relaxed text-slate-200 whitespace-pre-line">
               {displayCommentary}
             </p>
             {commentary.trim().length === 0 && (
