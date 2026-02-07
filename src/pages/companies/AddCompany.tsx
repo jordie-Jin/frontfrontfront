@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import AddCompanyForm from '../../components/companies/AddCompanyForm';
 import SearchResultList from '../../components/companies/SearchResultList';
 import SelectedCompanyPanel from '../../components/companies/SelectedCompanyPanel';
@@ -21,6 +21,7 @@ const AddCompanyPage: React.FC = () => {
   const [confirmResult, setConfirmResult] = useState<CompanyConfirmResult | null>(null);
   const [companyOverview, setCompanyOverview] = useState<CompanyOverview | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
+  const overviewCacheRef = useRef<Record<string, CompanyOverview>>({});
 
   const { items, total, isLoading, error, hasSearched, search, clear } = useCompanySearch();
   const { selectedCompany, selectCompany, clearSelection } = useCompanySelection();
@@ -87,9 +88,16 @@ const AddCompanyPage: React.FC = () => {
         setCompletionMessage('분석이 진행 중입니다. 완료되면 다시 확인해 주세요.');
         // TODO(API 연결): PROCESSING 상태일 때 폴링/재요청 로직 추가
       } else {
-        const overview = await getCompanyOverview(result.companyId);
-        setCompanyOverview(overview);
-        setCompletionMessage('완료: 기존 분석 결과를 불러왔습니다.');
+        const cachedOverview = overviewCacheRef.current[result.companyId];
+        if (cachedOverview) {
+          setCompanyOverview(cachedOverview);
+          setCompletionMessage('이미 불러온 기업입니다.');
+        } else {
+          const overview = await getCompanyOverview(result.companyId);
+          overviewCacheRef.current[result.companyId] = overview;
+          setCompanyOverview(overview);
+          setCompletionMessage('완료: 기존 분석 결과를 불러왔습니다.');
+        }
       }
     } catch (err) {
       setConfirmError('확인 단계 처리에 실패했습니다. 다시 시도해 주세요.');

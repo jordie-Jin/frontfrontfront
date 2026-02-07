@@ -399,7 +399,7 @@ const NoticesPage: React.FC = () => {
         open={Boolean(selectedNoticeId)}
         bulletin={selectedNotice}
         onClose={() => setSelectedNoticeId(null)}
-        onDelete={handleDelete}
+        onDelete={isAdmin ? handleDelete : undefined}
       />
 
       {editorOpen && (
