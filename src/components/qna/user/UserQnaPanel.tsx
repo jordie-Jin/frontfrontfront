@@ -53,7 +53,9 @@ const UserQnaPanel: React.FC<UserQnaPanelProps> = ({ api, currentUser }) => {
     const searchLower = qaSearch.trim().toLowerCase();
     return qaPosts.filter((post) => {
       if (!currentUser?.id) return false;
-      if (String(post.userId) !== String(currentUser.id)) return false;
+      if (post.userId !== undefined && String(post.userId) !== String(currentUser.id)) {
+        return false;
+      }
       const statusMatch = qaStatusFilter === 'all' || post.status === qaStatusFilter;
       if (!statusMatch) return false;
       if (!searchLower) return true;
