@@ -222,22 +222,24 @@ const AdminQnaPanel: React.FC<AdminQnaPanelProps> = ({ api }) => {
           onAddReply={handleAddReply}
           errorMessage={replyError}
           canReply
+          actionSlot={
+            selectedPost && api.deletePost ? (
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleDeletePost}
+                  disabled={isDeleting}
+                  className="rounded-full border border-rose-500/40 px-5 py-2 text-[10px] font-bold uppercase tracking-[0.3em] text-rose-200 transition hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isDeleting ? '삭제 중' : '질문 삭제'}
+                </button>
+                {deleteError && (
+                  <span className="text-xs text-rose-300">{deleteError}</span>
+                )}
+              </div>
+            ) : null
+          }
         />
-        {deleteError && (
-          <div className="rounded-2xl border border-rose-500/40 bg-rose-500/10 px-6 py-4 text-sm text-rose-100">
-            {deleteError}
-          </div>
-        )}
-        {selectedPost && api.deletePost && (
-          <button
-            type="button"
-            onClick={handleDeletePost}
-            disabled={isDeleting}
-            className="w-full rounded-full border border-rose-500/40 px-6 py-4 text-xs font-bold uppercase tracking-[0.3em] text-rose-200 transition hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isDeleting ? '삭제 중' : '질문 삭제'}
-          </button>
-        )}
       </div>
     </div>
   );
