@@ -45,7 +45,6 @@ const CompanyDetailPage: React.FC = () => {
   const [detail, setDetail] = useState<CompanyOverview | null>(null);
   const [insights, setInsights] = useState<CompanyInsightItem[]>([]);
   const [insightsFallbackMessage, setInsightsFallbackMessage] = useState<string | null>(null);
-  const [downloadError, setDownloadError] = useState<string | null>(null);
   const [isReportGenerating, setIsReportGenerating] = useState(false);
   const [reportStatusMessage, setReportStatusMessage] = useState<string | null>(null);
   const [reportYear, setReportYear] = useState<number | null>(null);
@@ -321,30 +320,6 @@ const CompanyDetailPage: React.FC = () => {
     }
   };
 
-  const handleDownloadReport = async () => {
-    if (!detail) {
-      return;
-    }
-
-    setDownloadError(null);
-    try {
-      const year = reportYear ?? resolveReportPeriod(detail).year;
-      const quarter = reportQuarter ?? resolveReportPeriod(detail).quarter;
-    const companyCode = detail.company.id;
-      const blob = await downloadCompanyAiReport(companyCode, { year, quarter });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${detail.company.name.replace(/\s+/g, '')}_AI리포트.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    } catch (downloadErr) {
-      setDownloadError('AI 리포트 다운로드에 실패했습니다.');
-    }
-  };
-
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
       <AsyncState
@@ -431,17 +406,6 @@ const CompanyDetailPage: React.FC = () => {
                   <i className={`fas ${isReportGenerating ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'} text-xs`}></i>
                   {isReportGenerating ? 'AI 분석 리포트 생성 중' : 'AI 분석 리포트 생성'}
                 </button>
-                <button
-                  type="button"
-                  onClick={handleDownloadReport}
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] uppercase tracking-[0.3em] text-white transition hover:border-white/30 hover:bg-white/10"
-                >
-                  <i className="fas fa-download text-xs"></i>
-                  분석 보고서 다운로드
-                </button>
-                {downloadError && (
-                  <span className="text-xs text-rose-300">{downloadError}</span>
-                )}
                 {reportStatusMessage && (
                   <span className="text-xs text-slate-400">{reportStatusMessage}</span>
                 )}
