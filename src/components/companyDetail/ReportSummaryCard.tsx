@@ -15,11 +15,18 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
 }) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [maxHeight, setMaxHeight] = useState('0px');
-  const lines = summary
+  const normalizedSummary = summary
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\r\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  const lines = normalizedSummary
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean);
-  const fallbackSummary = summary.trim().length > 0 ? summary : '사업보고서 요약을 불러오는 중입니다.';
+  const fallbackSummary =
+    normalizedSummary.length > 0 ? normalizedSummary : '사업보고서 요약을 불러오는 중입니다.';
   const bulletItems = lines.slice(1, 3);
 
   useEffect(() => {
@@ -56,8 +63,10 @@ const ReportSummaryCard: React.FC<ReportSummaryCardProps> = ({
         style={{ maxHeight, opacity: isOpen ? 1 : 0 }}
       >
         <div ref={contentRef} className="max-h-[380px] overflow-y-auto pr-2">
-          <p className="text-base leading-relaxed text-slate-200 whitespace-pre-line">{fallbackSummary}</p>
-          {summary.trim().length === 0 && (
+          <p className="text-base leading-relaxed text-slate-200 whitespace-pre-line">
+            {fallbackSummary}
+          </p>
+          {normalizedSummary.length === 0 && (
             <ul className="mt-3 list-disc space-y-1 pl-4 text-[11px] text-slate-400">
               {bulletItems.length > 0 ? (
                 bulletItems.map((item) => <li key={item}>{item}</li>)
