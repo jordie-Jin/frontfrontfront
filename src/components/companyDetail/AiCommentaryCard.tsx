@@ -59,7 +59,7 @@ const AiCommentaryCard: React.FC<AiCommentaryCardProps> = ({
   const fallbackBullets =
     bulletItems.length > 0
       ? bulletItems
-      : ['최근 30일 핵심 지표 변화를 기반으로 분석을 준비합니다.'];
+      : ['최근 4분기의 핵심 지표 변화를 기반으로 분석을 준비합니다.'];
   const displayCommentary =
     normalizedCommentary.length > 0 ? normalizedCommentary : fallbackSummary;
   const sections = parseNumberedSections(displayCommentary);
