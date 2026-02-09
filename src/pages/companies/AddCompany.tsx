@@ -113,7 +113,7 @@ const AddCompanyPage: React.FC = () => {
     <div className="space-y-10 animate-in fade-in duration-700">
       <header className="flex flex-col gap-3">
         <p className="text-[11px] uppercase tracking-[0.3em] text-slate-500">Companies</p>
-        <h2 className="text-4xl font-light text-white serif">기업 추가 (Add Company)</h2>
+        <h2 className="text-4xl font-semibold tracking-tight text-white">기업 추가 (Add Company)</h2>
         <p className="max-w-2xl text-sm text-slate-400">
           기업 검색부터 선택, 모델 요청까지 백엔드 연동 전에도 검증할 수 있도록 구성된 Mock 플로우입니다.
         </p>

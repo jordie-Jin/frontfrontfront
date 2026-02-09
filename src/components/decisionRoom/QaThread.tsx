@@ -46,7 +46,7 @@ const QaThread: React.FC<QaThreadProps> = ({
           </span>
           <span className="text-[10px] text-slate-500 uppercase tracking-widest">{post.createdAt}</span>
         </div>
-        <h3 className="text-2xl font-light serif text-white mb-2">{post.title}</h3>
+        <h3 className="text-2xl font-semibold tracking-tight text-white mb-2">{post.title}</h3>
         <p className="text-sm text-slate-300 leading-relaxed">{post.body}</p>
         <div className="mt-4 text-xs text-slate-500 uppercase tracking-widest">질문자: {post.author}</div>
       </div>

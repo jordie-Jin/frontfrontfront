@@ -111,7 +111,7 @@ const BulletinModal: React.FC<BulletinModalProps> = ({ open, bulletin, onClose, 
           >
             {bulletin.tag}
           </span>
-          <h2 className="text-3xl md:text-4xl font-light serif text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">
             {bulletin.title}
           </h2>
           <div className="flex flex-wrap items-center text-[10px] text-slate-500 uppercase tracking-widest gap-4">

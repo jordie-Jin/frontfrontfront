@@ -173,7 +173,7 @@ const AdminQnaPanel: React.FC<AdminQnaPanelProps> = ({ api }) => {
       )}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h3 className="text-2xl font-light serif text-white mb-2">Company Q&amp;A</h3>
+          <h3 className="text-2xl font-semibold tracking-tight text-white mb-2">Company Q&amp;A</h3>
         </div>
       </div>
 

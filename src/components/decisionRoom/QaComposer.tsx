@@ -36,7 +36,7 @@ const QaComposer: React.FC<QaComposerProps> = ({
           <i className="fas fa-times"></i>
         </button>
 
-        <h3 className="text-2xl font-light serif text-white mb-6">질문 작성</h3>
+        <h3 className="text-2xl font-semibold tracking-tight text-white mb-6">질문 작성</h3>
 
         <div className="space-y-4">
           <div>

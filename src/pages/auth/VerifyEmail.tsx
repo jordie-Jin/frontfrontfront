@@ -36,7 +36,7 @@ const VerifyEmail: React.FC = () => {
         <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full border border-white/20">
           <i className={`fas ${iconClass} text-sm`}></i>
         </div>
-        <h1 className="mb-4 text-3xl font-light serif">{title}</h1>
+        <h1 className="mb-4 text-3xl font-semibold tracking-tight">{title}</h1>
         <p className="mb-10 text-sm text-slate-400 leading-relaxed">{message}</p>
         <button
           type="button"

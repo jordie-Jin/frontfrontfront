@@ -24,7 +24,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
         <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-white/20">
           <i className="fas fa-check text-xs text-white"></i>
         </div>
-        <h3 className="mb-3 text-2xl font-light serif">{title}</h3>
+        <h3 className="mb-3 text-2xl font-semibold tracking-tight">{title}</h3>
         <p className="mb-8 text-sm text-slate-400 leading-relaxed">{message}</p>
         <button
           type="button"

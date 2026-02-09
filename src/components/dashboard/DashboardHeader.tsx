@@ -22,7 +22,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   return (
     <header className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div>
-        <h2 className="text-4xl font-light serif text-white mb-2">관리 현황 대시보드</h2>
+        <h2 className="text-4xl font-semibold tracking-tight text-white mb-2">관리 현황 대시보드</h2>
         <p className="text-slate-400">{userName} 님, 환영합니다.</p>
       </div>
       <div className="flex flex-wrap items-center gap-3">

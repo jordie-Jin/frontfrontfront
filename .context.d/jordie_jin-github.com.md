@@ -6,6 +6,7 @@
 - email: jordie_Jin@github.com
 
 ## 2. Recent Notes (최근 메모)
+- 2026-02-09 | 작업: 앱 주요 타이틀 폰트 톤 통일 | 결과: serif 제거 후 font-semibold/tracking-tight 적용으로 가독성 개선 | 이슈: 없음
 - 2026-02-09 | 작업: 사용자 QnA 목록 조회 userId 쿼리 제거 | 결과: /api/posts/qna 요청에서 userId 파라미터 제거 | 이슈: 없음
 - 2026-02-09 | 작업: 사용자 QnA 답변 표시 동기화 | 결과: userQnaApi에 관리자 로컬 답변 병합 적용으로 사용자 계정 답변 노출 반영 | 이슈: 없음
 - 2026-02-09 | 작업: 관리자 QnA 답변 API 경로 정합 및 재접속 유지 보완 | 결과: /api/admin/posts/qna/{postId}/replies 경로 반영, 답변 로컬 병합으로 재접속 시 유지 | 이슈: 없음

@@ -27,7 +27,7 @@ const CompanyNewsModal: React.FC<CompanyNewsModalProps> = ({ open, news, onClose
           <span className="text-[10px] font-bold uppercase tracking-[0.3em] px-3 py-1 rounded-full border border-slate-700 bg-white/5 text-slate-300 mb-4 inline-block">
             NEWS
           </span>
-          <h2 className="text-3xl md:text-4xl font-light serif text-white mb-4">{news.title}</h2>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white mb-4">{news.title}</h2>
           <div className="flex flex-wrap items-center text-[10px] text-slate-500 uppercase tracking-widest gap-4">
             {news.publishedAt && (
               <span>

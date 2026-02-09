@@ -26,7 +26,7 @@ const CompaniesHeader: React.FC<CompaniesHeaderProps> = ({
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
       <div>
-        <h2 className="text-4xl font-light text-white serif">협력사 디렉토리</h2>
+        <h2 className="text-4xl font-semibold tracking-tight text-white">협력사 디렉토리</h2>
         <p className="text-slate-400 mt-2">
           협력사 내부 건강도와 최신 리스크 시그널을 한눈에 확인하세요.
         </p>

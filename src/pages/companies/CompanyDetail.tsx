@@ -348,7 +348,7 @@ const CompanyDetailPage: React.FC = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-3">
-                    <h2 className="text-4xl font-light text-white serif">{detail.company.name}</h2>
+                    <h2 className="text-4xl font-semibold tracking-tight text-white">{detail.company.name}</h2>
                     <span
                       className={`rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] ${
                         statusStyles[statusLabel]
