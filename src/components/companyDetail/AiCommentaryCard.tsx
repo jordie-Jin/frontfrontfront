@@ -8,6 +8,37 @@ interface AiCommentaryCardProps {
   onToggle?: () => void;
 }
 
+const normalizeCommentary = (text: string) =>
+  text
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\r\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
+const parseNumberedSections = (text: string) => {
+  const sections: { title: string; body: string[] }[] = [];
+  const lines = text.split('\n').map((line) => line.trim());
+  let current: { title: string; body: string[] } | null = null;
+
+  lines.forEach((line) => {
+    if (!line) return;
+    const match = line.match(/^(\d+)\.\s*(.+)$/);
+    if (match) {
+      if (current) sections.push(current);
+      current = { title: match[2], body: [] };
+      return;
+    }
+    if (!current) {
+      current = { title: '', body: [] };
+    }
+    current.body.push(line);
+  });
+
+  if (current) sections.push(current);
+  return sections;
+};
+
 const AiCommentaryCard: React.FC<AiCommentaryCardProps> = ({
   commentary,
   variant = 'standalone',
@@ -17,7 +48,8 @@ const AiCommentaryCard: React.FC<AiCommentaryCardProps> = ({
 }) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [maxHeight, setMaxHeight] = useState('0px');
-  const lines = commentary
+  const normalizedCommentary = normalizeCommentary(commentary);
+  const lines = normalizedCommentary
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean);
@@ -28,7 +60,10 @@ const AiCommentaryCard: React.FC<AiCommentaryCardProps> = ({
     bulletItems.length > 0
       ? bulletItems
       : ['최근 30일 핵심 지표 변화를 기반으로 분석을 준비합니다.'];
-  const displayCommentary = commentary.trim().length > 0 ? commentary : fallbackSummary;
+  const displayCommentary =
+    normalizedCommentary.length > 0 ? normalizedCommentary : fallbackSummary;
+  const sections = parseNumberedSections(displayCommentary);
+  const hasSections = sections.some((section) => section.title.length > 0);
 
   if (variant === 'embedded') {
     useEffect(() => {
@@ -63,10 +98,29 @@ const AiCommentaryCard: React.FC<AiCommentaryCardProps> = ({
           style={{ maxHeight, opacity: isOpen ? 1 : 0 }}
         >
           <div ref={contentRef} className="max-h-[380px] overflow-y-auto pr-2">
-            <p className="text-base leading-relaxed text-slate-200 whitespace-pre-line">
-              {displayCommentary}
-            </p>
-            {commentary.trim().length === 0 && (
+            {hasSections ? (
+              <div className="space-y-4 text-slate-200">
+                {sections.map((section, index) => (
+                  <div key={`${section.title}-${index}`} className="space-y-2">
+                    {section.title && (
+                      <p className="text-sm font-semibold text-white">
+                        {index + 1}. {section.title}
+                      </p>
+                    )}
+                    {section.body.length > 0 && (
+                      <p className="whitespace-pre-line text-sm leading-relaxed text-slate-200">
+                        {section.body.join('\n')}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-base leading-relaxed text-slate-200 whitespace-pre-line">
+                {displayCommentary}
+              </p>
+            )}
+            {normalizedCommentary.length === 0 && (
               <ul className="mt-3 list-disc space-y-1 pl-4 text-[11px] text-slate-400">
                 {fallbackBullets.slice(0, 2).map((item) => (
                   <li key={item}>{item}</li>
@@ -89,9 +143,28 @@ const AiCommentaryCard: React.FC<AiCommentaryCardProps> = ({
         <i className="fas fa-brain text-slate-500"></i>
         <span className="text-[11px] uppercase tracking-[0.3em] text-slate-500">AI 분석 코멘트</span>
       </div>
-      <p className="whitespace-pre-line text-lg font-light text-slate-200 leading-relaxed italic">
-        {commentary}
-      </p>
+      {hasSections ? (
+        <div className="space-y-4 text-slate-200">
+          {sections.map((section, index) => (
+            <div key={`${section.title}-${index}`} className="space-y-2">
+              {section.title && (
+                <p className="text-base font-semibold text-white">
+                  {index + 1}. {section.title}
+                </p>
+              )}
+              {section.body.length > 0 && (
+                <p className="whitespace-pre-line text-base leading-relaxed text-slate-200 italic">
+                  {section.body.join('\n')}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="whitespace-pre-line text-lg font-light text-slate-200 leading-relaxed italic">
+          {displayCommentary}
+        </p>
+      )}
     </div>
   );
 };
