@@ -146,20 +146,20 @@ export const createUpdateRequest = async (
 };
 
 export const getCompanyAiAnalysis = async (
-  companyCode: string,
+  companyId: string,
   params?: { year?: number; quarter?: number; userId?: string },
 ): Promise<CompanyAiAnalysisResponse> => {
   return apiGet<CompanyAiAnalysisResponse>(
-    `/api/companies/${companyCode}/ai-analysis`,
+    `/api/companies/${companyId}/ai-analysis`,
     params,
   );
 };
 
 export const downloadCompanyAiReport = async (
-  companyCode: string,
+  companyId: string,
   params: { year: number; quarter: number; userId?: string },
 ): Promise<Blob> => {
-  const url = buildUrl(`/api/companies/${companyCode}/ai-report/download`, params);
+  const url = buildUrl(`/api/companies/${companyId}/ai-report/download`, params);
   const token = getAuthToken();
   const response = await fetch(url, {
     method: 'GET',
@@ -190,18 +190,18 @@ export interface AiReportRequestResponse {
 }
 
 export const requestCompanyAiReport = async (
-  companyCode: string,
+  companyId: string,
   params: { year: number; quarter: number; userId?: string },
 ): Promise<AiReportRequestResponse> => {
-  const url = buildUrl(`/api/companies/${companyCode}/ai-report/request`, params);
+  const url = buildUrl(`/api/companies/${companyId}/ai-report/request`, params);
   return apiPost<AiReportRequestResponse, undefined>(url, undefined);
 };
 
 export const getCompanyAiReportStatus = async (
-  companyCode: string,
+  companyId: string,
   requestId: string,
 ): Promise<AiReportRequestResponse> => {
   return apiGet<AiReportRequestResponse>(
-    `/api/companies/${companyCode}/ai-report/status/${requestId}`,
+    `/api/companies/${companyId}/ai-report/status/${requestId}`,
   );
 };

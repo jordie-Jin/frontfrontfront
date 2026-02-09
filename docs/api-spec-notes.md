@@ -15,15 +15,15 @@
 `PoC`: 미기재
 `대응`: `quarterKey`를 선택적으로 허용
 
-- AI 리포트 다운로드 (`GET /api/companies/{companyCode}/ai-report/download`)
+- AI 리포트 다운로드 (`GET /api/companies/{companyId}/ai-report/download`)
 `Swagger`: 신규 엔드포인트
 `PoC`: 미기재
 `대응`: 클라이언트 API 추가 및 `Blob` 다운로드 처리
 
-- AI 분석 조회 (`GET /api/companies/{companyCode}/ai-analysis`)
+- AI 분석 조회 (`GET /api/companies/{companyId}/ai-analysis`)
 `Swagger`: 신규 엔드포인트
 `PoC`: 미기재
 `대응`: 클라이언트 API 추가
 
 ## 주의사항
-- `companyCode`와 `companyId`가 혼용될 수 있으므로, 서버 구현 시 식별자 규칙을 통일하거나 변환 규칙을 명확히 해야 합니다.
+- 현재 프론트는 내부 식별자 명칭을 `companyId`로 통일해 사용합니다.

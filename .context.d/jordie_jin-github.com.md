@@ -6,6 +6,7 @@
 - email: jordie_Jin@github.com
 
 ## 2. Recent Notes (최근 메모)
+- 2026-02-09 | 작업: 회사 식별자 명칭 companyId 통일 | 결과: AI 분석/리포트 함수 및 문서의 companyCode 표기를 companyId로 정리 | 이슈: 없음
 - 2026-02-09 | 작업: 협력사 상세 기업명 타이포 미세 조정 | 결과: font-medium/tracking-normal 적용으로 두께·자간 완화 | 이슈: 없음
 - 2026-02-09 | 작업: 앱 주요 타이틀 폰트 톤 통일 | 결과: serif 제거 후 font-semibold/tracking-tight 적용으로 가독성 개선 | 이슈: 없음
 - 2026-02-09 | 작업: 사용자 QnA 목록 조회 userId 쿼리 제거 | 결과: /api/posts/qna 요청에서 userId 파라미터 제거 | 이슈: 없음

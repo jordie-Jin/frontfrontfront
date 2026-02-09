@@ -230,9 +230,9 @@ const CompanyDetailPage: React.FC = () => {
   const pollReportStatus = async (companyDetail: CompanyOverview, requestId: string) => {
     const year = reportYear ?? resolveReportPeriod(companyDetail).year;
     const quarter = reportQuarter ?? resolveReportPeriod(companyDetail).quarter;
-    const companyCode = companyDetail.company.id;
+    const companyId = companyDetail.company.id;
     try {
-      const response = await getCompanyAiReportStatus(companyCode, requestId);
+      const response = await getCompanyAiReportStatus(companyId, requestId);
       if (isReportCompleted(response.status, response.message)) {
         setIsReportGenerating(false);
         setReportCompletedKey(`${year}-Q${quarter}`);
@@ -270,13 +270,13 @@ const CompanyDetailPage: React.FC = () => {
 
     const year = reportYear ?? resolveReportPeriod(detail).year;
     const quarter = reportQuarter ?? resolveReportPeriod(detail).quarter;
-    const companyCode = detail.company.id;
+    const companyId = detail.company.id;
     const currentKey = `${year}-Q${quarter}`;
     if (reportCompletedKey === currentKey) {
       setIsReportGenerating(false);
       setReportStatusMessage('AI 분석 리포트 생성 완료됨');
       if (reportRequestId) {
-        const status = await getCompanyAiReportStatus(companyCode, reportRequestId);
+        const status = await getCompanyAiReportStatus(companyId, reportRequestId);
         if (status.downloadUrl) {
           await triggerReportDownload(detail.company.id, year, quarter);
         }
@@ -288,7 +288,7 @@ const CompanyDetailPage: React.FC = () => {
       `${year}년 Q${quarter} AI 분석 리포트 생성 중입니다. (약 1~2분 소요)`,
     );
     try {
-      const response = await requestCompanyAiReport(companyCode, { year, quarter });
+      const response = await requestCompanyAiReport(companyId, { year, quarter });
       if (response.requestId) {
         setReportRequestId(response.requestId);
       }
