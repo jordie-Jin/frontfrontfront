@@ -4,6 +4,7 @@ import {
   CompanyConfirmRequest,
   CompanyConfirmResult,
   CompanyInsightItem,
+  CompanyInsightsResponse,
   CompanyOverview,
   CompanyAiAnalysisResponse,
   CompanySearchResponse,
@@ -102,7 +103,16 @@ export const getCompanyInsights = async (
   params?: { userId?: string },
 ): Promise<CompanyInsightItem[]> => {
   // TODO(API 연결): 더미 데이터 제거 후 이 함수 사용
-  return apiGet<CompanyInsightItem[]>(`/api/companies/${companyId}/insights`, params);
+  const response = await apiGet<CompanyInsightItem[] | CompanyInsightsResponse>(
+    `/api/companies/${companyId}/insights`,
+    params,
+  );
+
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  return Array.isArray(response.items) ? response.items : [];
 };
 
 export const getDashboardSummary = async (params?: {

@@ -187,3 +187,8 @@ export interface CompanyInsightItem {
   url?: string;
   type?: 'REPORT' | 'NEWS';
 }
+
+export interface CompanyInsightsResponse {
+  averageScore?: number;
+  items: CompanyInsightItem[];
+}
