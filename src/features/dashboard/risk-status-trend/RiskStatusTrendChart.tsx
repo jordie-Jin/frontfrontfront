@@ -17,7 +17,7 @@ interface RiskStatusTrendChartProps {
 }
 
 const labelMap: Record<string, string> = {
-  NORMAL: '정상',
+  NORMAL: '양호',
   CAUTION: '주의',
   RISK: '위험',
 };

@@ -114,7 +114,7 @@ const KpiCards: React.FC<KpiCardsProps> = ({ kpis, riskRecords }) => {
                   ? "Risk Dwell Time: 협력사가 '주의/위험' 상태에 머무른 평균 기간(분기 수)입니다."
                   : stat.label === '위험 지수'
                   ? '포트폴리오 전체 위험 수준 요약 지표입니다.'
-                  : '협력 네트워크의 전반적 정상 상태 비율입니다.',
+                  : '협력 네트워크의 전반적 양호 상태 비율입니다.',
               interpretation:
                 stat.label === '활성 협력사'
                   ? '증가=신규 편입/재가동, 감소=종료/필터링'

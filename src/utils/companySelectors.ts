@@ -15,19 +15,19 @@ export type TrafficLight = 'green' | 'yellow' | 'red';
 export const getCompanyStatusLabel = (riskLevel: RiskLevel): string => {
   switch (riskLevel) {
     case 'SAFE':
-      return '정상';
+      return '양호';
     case 'WARN':
       return '주의';
     case 'RISK':
       return '위험';
     default:
-      return '정상';
+      return '양호';
   }
 };
 
 export const getCompanyStatusFromHealth = (score: number): string => {
   const tone = getHealthTone(score);
-  if (tone === 'good') return '정상';
+  if (tone === 'good') return '양호';
   if (tone === 'warn') return '주의';
   return '위험';
 };

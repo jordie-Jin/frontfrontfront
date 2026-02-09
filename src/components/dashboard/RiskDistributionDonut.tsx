@@ -9,7 +9,7 @@ interface RiskDistributionDonutProps {
 }
 
 const MOCK_DATA: RiskSegment[] = [
-  { key: 'SAFE', label: '정상', count: 62, ratio: 0.62 },
+  { key: 'SAFE', label: '양호', count: 62, ratio: 0.62 },
   { key: 'WARN', label: '주의', count: 25, ratio: 0.25 },
   { key: 'RISK', label: '위험', count: 13, ratio: 0.13 },
 ];

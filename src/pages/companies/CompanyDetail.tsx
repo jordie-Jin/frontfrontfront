@@ -28,7 +28,7 @@ import {
 } from '../../utils/companySelectors';
 
 const statusStyles: Record<string, string> = {
-  정상: 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10',
+  양호: 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10',
   주의: 'text-amber-300 border-amber-500/30 bg-amber-500/10',
   위험: 'text-rose-300 border-rose-500/30 bg-rose-500/10',
 };
