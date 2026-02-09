@@ -9,6 +9,9 @@ let lastFallback = false;
 type PostResponse = {
   id: string | number;
   userId?: string | number;
+  userName?: string;
+  name?: string;
+  author?: string;
   title: string;
   content: string;
   createdAt?: string;
@@ -19,7 +22,11 @@ type PostResponse = {
 };
 
 const toQaPost = (post: PostResponse): QaPost => {
-  const author = post.userId !== undefined ? String(post.userId) : 'User';
+  const author =
+    post.userName ||
+    post.name ||
+    post.author ||
+    (post.userId !== undefined ? String(post.userId) : 'User');
   const status =
     (post.replies?.length ?? 0) > 0 ||
     (post.status ?? '').toLowerCase().includes('answered')

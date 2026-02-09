@@ -9,6 +9,9 @@ let lastFallback = false;
 type PostResponse = {
   id: string | number;
   userId?: string | number;
+  userName?: string;
+  name?: string;
+  author?: string;
   title: string;
   content: string;
   createdAt?: string;
@@ -20,6 +23,9 @@ type PostResponse = {
 
 const toQaPost = (post: PostResponse, fallbackAuthor?: string): QaPost => {
   const author =
+    post.userName ||
+    post.name ||
+    post.author ||
     fallbackAuthor ??
     (post.userId !== undefined ? String(post.userId) : 'User');
   const status =

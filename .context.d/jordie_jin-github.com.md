@@ -6,6 +6,7 @@
 - email: jordie_Jin@github.com
 
 ## 2. Recent Notes (최근 메모)
+- 2026-02-09 | 작업: Q&A 작성자 표시 name 우선 사용 | 결과: userName/name/author 필드 우선 반영 | 이슈: 없음
 - 2026-02-09 | 작업: 리포트 자동 다운로드 방식 개선 | 결과: downloadUrl fetch+blob 방식으로 변경 | 이슈: 없음
 - 2026-02-09 | 작업: 리포트 완료 시 자동 다운로드 처리 | 결과: downloadUrl 있으면 자동 다운로드 및 완료 문구 변경 | 이슈: 없음
 - 2026-02-09 | 작업: AI 리포트 상태 조회 엔드포인트 분리 | 결과: requestId 기반 상태 조회로 폴링 변경 | 이슈: 없음
