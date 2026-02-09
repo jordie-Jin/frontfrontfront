@@ -199,24 +199,16 @@ const CompanyDetailPage: React.FC = () => {
     }
   };
 
-  const triggerReportDownload = async (downloadUrl: string) => {
-    const token = getAuthToken();
-    const downloadResponse = await fetch(downloadUrl, {
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    });
-    if (!downloadResponse.ok) {
-      throw new Error('download failed');
-    }
-    const contentType = downloadResponse.headers.get('content-type') ?? '';
-    if (!contentType.includes('application/pdf')) {
-      throw new Error('download is not pdf');
-    }
-    const blob = await downloadResponse.blob();
+  const triggerReportDownload = async (
+    companyId: string,
+    year: number,
+    quarter: number,
+  ) => {
+    const blob = await downloadCompanyAiReport(companyId, { year, quarter });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
+    link.download = `report_${companyId}_${year}_Q${quarter}.pdf`;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -246,7 +238,7 @@ const CompanyDetailPage: React.FC = () => {
         setReportCompletedKey(`${year}-Q${quarter}`);
         setReportStatusMessage('AI 분석 리포트 생성 완료됨');
         if (response.downloadUrl) {
-          await triggerReportDownload(response.downloadUrl);
+          await triggerReportDownload(companyDetail.company.id, year, quarter);
         }
         clearReportTimer();
         return;
@@ -286,7 +278,7 @@ const CompanyDetailPage: React.FC = () => {
       if (reportRequestId) {
         const status = await getCompanyAiReportStatus(companyCode, reportRequestId);
         if (status.downloadUrl) {
-          await triggerReportDownload(status.downloadUrl);
+          await triggerReportDownload(detail.company.id, year, quarter);
         }
       }
       return;
@@ -305,7 +297,7 @@ const CompanyDetailPage: React.FC = () => {
         setReportCompletedKey(currentKey);
         setReportStatusMessage('AI 분석 리포트 생성 완료됨');
         if (response.downloadUrl) {
-          await triggerReportDownload(response.downloadUrl);
+          await triggerReportDownload(detail.company.id, year, quarter);
         }
         return;
       }
