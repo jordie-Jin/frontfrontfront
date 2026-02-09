@@ -96,12 +96,23 @@ const CompanyDetailPage: React.FC = () => {
   const newsInsights = insights.filter((item) => item.type === 'NEWS').slice(0, 10);
   const normalizedKeyMetrics = detail?.keyMetrics
     ?.map((metric) => {
+      if (metric.key === 'EXTERNAL_HEALTH' || metric.label === '외부 건강도') {
+        const rawValue = metric.value;
+        const normalizedValue =
+          typeof rawValue === 'number' && rawValue > 0 && rawValue <= 1
+            ? Number((rawValue * 100).toFixed(2))
+            : rawValue;
+        return {
+          ...metric,
+          value: normalizedValue,
+        };
+      }
       if (metric.key === 'ANNUAL_REVENUE' || metric.label === '연 매출') {
         return {
           ...metric,
           key: 'EXTERNAL_HEALTH',
           label: '외부 건강도',
-        value: detail.company.kpi?.reputationScore ?? detail.company.overallScore,
+          value: detail.company.kpi?.reputationScore ?? detail.company.overallScore,
           unit: '%',
           tooltip: {
             description: '외부 평판·시장 신호를 종합한 건강도 지표입니다.',
