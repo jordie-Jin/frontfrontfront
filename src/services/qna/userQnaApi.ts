@@ -26,7 +26,7 @@ const toQaPost = (post: PostResponse, fallbackAuthor?: string): QaPost => {
     post.userName ||
     post.name ||
     post.author ||
-    fallbackAuthor ??
+    fallbackAuthor ||
     (post.userId !== undefined ? String(post.userId) : 'User');
   const status =
     (post.replies?.length ?? 0) > 0 ||
