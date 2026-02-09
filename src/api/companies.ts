@@ -1,5 +1,5 @@
 // 협력사 관련 API 호출 헬퍼입니다.
-import { ApiRequestError, apiGet, apiPost } from './client';
+import { ApiRequestError, apiDelete, apiGet, apiPost } from './client';
 import {
   CompanyConfirmRequest,
   CompanyConfirmResult,
@@ -67,6 +67,10 @@ export const createWatchlistCompany = async (payload: {
     '/api/watchlists',
     payload,
   );
+};
+
+export const deleteWatchlistCompany = async (companyId: string | number): Promise<string> => {
+  return apiDelete<string>(`/api/watchlists/${companyId}`);
 };
 
 export const listCompanies = async (params?: {

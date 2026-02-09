@@ -6,7 +6,13 @@ import CompanyQuickViewDrawer from '../../components/companies/CompanyQuickViewD
 import CompaniesHeader from '../../components/companies/CompaniesHeader';
 import CompaniesTable from '../../components/companies/CompaniesTable';
 import { logout, getStoredUser } from '../../services/auth';
-import { getCompanyInsights, getCompanyOverview, listCompanies } from '../../api/companies';
+import { ApiRequestError } from '../../api/client';
+import {
+  deleteWatchlistCompany,
+  getCompanyInsights,
+  getCompanyOverview,
+  listCompanies,
+} from '../../api/companies';
 import {
   getMockCompanyInsights,
   getMockCompanyOverview,
@@ -43,6 +49,8 @@ const CompaniesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fallbackMessage, setFallbackMessage] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<CompanySummary | null>(null);
   const [detailState, setDetailState] = useState<{
     isLoading: boolean;
@@ -150,6 +158,37 @@ const CompaniesPage: React.FC = () => {
     );
   }, [companies, searchValue]);
 
+  const handleDeleteCompany = async (company: CompanySummary) => {
+    if (deletingId) {
+      return;
+    }
+
+    const confirmed = window.confirm(`${company.name}을(를) 워치리스트에서 삭제할까요?`);
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingId(company.id);
+    setDeleteError(null);
+    try {
+      await deleteWatchlistCompany(company.id);
+      setCompanies(companies.filter((item) => item.id !== company.id));
+      if (selectedCompany?.id === company.id) {
+        setSelectedCompany(null);
+      }
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.apiError?.status === 401) {
+        setDeleteError('인증이 필요합니다. 다시 로그인해 주세요.');
+      } else if (err instanceof ApiRequestError && err.apiError?.status === 404) {
+        setDeleteError('등록되지 않은 기업입니다.');
+      } else {
+        setDeleteError('워치리스트 삭제에 실패했습니다. 다시 시도해 주세요.');
+      }
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
       <CompaniesHeader
@@ -193,7 +232,17 @@ const CompaniesPage: React.FC = () => {
             {fallbackMessage}
           </div>
         )}
-        <CompaniesTable companies={filteredCompanies} onSelect={setSelectedCompany} />
+        {deleteError && (
+          <div className="mb-4 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-6 py-4 text-sm text-rose-100">
+            {deleteError}
+          </div>
+        )}
+        <CompaniesTable
+          companies={filteredCompanies}
+          onSelect={setSelectedCompany}
+          onDelete={handleDeleteCompany}
+          deletingId={deletingId}
+        />
       </AsyncState>
 
       <CompanyQuickViewDrawer

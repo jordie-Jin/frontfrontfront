@@ -11,6 +11,8 @@ import {
 interface CompaniesTableProps {
   companies: CompanySummary[];
   onSelect: (company: CompanySummary) => void;
+  onDelete: (company: CompanySummary) => void;
+  deletingId?: string | null;
 }
 
 const statusStyles: Record<string, string> = {
@@ -19,7 +21,12 @@ const statusStyles: Record<string, string> = {
   위험: 'text-rose-300 border-rose-500/30 bg-rose-500/10',
 };
 
-const CompaniesTable: React.FC<CompaniesTableProps> = ({ companies, onSelect }) => {
+const CompaniesTable: React.FC<CompaniesTableProps> = ({
+  companies,
+  onSelect,
+  onDelete,
+  deletingId,
+}) => {
   return (
     <div className="glass-panel rounded-2xl overflow-hidden">
       <table className="w-full text-left">
@@ -31,6 +38,7 @@ const CompaniesTable: React.FC<CompaniesTableProps> = ({ companies, onSelect }) 
             <th className="px-6 py-4">외부 건강도</th>
             <th className="px-6 py-4">상태</th>
             <th className="px-6 py-4">상세</th>
+            <th className="px-6 py-4">삭제</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-white/5">
@@ -109,6 +117,20 @@ const CompaniesTable: React.FC<CompaniesTableProps> = ({ companies, onSelect }) 
                   >
                     보기
                   </Link>
+                </td>
+                <td className="px-6 py-5 text-sm text-slate-400">
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onDelete(company);
+                    }}
+                    disabled={deletingId === company.id}
+                    className="inline-flex items-center gap-2 text-xs text-rose-300 hover:text-rose-200 disabled:opacity-50"
+                  >
+                    <i className="fas fa-trash text-[10px]"></i>
+                    {deletingId === company.id ? '삭제 중' : '삭제'}
+                  </button>
                 </td>
               </tr>
             );
