@@ -91,7 +91,7 @@ export const userQnaApi = {
     try {
       const response = await apiGet<PostResponse[] | { content?: PostResponse[] }>(
         USER_QNA_BASE,
-        { page: 1, size: 50, userId: currentUser?.id },
+        { page: 1, size: 50 },
       );
       const items = Array.isArray(response) ? response : response.content ?? [];
       const store = readStoredReplies();
