@@ -199,7 +199,7 @@ const CompanyDetailPage: React.FC = () => {
     }
   };
 
-  const triggerReportDownload = async (downloadUrl: string, companyName: string) => {
+  const triggerReportDownload = async (downloadUrl: string) => {
     const downloadResponse = await fetch(downloadUrl);
     if (!downloadResponse.ok) {
       throw new Error('download failed');
@@ -208,7 +208,6 @@ const CompanyDetailPage: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${companyName.replace(/\s+/g, '')}_AI리포트.pdf`;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -238,7 +237,7 @@ const CompanyDetailPage: React.FC = () => {
         setReportCompletedKey(`${year}-Q${quarter}`);
         setReportStatusMessage('AI 분석 리포트 생성 완료됨');
         if (response.downloadUrl) {
-          await triggerReportDownload(response.downloadUrl, companyDetail.company.name);
+          await triggerReportDownload(response.downloadUrl);
         }
         clearReportTimer();
         return;
@@ -278,7 +277,7 @@ const CompanyDetailPage: React.FC = () => {
       if (reportRequestId) {
         const status = await getCompanyAiReportStatus(companyCode, reportRequestId);
         if (status.downloadUrl) {
-          await triggerReportDownload(status.downloadUrl, detail.company.name);
+          await triggerReportDownload(status.downloadUrl);
         }
       }
       return;
@@ -297,7 +296,7 @@ const CompanyDetailPage: React.FC = () => {
         setReportCompletedKey(currentKey);
         setReportStatusMessage('AI 분석 리포트 생성 완료됨');
         if (response.downloadUrl) {
-          await triggerReportDownload(response.downloadUrl, detail.company.name);
+          await triggerReportDownload(response.downloadUrl);
         }
         return;
       }
