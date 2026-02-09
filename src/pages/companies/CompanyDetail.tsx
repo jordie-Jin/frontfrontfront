@@ -47,6 +47,8 @@ const CompanyDetailPage: React.FC = () => {
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [isReportGenerating, setIsReportGenerating] = useState(false);
   const [reportStatusMessage, setReportStatusMessage] = useState<string | null>(null);
+  const [reportYear, setReportYear] = useState<number | null>(null);
+  const [reportQuarter, setReportQuarter] = useState<number | null>(null);
   const reportTimerRef = useRef<number | null>(null);
   const currentUser = getStoredUser();
   const storedAdminViewUser = getStoredAdminViewUser();
@@ -96,6 +98,14 @@ const CompanyDetailPage: React.FC = () => {
     void loadDetail();
     void loadInsights();
   }, [id, adminViewUserId]);
+
+  useEffect(() => {
+    if (!detail) return;
+    if (reportYear !== null && reportQuarter !== null) return;
+    const { year, quarter } = resolveReportPeriod(detail);
+    setReportYear(year);
+    setReportQuarter(quarter);
+  }, [detail, reportQuarter, reportYear]);
 
   useEffect(() => {
     return () => {
@@ -191,7 +201,8 @@ const CompanyDetailPage: React.FC = () => {
   };
 
   const pollReportStatus = async (companyDetail: CompanyOverview) => {
-    const { year, quarter } = resolveReportPeriod(companyDetail);
+    const year = reportYear ?? resolveReportPeriod(companyDetail).year;
+    const quarter = reportQuarter ?? resolveReportPeriod(companyDetail).quarter;
     const companyCode = companyDetail.company.stockCode ?? companyDetail.company.id;
     try {
       const response = await requestCompanyAiReport(companyCode, { year, quarter });
@@ -226,7 +237,8 @@ const CompanyDetailPage: React.FC = () => {
     setIsReportGenerating(true);
     setReportStatusMessage('AI 분석 리포트 생성 중입니다. (약 1~2분 소요)');
 
-    const { year, quarter } = resolveReportPeriod(detail);
+    const year = reportYear ?? resolveReportPeriod(detail).year;
+    const quarter = reportQuarter ?? resolveReportPeriod(detail).quarter;
     const companyCode = detail.company.stockCode ?? detail.company.id;
     try {
       const response = await requestCompanyAiReport(companyCode, { year, quarter });
@@ -257,7 +269,8 @@ const CompanyDetailPage: React.FC = () => {
 
     setDownloadError(null);
     try {
-      const { year, quarter } = resolveReportPeriod(detail);
+      const year = reportYear ?? resolveReportPeriod(detail).year;
+      const quarter = reportQuarter ?? resolveReportPeriod(detail).quarter;
       const companyCode = detail.company.stockCode ?? detail.company.id;
       const blob = await downloadCompanyAiReport(companyCode, { year, quarter });
       const url = URL.createObjectURL(blob);
@@ -321,6 +334,30 @@ const CompanyDetailPage: React.FC = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+                <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-slate-500">
+                  <select
+                    className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-[10px] text-slate-200"
+                    value={reportYear ?? ''}
+                    onChange={(event) => setReportYear(Number(event.target.value))}
+                  >
+                    {[2024, 2025, 2026, 2027].map((year) => (
+                      <option key={year} value={year} className="bg-slate-900">
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-[10px] text-slate-200"
+                    value={reportQuarter ?? ''}
+                    onChange={(event) => setReportQuarter(Number(event.target.value))}
+                  >
+                    {[1, 2, 3, 4].map((quarter) => (
+                      <option key={quarter} value={quarter} className="bg-slate-900">
+                        Q{quarter}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <button
                   type="button"
                   onClick={handleGenerateReport}
