@@ -26,7 +26,7 @@ const SearchResultList: React.FC<SearchResultListProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="text-lg text-white">검색 결과</h3>
-          <p className="text-sm text-slate-400">최대 10개까지 표시됩니다.</p>
+          <p className="text-sm text-slate-400">최대 20개까지 표시됩니다.</p>
         </div>
         {hasSearched && !isLoading && !error && (
           <span className="rounded-full border border-white/10 px-4 py-2 text-xs text-slate-200">
