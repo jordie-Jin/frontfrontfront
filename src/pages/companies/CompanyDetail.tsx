@@ -12,7 +12,7 @@ import {
   requestCompanyAiReport,
 } from '../../api/companies';
 import { getMockCompanyInsights, getMockCompanyOverview } from '../../mocks/companies.mock';
-import { getStoredUser } from '../../services/auth';
+import { getAuthToken, getStoredUser } from '../../services/auth';
 import {
   getStoredAdminViewUser,
   isAdminUser,
@@ -200,9 +200,18 @@ const CompanyDetailPage: React.FC = () => {
   };
 
   const triggerReportDownload = async (downloadUrl: string) => {
-    const downloadResponse = await fetch(downloadUrl);
+    const token = getAuthToken();
+    const downloadResponse = await fetch(downloadUrl, {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
     if (!downloadResponse.ok) {
       throw new Error('download failed');
+    }
+    const contentType = downloadResponse.headers.get('content-type') ?? '';
+    if (!contentType.includes('application/pdf')) {
+      throw new Error('download is not pdf');
     }
     const blob = await downloadResponse.blob();
     const url = URL.createObjectURL(blob);
