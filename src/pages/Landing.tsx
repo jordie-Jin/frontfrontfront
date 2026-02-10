@@ -573,21 +573,22 @@ const Landing: React.FC = () => {
           </div>
           <div>
             <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500 font-bold mb-6 flex items-center">
-              <span className="w-2 h-2 bg-slate-400 mr-2"></span> Our Service
+              <span className="w-2 h-2 bg-slate-400 mr-2"></span> 핵심 인사이트
             </div>
             <h2 className="text-4xl md:text-5xl serif leading-tight mb-8">
-              데이터로 협력사 리스크를
+              우리의
               <br />
-              <span className="italic text-slate-400">한눈에</span>
+              <span className="italic text-slate-400">데이터</span>를 쓰고, <br />
+              간단하지만 강력한 인사이트로
               <br />
-              확인하고 대응합니다.
+              제공합니다.
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
               <p className="text-sm text-slate-500 leading-relaxed">
-                재무·공급망·외부 신호를 통합 분석해 위험 징후를 조기에 포착합니다.
+                전문가의 직관에 의존하던 의사결정을 데이터 기반 인사이트로 전환합니다.
               </p>
               <p className="text-sm text-slate-500 leading-relaxed">
-                분산된 데이터를 연결해 우선순위를 제시하고, 대응이 필요한 기업을 빠르게 식별합니다.
+                문제가 발생한 뒤가 아니라, 위험이 커지기 전에 신호를 포착합니다.
               </p>
             </div>
             <button
@@ -598,7 +599,7 @@ const Landing: React.FC = () => {
               <span className="bg-white text-black p-4 rounded-full group-hover:bg-slate-200 transition-all">
                 <i className="fas fa-plus"></i>
               </span>
-              <span>서비스 자세히 보기</span>
+              <span>문의하기</span>
             </button>
           </div>
         </div>
@@ -608,17 +609,14 @@ const Landing: React.FC = () => {
       <section className="py-32 px-10 border-t border-white/5 bg-white/[0.01]">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-end mb-20">
-            <h2 className="text-6xl serif font-light">우리 서비스</h2>
-            <button className="px-6 py-2 border border-white/20 rounded-full text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all">
-              서비스 자세히 보기 <i className="fas fa-arrow-right ml-2"></i>
-            </button>
+            <h2 className="text-6xl serif font-light">핵심 인사이트</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="md:col-span-2 group cursor-pointer">
+            <div className="md:col-span-2 group">
               <div className="aspect-video bg-slate-900 overflow-hidden mb-8">
                 <video
                   src="/img/robot.mp4"
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                  className="w-full h-full object-cover grayscale transition-all duration-700"
                   autoPlay
                   muted
                   loop
@@ -627,49 +625,28 @@ const Landing: React.FC = () => {
                 />
               </div>
               <div className="flex justify-between text-[10px] text-slate-500 uppercase tracking-widest mb-4">
-                <span>SENTINEL</span>
-                <span>CORE VALUE</span>
+                <span>RECENT</span>
+                <span>2026.01.26</span>
               </div>
-              <h3 className="text-3xl serif mb-4 group-hover:text-slate-300 transition-colors">
-                데이터로 협력사 리스크를 한눈에
+              <h3 className="text-3xl serif mb-4">
+                데이터 기반 통합 리스크 조기 경보
               </h3>
               <p className="text-slate-500 text-sm mb-6 max-w-xl">
-                재무·공급망·외부 신호를 통합 분석해 위험 징후를 조기에 포착하고, 대응 우선순위를 제시합니다.
+                수요 지표, 공급망, 외부 환경 데이터를 결합해 기업 위험 신호를 조기에 포착합니다.
               </p>
-              <span className="text-[10px] uppercase tracking-widest font-bold border-b border-white/20 pb-1 group-hover:border-white transition-all">
-                서비스 핵심 보기
-              </span>
             </div>
             <div className="space-y-12">
               {[
-                {
-                  label: 'Feature 01',
-                  title: '조기 경보 알림',
-                  description: '리스크 급변 신호를 자동 감지해 선제 대응 시간을 확보합니다.',
-                },
-                {
-                  label: 'Feature 02',
-                  title: 'AI 코멘트 자동 요약',
-                  description: '핵심 이슈와 영향도를 요약해 의사결정을 빠르게 지원합니다.',
-                },
-                {
-                  label: 'Feature 03',
-                  title: '협력사 리스크 추적',
-                  description: '기업별 변화 흐름을 지속적으로 모니터링해 관리 누락을 줄입니다.',
-                },
+                { date: '2025.12.18', title: '투자 리스크를 줄이는 공급망 확장 전략' },
+                { date: '2025.12.02', title: '사건 이후가 아닌 사전 위험 예측의 중요성' },
+                { date: '2025.11.21', title: 'AI 기반 기업 리스크 분석, 국내 적용 사례' },
               ].map((item, i) => (
-                <div key={i} className="group cursor-pointer border-t border-white/10 pt-8">
+                <div key={i} className="border-t border-white/10 pt-8">
                   <div className="flex justify-between text-[9px] text-slate-600 uppercase tracking-[0.2em] mb-3">
-                    <span>{item.label}</span>
-                    <span>SERVICE</span>
+                    <span>뉴스</span>
+                    <span>{item.date}</span>
                   </div>
-                  <h4 className="text-xl serif leading-snug group-hover:text-slate-300 transition-colors">
-                    {item.title}
-                  </h4>
-                  <p className="text-slate-500 text-xs leading-relaxed mt-3">{item.description}</p>
-                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <i className="fas fa-arrow-right text-xs"></i>
-                  </div>
+                  <h4 className="text-xl serif leading-snug">{item.title}</h4>
                 </div>
               ))}
             </div>
@@ -690,47 +667,17 @@ const Landing: React.FC = () => {
             <br />
             해결합니다.
           </h2>
-          <button
-            onClick={() => {
-              setAuthMode('register');
-              setShowAuth(true);
-            }}
-            className="inline-flex items-center space-x-4 group"
-          >
-            <span className="bg-white text-black w-14 h-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-              <i className="fas fa-plus"></i>
-            </span>
-            <span className="text-[13px] uppercase tracking-[0.3em] font-bold">CONTACT US</span>
-          </button>
         </div>
       </section>
 
       {/* Big Branding Footer */}
       <footer className="pt-24 pb-12 px-10 bg-[#0a0a0a] border-t border-white/5">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 text-[10px] uppercase tracking-widest text-slate-500">
-            <div className="md:col-span-4">
+          <div className="flex flex-col gap-6 text-[10px] uppercase tracking-widest text-slate-500 md:flex-row md:items-start md:justify-between">
+            <div>
               <p className="mb-4">© 2026 SENTINEL. All rights reserved.</p>
             </div>
-            <div className="md:col-span-2 flex flex-col space-y-2">
-              <span className="text-white font-bold mb-2">둘러보기</span>
-              <a href="#" className="hover:text-white transition-colors">
-                회사
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
-                뉴스룸
-              </a>
-            </div>
-            <div className="md:col-span-2 flex flex-col space-y-2">
-              <span className="text-white font-bold mb-2">연락처</span>
-              <a href="#" className="hover:text-white transition-colors">
-                LinkedIn
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
-                X
-              </a>
-            </div>
-            <div className="md:col-span-2 flex flex-col space-y-2">
+            <div className="flex flex-col space-y-2">
               <span className="text-white font-bold mb-2">정책</span>
               <LegalLinks
                 className="flex flex-col space-y-2"
