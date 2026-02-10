@@ -616,7 +616,7 @@ const Landing: React.FC = () => {
               <div className="aspect-video bg-slate-900 overflow-hidden mb-8">
                 <video
                   src="/img/robot.mp4"
-                  className="w-full h-full object-cover grayscale transition-all duration-700"
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
                   autoPlay
                   muted
                   loop
