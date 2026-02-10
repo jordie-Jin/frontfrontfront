@@ -6,6 +6,7 @@
 - email: jordie_Jin@github.com
 
 ## 2. Recent Notes (최근 메모)
+- 2026-02-10 | 작업: 대시보드 risk-records 의존 제거 | 결과: KPI 카드가 summary.kpis만 사용하도록 정리하고 risk-records 호출 제거 | 이슈: 없음
 - 2026-02-10 | 작업: 대시보드 summary KPI/분포 표기 정합화 | 결과: NETWORK_STATUS 키 매핑, delta 라벨/단위/API tooltip 반영, 평균 위험도/주요 섹터 표기 개선 | 이슈: 없음
 - 2026-02-09 | 작업: 회사 식별자 명칭 companyId 통일 | 결과: AI 분석/리포트 함수 및 문서의 companyCode 표기를 companyId로 정리 | 이슈: 없음
 - 2026-02-09 | 작업: 협력사 상세 기업명 타이포 미세 조정 | 결과: font-medium/tracking-normal 적용으로 두께·자간 완화 | 이슈: 없음

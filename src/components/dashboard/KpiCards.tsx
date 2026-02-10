@@ -1,12 +1,9 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { KpiCardDto } from '../../types/company';
-import { CompanyQuarterRisk } from '../../types/risk';
-import { computeDwellTimeDelta, getRecentQuarterWindows } from '../../utils/kpi';
 import KpiCard from '../kpi/KpiCard';
 
 interface KpiCardsProps {
   kpis: KpiCardDto[];
-  riskRecords: CompanyQuarterRisk[];
 }
 
 const formatDecimal = (value: number): string => value.toFixed(1);
@@ -95,22 +92,7 @@ const KPI_FALLBACKS: Record<
   },
 };
 
-const KpiCards: React.FC<KpiCardsProps> = ({ kpis, riskRecords }) => {
-  const { currentWindow, previousWindow } = useMemo(
-    () => getRecentQuarterWindows(riskRecords, 4),
-    [riskRecords],
-  );
-
-  const { value: dwellValue, delta: dwellDelta } = useMemo(
-    () => computeDwellTimeDelta(riskRecords, currentWindow, previousWindow),
-    [currentWindow, previousWindow, riskRecords],
-  );
-
-  const dwellValueText = dwellValue === null ? '—' : formatDecimal(dwellValue);
-  const dwellTone: 'positive' | 'negative' | 'neutral' =
-    dwellDelta === null || dwellDelta === 0 ? 'neutral' : dwellDelta > 0 ? 'negative' : 'positive';
-
-  const dwellKpi = findKpi(kpis, ['RISK_DWELL_TIME', 'RISK_DWELL']);
+const KpiCards: React.FC<KpiCardsProps> = ({ kpis }) => {
 
   const createDelta = (
     delta?: KpiCardDto['delta'],
@@ -124,21 +106,6 @@ const KpiCards: React.FC<KpiCardsProps> = ({ kpis, riskRecords }) => {
     };
   };
 
-  const dwellDeltaFromSummary = createDelta(dwellKpi?.delta, '지난 분기 대비');
-  const computedDwellDelta =
-    dwellDelta === null
-      ? undefined
-      : {
-          value: `${dwellDelta > 0 ? '+' : ''}${formatDecimal(dwellDelta)}분기`,
-          direction:
-            (dwellTone === 'negative'
-              ? 'up'
-              : dwellTone === 'positive'
-              ? 'down'
-              : 'flat') as 'up' | 'down' | 'flat',
-          label: '지난 분기 대비',
-        };
-
   // summary 응답에서 내려온 KPI 순서를 기준으로 최대 6개 카드를 노출합니다.
   const cards = KPI_ORDER.map((key) => {
     const aliases =
@@ -150,18 +117,14 @@ const KpiCards: React.FC<KpiCardsProps> = ({ kpis, riskRecords }) => {
 
     const kpi = findKpi(kpis, aliases);
     const fallback = KPI_FALLBACKS[key];
-    const isDwellTime = key === 'RISK_DWELL_TIME';
-
     return {
       key,
       label: kpi?.title ?? fallback.title,
-      valueText: isDwellTime && !kpi ? dwellValueText : formatValue(kpi?.value),
+      valueText: formatValue(kpi?.value),
       unit: kpi?.unit ?? fallback.unit,
-      delta: isDwellTime
-        ? dwellDeltaFromSummary ?? computedDwellDelta
-        : createDelta(kpi?.delta),
+      delta: createDelta(kpi?.delta, key === 'RISK_DWELL_TIME' ? '지난 분기 대비' : '전기 대비'),
       icon: fallback.icon,
-      tone: isDwellTime && !kpi ? dwellTone : toTone(kpi?.tone),
+      tone: toTone(kpi?.tone),
       tooltip: kpi?.tooltip ?? fallback.tooltip,
     };
   });
