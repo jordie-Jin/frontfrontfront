@@ -7,12 +7,18 @@ import { getStoredUser, login, logout, register } from '../services/auth';
 import TurnstileWidget from '../components/TurnstileWidget';
 import SuccessModal from '../components/common/SuccessModal';
 import LegalLinks from '../components/common/LegalLinks';
+import privacyPolicyContent from '../../docs/privacy-policy.md?raw';
+import termsOfServiceContent from '../../docs/terms-of-service.md?raw';
+import { normalizeLegalMarkdown } from '../utils/legalContent';
 
 type AuthMode = 'login' | 'register';
+type LegalModalType = 'privacy' | 'terms' | null;
 
 const Landing: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [legalModalType, setLegalModalType] = useState<LegalModalType>(null);
   const [showSignupSuccess, setShowSignupSuccess] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [authError, setAuthError] = useState<string | null>(null);
@@ -24,6 +30,11 @@ const Landing: React.FC = () => {
   const [currentUser, setCurrentUser] = useState(() => getStoredUser());
   const navigate = useNavigate();
   const isAuthenticated = Boolean(currentUser);
+  const normalizedPrivacyPolicy = normalizeLegalMarkdown(privacyPolicyContent);
+  const normalizedTermsOfService = normalizeLegalMarkdown(termsOfServiceContent);
+  const legalModalTitle = legalModalType === 'privacy' ? '개인정보 처리방침' : '이용약관';
+  const legalModalContent =
+    legalModalType === 'privacy' ? normalizedPrivacyPolicy : normalizedTermsOfService;
 
   // Form State
   const [email, setEmail] = useState('');
@@ -386,6 +397,100 @@ const Landing: React.FC = () => {
         </div>
       )}
 
+      {/* 고객센터/문의 모달 */}
+      {showContactModal && (
+        <div className="fixed inset-0 z-[95] flex items-center justify-center p-6 animate-in fade-in duration-300">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => setShowContactModal(false)}
+          ></div>
+          <div className="relative glass-panel w-full max-w-lg rounded-3xl p-8 border border-white/10">
+            <button
+              type="button"
+              onClick={() => setShowContactModal(false)}
+              className="absolute top-5 right-5 text-slate-500 hover:text-white transition-colors"
+              aria-label="문의 모달 닫기"
+            >
+              <i className="fas fa-times"></i>
+            </button>
+            <h3 className="text-2xl font-semibold tracking-tight text-white mb-2">고객센터 및 문의</h3>
+            <p className="text-sm text-slate-400 mb-6">
+              서비스 이용 중 불편사항이나 기업 도입 문의를 남겨주세요.
+            </p>
+            <div className="space-y-4 text-sm">
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                <p className="text-xs uppercase tracking-widest text-slate-500 mb-2">서비스명</p>
+                <p className="text-white">SENTINEL</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                <p className="text-xs uppercase tracking-widest text-slate-500 mb-2">책임자</p>
+                <p className="text-white">이석진 / 대표</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                <p className="text-xs uppercase tracking-widest text-slate-500 mb-2">부서명</p>
+                <p className="text-white">SENTINEL</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                <p className="text-xs uppercase tracking-widest text-slate-500 mb-2">이메일</p>
+                <a
+                  href="mailto:dkcladlek098@naver.com"
+                  className="text-white hover:text-slate-300 transition-colors"
+                >
+                  dkcladlek098@naver.com
+                </a>
+              </div>
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                <p className="text-xs uppercase tracking-widest text-slate-500 mb-2">연락처</p>
+                <a
+                  href="tel:01012345678"
+                  className="text-white hover:text-slate-300 transition-colors"
+                >
+                  010-1234-5678
+                </a>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowContactModal(false)}
+              className="mt-6 w-full rounded-2xl border border-white/15 py-3 text-xs font-bold uppercase tracking-[0.2em] text-white hover:bg-white hover:text-black transition-all"
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 정책/약관 모달 */}
+      {legalModalType && (
+        <div className="fixed inset-0 z-[94] flex items-center justify-center p-6 animate-in fade-in duration-300">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => setLegalModalType(null)}
+          ></div>
+          <div className="relative glass-panel w-full max-w-3xl rounded-3xl p-8 border border-white/10">
+            <button
+              type="button"
+              onClick={() => setLegalModalType(null)}
+              className="absolute top-5 right-5 text-slate-500 hover:text-white transition-colors"
+              aria-label="정책 모달 닫기"
+            >
+              <i className="fas fa-times"></i>
+            </button>
+            <h3 className="text-2xl font-semibold tracking-tight text-white mb-6">{legalModalTitle}</h3>
+            <div className="max-h-[60vh] overflow-y-auto whitespace-pre-wrap text-sm leading-relaxed text-slate-200 pr-2">
+              {legalModalContent}
+            </div>
+            <button
+              type="button"
+              onClick={() => setLegalModalType(null)}
+              className="mt-6 w-full rounded-2xl border border-white/15 py-3 text-xs font-bold uppercase tracking-[0.2em] text-white hover:bg-white hover:text-black transition-all"
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-500 ${
@@ -486,7 +591,11 @@ const Landing: React.FC = () => {
                 문제가 발생한 뒤가 아니라, 위험이 커지기 전에 신호를 포착합니다.
               </p>
             </div>
-            <button className="flex items-center space-x-3 text-[10px] uppercase tracking-widest font-bold text-white group">
+            <button
+              type="button"
+              onClick={() => setShowContactModal(true)}
+              className="flex items-center space-x-3 text-[10px] uppercase tracking-widest font-bold text-white group"
+            >
               <span className="bg-white text-black p-4 rounded-full group-hover:bg-slate-200 transition-all">
                 <i className="fas fa-plus"></i>
               </span>
@@ -611,7 +720,12 @@ const Landing: React.FC = () => {
             </div>
             <div className="md:col-span-2 flex flex-col space-y-2">
               <span className="text-white font-bold mb-2">정책</span>
-              <LegalLinks className="flex flex-col space-y-2" linkClassName="hover:text-white transition-colors" />
+              <LegalLinks
+                className="flex flex-col space-y-2"
+                linkClassName="hover:text-white transition-colors text-left"
+                onPrivacyClick={() => setLegalModalType('privacy')}
+                onTermsClick={() => setLegalModalType('terms')}
+              />
             </div>
           </div>
         </div>

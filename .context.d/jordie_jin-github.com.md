@@ -6,6 +6,7 @@
 - email: jordie_Jin@github.com
 
 ## 2. Recent Notes (최근 메모)
+- 2026-02-10 | 작업: 랜딩 정책 링크 모달화 및 마크다운 헤더 제거 | 결과: 개인정보 처리방침/이용약관을 모달로 노출하고 문서 렌더 시 # 헤더 기호 제거 | 이슈: 없음
 - 2026-02-10 | 작업: 대시보드 KPI 단위/라벨 보정 | 결과: 활성/고위험 기업 수 단위를 개로 고정하고 ACTIVE_COMPANIES 라벨을 전체 협력사 수로 표기 | 이슈: 없음
 - 2026-02-10 | 작업: 대시보드 risk-records 의존 제거 | 결과: KPI 카드가 summary.kpis만 사용하도록 정리하고 risk-records 호출 제거 | 이슈: 없음
 - 2026-02-10 | 작업: 대시보드 summary KPI/분포 표기 정합화 | 결과: NETWORK_STATUS 키 매핑, delta 라벨/단위/API tooltip 반영, 평균 위험도/주요 섹터 표기 개선 | 이슈: 없음
