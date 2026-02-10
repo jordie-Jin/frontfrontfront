@@ -573,22 +573,21 @@ const Landing: React.FC = () => {
           </div>
           <div>
             <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500 font-bold mb-6 flex items-center">
-              <span className="w-2 h-2 bg-slate-400 mr-2"></span> Our Company
+              <span className="w-2 h-2 bg-slate-400 mr-2"></span> Our Service
             </div>
             <h2 className="text-4xl md:text-5xl serif leading-tight mb-8">
-              우리의
+              데이터로 협력사 리스크를
               <br />
-              <span className="italic text-slate-400">데이터</span>를 쓰고, <br />
-              간단하지만 강력한 인사이트로
+              <span className="italic text-slate-400">한눈에</span>
               <br />
-              제공합니다.
+              확인하고 대응합니다.
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
               <p className="text-sm text-slate-500 leading-relaxed">
-                전문가의 직관에 의존하던 의사결정을 데이터 기반 인사이트로 전환합니다.
+                재무·공급망·외부 신호를 통합 분석해 위험 징후를 조기에 포착합니다.
               </p>
               <p className="text-sm text-slate-500 leading-relaxed">
-                문제가 발생한 뒤가 아니라, 위험이 커지기 전에 신호를 포착합니다.
+                분산된 데이터를 연결해 우선순위를 제시하고, 대응이 필요한 기업을 빠르게 식별합니다.
               </p>
             </div>
             <button
@@ -599,7 +598,7 @@ const Landing: React.FC = () => {
               <span className="bg-white text-black p-4 rounded-full group-hover:bg-slate-200 transition-all">
                 <i className="fas fa-plus"></i>
               </span>
-              <span>문의하기</span>
+              <span>서비스 자세히 보기</span>
             </button>
           </div>
         </div>
@@ -609,9 +608,9 @@ const Landing: React.FC = () => {
       <section className="py-32 px-10 border-t border-white/5 bg-white/[0.01]">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-end mb-20">
-            <h2 className="text-6xl serif font-light">최신 인사이트</h2>
+            <h2 className="text-6xl serif font-light">우리 서비스</h2>
             <button className="px-6 py-2 border border-white/20 rounded-full text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all">
-              모든 뉴스 보기 <i className="fas fa-arrow-right ml-2"></i>
+              서비스 자세히 보기 <i className="fas fa-arrow-right ml-2"></i>
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -628,33 +627,46 @@ const Landing: React.FC = () => {
                 />
               </div>
               <div className="flex justify-between text-[10px] text-slate-500 uppercase tracking-widest mb-4">
-                <span>RECENT</span>
-                <span>2026.01.26</span>
+                <span>SENTINEL</span>
+                <span>CORE VALUE</span>
               </div>
               <h3 className="text-3xl serif mb-4 group-hover:text-slate-300 transition-colors">
-                데이터 기반 통합 리스크 조기 경보
+                데이터로 협력사 리스크를 한눈에
               </h3>
               <p className="text-slate-500 text-sm mb-6 max-w-xl">
-                수요 지표, 공급망, 외부 환경 데이터를 결합해 기업 위험 신호를 조기에 포착합니다.
+                재무·공급망·외부 신호를 통합 분석해 위험 징후를 조기에 포착하고, 대응 우선순위를 제시합니다.
               </p>
               <span className="text-[10px] uppercase tracking-widest font-bold border-b border-white/20 pb-1 group-hover:border-white transition-all">
-                기사 읽기
+                서비스 핵심 보기
               </span>
             </div>
             <div className="space-y-12">
               {[
-                { date: '2025.12.18', title: '투자 리스크를 줄이는 공급망 확장 전략' },
-                { date: '2025.12.02', title: '사건 이후가 아닌 사전 위험 예측의 중요성' },
-                { date: '2025.11.21', title: 'AI 기반 기업 리스크 분석, 국내 적용 사례' },
+                {
+                  label: 'Feature 01',
+                  title: '조기 경보 알림',
+                  description: '리스크 급변 신호를 자동 감지해 선제 대응 시간을 확보합니다.',
+                },
+                {
+                  label: 'Feature 02',
+                  title: 'AI 코멘트 자동 요약',
+                  description: '핵심 이슈와 영향도를 요약해 의사결정을 빠르게 지원합니다.',
+                },
+                {
+                  label: 'Feature 03',
+                  title: '협력사 리스크 추적',
+                  description: '기업별 변화 흐름을 지속적으로 모니터링해 관리 누락을 줄입니다.',
+                },
               ].map((item, i) => (
                 <div key={i} className="group cursor-pointer border-t border-white/10 pt-8">
                   <div className="flex justify-between text-[9px] text-slate-600 uppercase tracking-[0.2em] mb-3">
-                    <span>뉴스</span>
-                    <span>{item.date}</span>
+                    <span>{item.label}</span>
+                    <span>SERVICE</span>
                   </div>
                   <h4 className="text-xl serif leading-snug group-hover:text-slate-300 transition-colors">
                     {item.title}
                   </h4>
+                  <p className="text-slate-500 text-xs leading-relaxed mt-3">{item.description}</p>
                   <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                     <i className="fas fa-arrow-right text-xs"></i>
                   </div>
