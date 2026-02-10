@@ -33,6 +33,15 @@ const buildRiskDistribution = (summary: DashboardSummary): RiskDistribution => {
       { key: 'WARN', label: '주의', count: CAUTION, ratio: ratio(CAUTION) },
       { key: 'RISK', label: '높음', count: RISK, ratio: ratio(RISK) },
     ],
+    summary: {
+      avgRiskLevel: summary.averageRiskLevel ?? null,
+      topSector: summary.majorSector
+        ? {
+            key: summary.majorSector.name,
+            label: summary.majorSector.name,
+          }
+        : undefined,
+    },
   };
 };
 

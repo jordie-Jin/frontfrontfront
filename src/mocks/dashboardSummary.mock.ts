@@ -19,9 +19,9 @@ const summary: DashboardSummary = {
   ],
   kpis: [
     { key: 'ACTIVE_COMPANIES', title: '활성 협력사', value: 124, tone: 'GOOD', unit: '개' },
-    { key: 'RISK_DWELL', title: '리스크 체류 기간', value: 2.2, unit: '분기', tone: 'WARN' },
+    { key: 'RISK_DWELL_TIME', title: '리스크 체류 기간', value: 2.2, unit: '분기', tone: 'WARN' },
     { key: 'RISK_INDEX', title: '위험 지수', value: '최소', tone: 'GOOD' },
-    { key: 'NETWORK_HEALTH', title: '네트워크 상태', value: 98.2, unit: '%', tone: 'GOOD' },
+    { key: 'NETWORK_STATUS', title: '네트워크 상태', value: 98.2, unit: '%', tone: 'GOOD' },
   ],
 };
 

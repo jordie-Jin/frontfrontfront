@@ -15,6 +15,9 @@ const avgRiskLabelMap: Record<string, string> = {
 const RiskDistributionCard: React.FC<RiskDistributionCardProps> = ({ distribution }) => {
   const avgRiskLabel = useMemo(() => {
     const level = distribution.summary?.avgRiskLevel;
+    if (typeof level === 'number') {
+      return `${level.toFixed(1)}점`;
+    }
     return level ? avgRiskLabelMap[level] ?? level : '—';
   }, [distribution.summary?.avgRiskLevel]);
 

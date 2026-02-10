@@ -6,7 +6,7 @@ interface KpiCardProps {
   title: string;
   value: string | number;
   unit?: string;
-  delta?: { value: string; direction: 'up' | 'down' | 'flat' };
+  delta?: { value: string; direction: 'up' | 'down' | 'flat'; label?: string };
   icon?: React.ReactNode;
   tone?: 'default' | 'good' | 'warn' | 'risk';
   tooltip?: KpiTooltipContent;
@@ -94,7 +94,8 @@ const KpiCard: React.FC<KpiCardProps> = ({
         </div>
         {delta && (
           <div className={`text-[10px] ${deltaClasses[delta.direction]}`}>
-            {delta.value} <span className="text-slate-600 ml-1">지난달 대비</span>
+            {delta.value}{' '}
+            <span className="text-slate-600 ml-1">{delta.label?.trim() || '전기 대비'}</span>
           </div>
         )}
       </div>

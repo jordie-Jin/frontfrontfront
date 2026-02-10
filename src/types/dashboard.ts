@@ -7,6 +7,14 @@ export interface DashboardSummary {
   latestActualQuarter: string;
   forecastQuarter: string;
   windowQuarters: string[];
+  averageRiskLevel?: number | null;
+  majorSector?: {
+    name: string;
+    riskCompanyCount?: number;
+    totalCompanyCount?: number;
+    riskRatio?: number;
+    riskIndex?: number;
+  } | null;
   riskStatusDistribution: {
     NORMAL: number;
     CAUTION: number;
@@ -52,7 +60,7 @@ export interface RiskDistribution {
   range?: string;
   segments: RiskSegment[];
   summary?: {
-    avgRiskLevel?: 'LOW' | 'MID' | 'HIGH';
+    avgRiskLevel?: 'LOW' | 'MID' | 'HIGH' | number | null;
     topSector?: Sector;
   };
 }
