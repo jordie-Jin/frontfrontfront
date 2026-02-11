@@ -39,5 +39,5 @@ export const resolveAdminViewUserId = (
   adminViewUser: AdminViewUser | null,
 ): string | undefined => {
   if (!isAdmin || !adminViewUser) return undefined;
-  return adminViewUser.id;
+  return String(adminViewUser.id);
 };

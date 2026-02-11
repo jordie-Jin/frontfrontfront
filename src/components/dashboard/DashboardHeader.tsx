@@ -7,7 +7,7 @@ interface DashboardHeaderProps {
   userName?: string;
   showAdminSwitch?: boolean;
   adminUsers?: AdminViewUser[];
-  selectedAdminUserId?: string;
+  selectedAdminUserId?: string | number;
   onAdminUserChange?: (userId: string) => void;
 }
 

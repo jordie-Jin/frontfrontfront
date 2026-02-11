@@ -199,7 +199,8 @@ const CompaniesPage: React.FC = () => {
         adminUsers={adminUsers}
         selectedAdminUserId={adminViewUser?.id}
         onAdminUserChange={(userId) => {
-          const nextUser = adminUsers.find((user) => user.id === userId) ?? null;
+          const nextUser =
+            adminUsers.find((user) => String(user.id) === String(userId)) ?? null;
           setAdminViewUser(nextUser);
           setStoredAdminViewUser(nextUser);
         }}

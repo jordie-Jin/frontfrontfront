@@ -9,7 +9,7 @@ interface CompaniesHeaderProps {
   onLogout?: () => void;
   showAdminSwitch?: boolean;
   adminUsers?: AdminViewUser[];
-  selectedAdminUserId?: string;
+  selectedAdminUserId?: string | number;
   onAdminUserChange?: (userId: string) => void;
 }
 
