@@ -7,6 +7,7 @@ import { useCompanySearch } from '../../hooks/useCompanySearch';
 import { useCompanySelection } from '../../hooks/useCompanySelection';
 import { ApiRequestError } from '../../api/client';
 import { createWatchlistCompany, getCompanyOverview } from '../../api/companies';
+import { getStoredUser } from '../../services/auth';
 import { CompanyConfirmResult, CompanyOverview, CompanySearchItem } from '../../types/company';
 
 const AddCompanyPage: React.FC = () => {
@@ -23,6 +24,9 @@ const AddCompanyPage: React.FC = () => {
   const [companyOverview, setCompanyOverview] = useState<CompanyOverview | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
   const overviewCacheRef = useRef<Record<string, CompanyOverview>>({});
+  const currentUser = getStoredUser();
+  const role = currentUser?.role;
+  const isAdmin = role === 'ADMIN' || role === 'ROLE_ADMIN';
 
   const { items, total, isLoading, error, hasSearched, search, clear } = useCompanySearch();
   const { selectedCompany, selectCompany, clearSelection } = useCompanySelection();
@@ -67,6 +71,11 @@ const AddCompanyPage: React.FC = () => {
   };
 
   const handleConfirm = async () => {
+    if (isAdmin) {
+      setConfirmError('관리자 계정에서는 기업 추가 Confirm을 사용할 수 없습니다.');
+      return;
+    }
+
     if (!selectedCompany || isConfirming) {
       return;
     }
@@ -132,6 +141,10 @@ const AddCompanyPage: React.FC = () => {
           selectedCompany={selectedCompany}
           onConfirm={handleConfirm}
           isConfirming={isConfirming}
+          isConfirmDisabled={isAdmin}
+          disabledMessage={
+            isAdmin ? '관리자 계정에서는 Confirm 기능이 비활성화됩니다.' : null
+          }
           completionMessage={completionMessage}
           errorMessage={confirmError}
         />

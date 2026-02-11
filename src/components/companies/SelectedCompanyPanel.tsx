@@ -5,6 +5,8 @@ type SelectedCompanyPanelProps = {
   selectedCompany: CompanySearchItem | null;
   onConfirm: () => void;
   isConfirming: boolean;
+  isConfirmDisabled?: boolean;
+  disabledMessage?: string | null;
   completionMessage?: string | null;
   errorMessage?: string | null;
 };
@@ -13,9 +15,13 @@ const SelectedCompanyPanel: React.FC<SelectedCompanyPanelProps> = ({
   selectedCompany,
   onConfirm,
   isConfirming,
+  isConfirmDisabled = false,
+  disabledMessage,
   completionMessage,
   errorMessage
 }) => {
+  const disabled = !selectedCompany || isConfirming || isConfirmDisabled;
+
   return (
     <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
       <h3 className="text-lg text-white">선택된 기업</h3>
@@ -66,9 +72,9 @@ const SelectedCompanyPanel: React.FC<SelectedCompanyPanelProps> = ({
         <button
           type="button"
           onClick={onConfirm}
-          disabled={!selectedCompany || isConfirming}
+          disabled={disabled}
           className="flex w-full items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-xs font-bold uppercase tracking-[0.3em] text-slate-900 disabled:cursor-not-allowed disabled:bg-white/40"
-          aria-disabled={!selectedCompany || isConfirming}
+          aria-disabled={disabled}
         >
           {isConfirming ? (
             <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-slate-900">
@@ -79,6 +85,9 @@ const SelectedCompanyPanel: React.FC<SelectedCompanyPanelProps> = ({
             'Confirm'
           )}
         </button>
+        {isConfirmDisabled && disabledMessage && (
+          <p className="mt-3 text-xs text-amber-300">{disabledMessage}</p>
+        )}
       </div>
     </div>
   );
