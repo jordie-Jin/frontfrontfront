@@ -223,13 +223,30 @@ const Landing: React.FC = () => {
     }
   };
 
-  const handleSentinelClick = () => {
+  const handleSentinelClick = async () => {
     if (isAuthenticated) {
       navigate('/dashboard');
       return;
     }
-    setAuthMode('login');
-    setShowAuth(true);
+
+    const demoEmail = import.meta.env.VITE_DEMO_EMAIL;
+    const demoPassword = import.meta.env.VITE_DEMO_PASSWORD;
+    if (!demoEmail || !demoPassword) {
+      setAuthError('데모 계정 환경변수를 확인해 주세요.');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setAuthError(null);
+      await login({ email: demoEmail, password: demoPassword });
+      setCurrentUser(getStoredUser());
+      navigate('/dashboard');
+    } catch (error) {
+      setAuthError('데모 로그인에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
