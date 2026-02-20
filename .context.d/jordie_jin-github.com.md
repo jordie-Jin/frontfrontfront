@@ -80,3 +80,4 @@
 ## 3. History (ì´ì „ ê¸°ë¡)
 - 2026-02-20 | ÀÛ¾÷: AI ¸®Æ÷Æ® ¼±´Ù¿î·Îµå ¿ì¼± Ã³¸® | °á°ú: ±âÁ¸ º¸°í¼­ Áï½Ã ´Ù¿î·Îµå, ¹Ì»ý¼º ½Ã¿¡¸¸ »ý¼º ¿äÃ» ¹× Æú¸µ ÁøÇà | ÀÌ½´: ¾øÀ½
 - 2026-02-20 | ÀÛ¾÷: ·£µù È÷¾î·Î SENTINEL µ¥¸ð ·Î±×ÀÎ ¿¬µ¿ | °á°ú: VITE_DEMO_EMAIL/VITE_DEMO_PASSWORD·Î ÀÚµ¿ ·Î±×ÀÎ ÈÄ ´ë½Ãº¸µå ÀÌµ¿ | ÀÌ½´: ¾øÀ½
+- 2026-02-20 | ÀÛ¾÷: µ¥¸ð ÀÚµ¿·Î±×ÀÎ env ¹Ý¿µ | °á°ú: .env¿¡ VITE_DEMO_EMAIL/VITE_DEMO_PASSWORD Ãß°¡ | ÀÌ½´: ¾øÀ½
