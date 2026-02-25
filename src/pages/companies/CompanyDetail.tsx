@@ -203,12 +203,24 @@ const CompanyDetailPage: React.FC = () => {
     companyId: string,
     year: number,
     quarter: number,
+    downloadUrl?: string,
   ) => {
+    const filename = `report_${companyId}_${year}_Q${quarter}.pdf`;
+    if (downloadUrl) {
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      return;
+    }
+
     const blob = await downloadCompanyAiReport(companyId, { year, quarter });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `report_${companyId}_${year}_Q${quarter}.pdf`;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -238,7 +250,7 @@ const CompanyDetailPage: React.FC = () => {
         setReportCompletedKey(`${year}-Q${quarter}`);
         setReportStatusMessage('AI 분석 리포트 생성 완료됨');
         if (response.downloadUrl) {
-          await triggerReportDownload(companyDetail.company.id, year, quarter);
+          await triggerReportDownload(companyDetail.company.id, year, quarter, response.downloadUrl);
         }
         clearReportTimer();
         return;
@@ -278,7 +290,7 @@ const CompanyDetailPage: React.FC = () => {
       if (reportRequestId) {
         const status = await getCompanyAiReportStatus(companyId, reportRequestId);
         if (status.downloadUrl) {
-          await triggerReportDownload(detail.company.id, year, quarter);
+          await triggerReportDownload(detail.company.id, year, quarter, status.downloadUrl);
         }
       }
       return;
@@ -297,7 +309,7 @@ const CompanyDetailPage: React.FC = () => {
         setReportCompletedKey(currentKey);
         setReportStatusMessage('AI 분석 리포트 생성 완료됨');
         if (response.downloadUrl) {
-          await triggerReportDownload(detail.company.id, year, quarter);
+          await triggerReportDownload(detail.company.id, year, quarter, response.downloadUrl);
         }
         return;
       }
