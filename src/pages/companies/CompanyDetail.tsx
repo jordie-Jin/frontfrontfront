@@ -239,7 +239,7 @@ const CompanyDetailPage: React.FC = () => {
     } catch (error) {
       if (error instanceof ApiRequestError) {
         const status = error.apiError?.status;
-        if (status === 404 || status === 409) {
+        if (status === 400 || status === 404 || status === 409) {
           return false;
         }
       }
