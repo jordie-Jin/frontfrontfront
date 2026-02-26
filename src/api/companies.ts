@@ -163,9 +163,20 @@ export const downloadCompanyAiReport = async (
   const response = await fetch(url, {
     method: 'GET',
     headers: {
+      Accept: 'application/pdf',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
+  const blob = await response.blob();
+  const contentType = response.headers.get('content-type') ?? '';
+
+  if (!contentType.includes('application/pdf')) {
+    const errorText = (await blob.text()).trim();
+    throw new ApiRequestError(
+      errorText || 'AI 리포트 다운로드에 실패했습니다.',
+      { status: response.status },
+    );
+  }
 
   if (!response.ok) {
     throw new ApiRequestError('AI 리포트 다운로드에 실패했습니다.', {
@@ -173,7 +184,7 @@ export const downloadCompanyAiReport = async (
     });
   }
 
-  return response.blob();
+  return blob;
 };
 
 export interface AiReportRequestResponse {

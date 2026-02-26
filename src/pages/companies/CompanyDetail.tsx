@@ -13,7 +13,7 @@ import {
 } from '../../api/companies';
 import { ApiRequestError } from '../../api/client';
 import { getMockCompanyInsights, getMockCompanyOverview } from '../../mocks/companies.mock';
-import { getAuthToken, getStoredUser } from '../../services/auth';
+import { getStoredUser } from '../../services/auth';
 import {
   getStoredAdminViewUser,
   isAdminUser,
@@ -200,23 +200,8 @@ const CompanyDetailPage: React.FC = () => {
     }
   };
 
-  const triggerReportDownload = async (
-    companyId: string,
-    year: number,
-    quarter: number,
-    downloadUrl?: string,
-  ) => {
+  const triggerReportDownload = async (companyId: string, year: number, quarter: number) => {
     const filename = `report_${companyId}_${year}_Q${quarter}.pdf`;
-    if (downloadUrl) {
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      return;
-    }
-
     const blob = await downloadCompanyAiReport(companyId, { year, quarter });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -259,6 +244,13 @@ const CompanyDetailPage: React.FC = () => {
     return false;
   };
 
+  const resolveReportErrorMessage = (error: unknown, fallback: string) => {
+    if (error instanceof ApiRequestError && error.message) {
+      return error.message;
+    }
+    return fallback;
+  };
+
   const pollReportStatus = async (companyDetail: CompanyOverview, requestId: string) => {
     const year = reportYear ?? resolveReportPeriod(companyDetail).year;
     const quarter = reportQuarter ?? resolveReportPeriod(companyDetail).quarter;
@@ -269,9 +261,7 @@ const CompanyDetailPage: React.FC = () => {
         setIsReportGenerating(false);
         setReportCompletedKey(`${year}-Q${quarter}`);
         setReportStatusMessage('AI 분석 리포트 생성 완료됨');
-        if (response.downloadUrl) {
-          await triggerReportDownload(companyDetail.company.id, year, quarter, response.downloadUrl);
-        }
+        await triggerReportDownload(companyDetail.company.id, year, quarter);
         clearReportTimer();
         return;
       }
@@ -282,7 +272,7 @@ const CompanyDetailPage: React.FC = () => {
       );
     } catch (error) {
       setIsReportGenerating(false);
-      setReportStatusMessage('AI 리포트 생성 상태 확인에 실패했습니다.');
+      setReportStatusMessage(resolveReportErrorMessage(error, 'AI 리포트 생성 상태 확인에 실패했습니다.'));
       clearReportTimer();
       return;
     }
@@ -312,14 +302,12 @@ const CompanyDetailPage: React.FC = () => {
           return;
         }
       } catch (error) {
-        setReportStatusMessage('AI 리포트 다운로드에 실패했습니다.');
+        setReportStatusMessage(resolveReportErrorMessage(error, 'AI 리포트 다운로드에 실패했습니다.'));
       }
       setReportStatusMessage('AI 분석 리포트 생성 완료됨');
       if (reportRequestId) {
         const status = await getCompanyAiReportStatus(companyId, reportRequestId);
-        if (status.downloadUrl) {
-          await triggerReportDownload(detail.company.id, year, quarter, status.downloadUrl);
-        }
+        await triggerReportDownload(detail.company.id, year, quarter);
       }
       return;
     }
@@ -334,7 +322,7 @@ const CompanyDetailPage: React.FC = () => {
       }
     } catch (error) {
       setIsReportGenerating(false);
-      setReportStatusMessage('AI 리포트 다운로드에 실패했습니다.');
+      setReportStatusMessage(resolveReportErrorMessage(error, 'AI 리포트 다운로드에 실패했습니다.'));
       return;
     }
 
@@ -350,9 +338,7 @@ const CompanyDetailPage: React.FC = () => {
         setIsReportGenerating(false);
         setReportCompletedKey(currentKey);
         setReportStatusMessage('AI 분석 리포트 생성 완료됨');
-        if (response.downloadUrl) {
-          await triggerReportDownload(detail.company.id, year, quarter, response.downloadUrl);
-        }
+        await triggerReportDownload(detail.company.id, year, quarter);
         return;
       }
 
@@ -370,7 +356,7 @@ const CompanyDetailPage: React.FC = () => {
       }
     } catch (error) {
       setIsReportGenerating(false);
-      setReportStatusMessage('AI 분석 리포트 생성 요청에 실패했습니다.');
+      setReportStatusMessage(resolveReportErrorMessage(error, 'AI 분석 리포트 생성 요청에 실패했습니다.'));
     }
   };
 
